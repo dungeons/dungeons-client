@@ -1,0 +1,13 @@
+v 0.0.1d1
+features
+- textures added to polygon
+- Actor class manages camera and can move without constrains
+- Input class manages input
+- Entity class is base for every moving object
+
+v 0.0.1d2
+- Fixed error with missing depth test
+
+v 0.0.1d3
+- Update mechanism from Entity class was moved to new AI class, that is responsible for controlling entities
+- Shadowmaps added for casting shadow within the labyrinth
