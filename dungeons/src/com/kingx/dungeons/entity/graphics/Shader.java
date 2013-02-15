@@ -100,11 +100,11 @@ public class Shader {
     }
 
     public static String getFragment(String name) {
-        return map.get(name).getFragment();
+        return getStructure(name).getFragment();
     }
     
     public static ShaderProgram getShader(String name) {
-        return map.get(name).getShader();
+        return getStructure(name).getShader();
     }
 
     private static ShaderStructure getStructure(String name) {
