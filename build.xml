@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project dungeons-desktop">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+<mkdir dir="H:/git/dungeons/dungeons-desktop/bin/bin"/>
+<move todir="H:/git/dungeons/dungeons-desktop/bin/bin" file="H:/git/dungeons/dungeons-desktop/bin/data"/>
+        <jar destfile="./maze.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="com.kingx.dungeons.Main"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="H:/git/dungeons/dungeons-desktop/bin" excludes="data/"/>
+            <fileset dir="H:/git/dungeons/dungeons/bin"   />
+            <zipfileset excludes="META-INF/*.SF" src="H:/git/dungeons/dungeons/libs/gdx.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="H:/git/dungeons/dungeons-desktop/libs/gdx-backend-lwjgl.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="H:/git/dungeons/dungeons-desktop/libs/gdx-backend-lwjgl-natives.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="H:/git/dungeons/dungeons-desktop/libs/gdx-natives.jar"/>
+        </jar>
+
+    </target>
+</project>
