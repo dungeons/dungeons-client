@@ -44,8 +44,13 @@ public abstract class Entity {
 
     private void updatePositionListeners() {
         for (EntityListener el : listeners) {
-            System.out.println("update: "+this.position);
             el.positionChange(this.position.x, this.position.y, this.position.z);
+        }
+    }
+    
+    private void updateRotationListeners() {
+        for (EntityListener el : listeners) {
+            el.rotationChange(this.rotation);
         }
     }
 
@@ -116,6 +121,12 @@ public abstract class Entity {
 
     public void setRotation(float rotation) {
         this.rotation = rotation;
+        updateRotationListeners();
+    }
+
+    public void addRotation(float rotation) {
+        this.rotation += rotation;
+        updateRotationListeners();
     }
 
     public float getSize() {

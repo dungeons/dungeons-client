@@ -22,7 +22,7 @@ public final class MazeShadow extends RenderableEntity {
         super(0, 0, 0, map.length * size, 0);
         this.footprint = map;
         walls = this.getWalls();
-        Vector3 polySize = new Vector3(size, size, .2f);
+        Vector3 polySize = new Vector3(size, size, size);
         poly = new PolyBuilder(this, polySize).generate();
 
     }

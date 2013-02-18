@@ -86,8 +86,8 @@ public class App implements ApplicationListener {
         renderList(renderList);
 
         sb.begin();
-        if (ground.getCbt()!= null) {
-            sb.draw(ground.getCbt(), 0, 0, 100, 100);
+        if (ground.getCbt0() != null) {
+            sb.draw(ground.getCbt0(), 0, 0, 100, 100, 1  , 0, 0, 1);
         }
         sb.end();
 

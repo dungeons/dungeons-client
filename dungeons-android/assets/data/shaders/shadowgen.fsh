@@ -39,8 +39,8 @@
 /// Linear depth calculation.
 /// You could optionally upload this as a shader parameter.
 /// <summary>
-const float Near = 1.0;
-const float Far = 30.0;
+const float Near = 0;
+const float Far = 50000;
 const float LinearDepthConstant = 1.0 / (Far - Near);
 
 
@@ -95,7 +95,7 @@ vec2 packHalf (float depth)
 void main ()
 {
 	// Linear depth
-	float linearDepth = length(vPosition) * LinearDepthConstant;
+	float linearDepth = length(vPosition);
 
 		//
 		// Classic shadow mapping algorithm.

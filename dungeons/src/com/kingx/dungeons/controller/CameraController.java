@@ -20,7 +20,8 @@ public abstract class CameraController {
         this.controller.unregisterListener(listener);
         }
         this.controller = newController;
-        this.controller.registerListener(listener);
+        newController.registerListener(listener);
+        init(newController);
     }
 
     public Camera getCamera() {
@@ -28,4 +29,5 @@ public abstract class CameraController {
     }
 
     protected abstract EntityListener createListener();
+    protected abstract void init(Entity puppet);
 }

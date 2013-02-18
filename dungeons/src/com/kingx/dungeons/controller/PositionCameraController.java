@@ -1,6 +1,7 @@
 package com.kingx.dungeons.controller;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.kingx.dungeons.entity.Entity;
 import com.kingx.dungeons.entity.EntityListener;
 
 public class PositionCameraController extends CameraController {
@@ -22,11 +23,13 @@ public class PositionCameraController extends CameraController {
 
             @Override
             public void rotationChange(float rotation) {
-                // TODO Auto-generated method stub
-
             }
         };
 
+    }
+
+    @Override
+    protected void init(Entity puppet) {
     }
 
 }

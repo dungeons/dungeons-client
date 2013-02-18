@@ -7,6 +7,7 @@ import com.kingx.dungeons.entity.Entity;
 public final class AvatarBehavior extends PlayerControlledBehavior {
 
     private Vector2 moveVector = new Vector2();
+    private float rotateValue = 0;
 
     public AvatarBehavior() {
         this(null);
@@ -18,15 +19,15 @@ public final class AvatarBehavior extends PlayerControlledBehavior {
 
     @Override
     public boolean keyDown(int keycode) {
-        return changeDirection(keycode, 1);
+        return action(keycode, 1);
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        return changeDirection(keycode, -1);
+        return action(keycode, -1);
     }
 
-    private boolean changeDirection(int keycode, int dir) {
+    private boolean action(int keycode, int dir) {
         switch (keycode) {
             case Keys.W:
                 moveVector.add(0, 1 * dir);
@@ -40,6 +41,9 @@ public final class AvatarBehavior extends PlayerControlledBehavior {
             case Keys.D:
                 moveVector.add(1 * dir, 0);
                 break;
+            case Keys.F:
+                rotateValue += dir/10f;
+                break;
         }
         return false;
     }
@@ -47,6 +51,7 @@ public final class AvatarBehavior extends PlayerControlledBehavior {
     @Override
     public void move(float delta) {
         this.resolveMove(moveVector.x * puppet.getSpeed(), moveVector.y * puppet.getSpeed());
+        puppet.addRotation(rotateValue);
     }
 
     // / Unused

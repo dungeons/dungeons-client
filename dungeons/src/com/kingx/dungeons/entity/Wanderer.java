@@ -30,7 +30,9 @@ public class Wanderer extends RenderableEntity {
 
         avatar = Input.getInstance().getControlledEntity(this);
 
-        Camera camera = new PerspectiveCamera(90,1024, 1024);
+        Camera camera = new PerspectiveCamera(90,128, 128);
+        camera.near = 0.0001f;
+        camera.far = 50000;
 
 /*
         camera.direction.x = 0;
