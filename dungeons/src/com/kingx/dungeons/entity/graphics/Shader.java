@@ -79,6 +79,8 @@ public class Shader {
                 ss = map.get(name);
             }
 
+            System.out.println("Parsing: "+f);
+
             switch (ShaderType.valueOf(ext)) {
                 case vsh:
                     ss.setVertex(f.readString());

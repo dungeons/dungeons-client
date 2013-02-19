@@ -32,7 +32,7 @@ public class Wanderer extends RenderableEntity {
 
         Camera camera = new PerspectiveCamera(90,128, 128);
         camera.near = 0.0001f;
-        camera.far = 50000;
+        camera.far = 500;
 
 /*
         camera.direction.x = 0;

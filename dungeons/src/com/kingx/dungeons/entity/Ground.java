@@ -16,14 +16,14 @@ import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.entity.graphics.Shader;
 
 public class Ground extends RenderableEntity {
     private Mesh poly;
     private ShaderProgram shadowGeneratorShader;
     private ShaderProgram shadowProjectShader;
-    private FrameBuffer shadowMap0;
-    private FrameBuffer shadowMap1;
+    private FrameBuffer shadowMap;
     private Camera lightCam;
 
     public Ground(float size) {
@@ -42,8 +42,7 @@ public class Ground extends RenderableEntity {
         shadowGeneratorShader = Shader.getShader("shadowgen");
         shadowProjectShader = Shader.getShader("shadowproj");
 
-        shadowMap0 = new FrameBuffer(Format.RGBA8888, 1024, 1024, true);
-        shadowMap1 = new FrameBuffer(Format.RGBA8888, 1024, 1024, true);
+        shadowMap = new FrameBuffer(Format.RGBA8888, 1024, 1024, true);
 
     }
 
@@ -60,7 +59,7 @@ public class Ground extends RenderableEntity {
         // texture #0
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
                 | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
-        shadowMap0.begin();
+        shadowMap.begin();
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.gl.glClearColor(0, 0, 0, 0);
@@ -71,45 +70,26 @@ public class Ground extends RenderableEntity {
         shadowGeneratorShader.setUniformMatrix("ViewMatrix", lightCam.view);
         App.getMaze().poly.render(shadowGeneratorShader, GL20.GL_TRIANGLES);
         shadowGeneratorShader.end();
-        shadowMap0.end();
+        shadowMap.end();
+       // cbt.bind();
         
         
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        // texture #1
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
-                | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
-        shadowMap1.begin();
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        Gdx.gl.glClearColor(0, 0, 0, 0);
-        
-        
-        shadowGeneratorShader.begin();
-        shadowGeneratorShader.setUniformMatrix("ProjectionMatrix", lightCam.projection);
-        shadowGeneratorShader.setUniformMatrix("ViewMatrix", lightCam.view);
-        App.getMaze().poly.render(shadowGeneratorShader, GL20.GL_TRIANGLES);
-        shadowGeneratorShader.end();
-        shadowMap1.end();
-        
-        
+        cbt = shadowMap.getColorBufferTexture();
+        cbt.bind();
         // Shadowmap gen
         shadowProjectShader.begin();
-        cbt = shadowMap0.getColorBufferTexture();
-        
-        Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE0);
-        shadowMap0.getColorBufferTexture().bind();
 
-        Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE1);
-        shadowMap1.getColorBufferTexture().bind();
-        
+        shadowProjectShader.setUniformi("DepthMap", 0);
 
-        shadowProjectShader.setUniformi("s_shadowMap0", 0);
-        shadowProjectShader.setUniformi("s_shadowMap1", 0);
+        shadowProjectShader.setUniformMatrix("ProjectionMatrix", cam.projection);
+        shadowProjectShader.setUniformMatrix("ViewMatrix", cam.view);
+        shadowProjectShader.setUniformMatrix("LightSourceProjectionMatrix", lightCam.projection);
+        shadowProjectShader.setUniformMatrix("LightSourceViewMatrix", lightCam.view);
         
-        shadowProjectShader.setUniformMatrix("u_projTrans", cam.combined);
-        shadowProjectShader.setUniformMatrix("u_lightProjTrans0", lightCam.combined);
-        shadowProjectShader.setUniformMatrix("u_lightProjTrans1", lightCam.combined);
-        shadowProjectShader.setUniformf("u_color", 0.8f, 0.5f, 0.2f, 1f);
+        shadowProjectShader.setUniformf("v_lightSpacePosition", lightCam.position);
+        
         poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
         shadowProjectShader.end();
 

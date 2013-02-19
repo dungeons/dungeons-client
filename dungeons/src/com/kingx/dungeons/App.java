@@ -51,7 +51,6 @@ public class App implements ApplicationListener {
 
         Logic logic = Logic.getInstance(this);
 
-        Gdx.gl.glEnable(GL10.GL_CULL_FACE);
         Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
         Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
         Gdx.gl.glDepthFunc(GL10.GL_LESS);
@@ -86,8 +85,8 @@ public class App implements ApplicationListener {
         renderList(renderList);
 
         sb.begin();
-        if (ground.getCbt0() != null) {
-            sb.draw(ground.getCbt0(), 0, 0, 100, 100, 1  , 0, 0, 1);
+        if (ground.getCbt() != null) {
+            sb.draw(ground.getCbt(), 0, 0, 50, 50, 1  , 0, 0, 1);
         }
         sb.end();
 
@@ -168,5 +167,4 @@ public class App implements ApplicationListener {
     public static boolean[][] getFootprint() {
         return footprint;
     }
-
 }

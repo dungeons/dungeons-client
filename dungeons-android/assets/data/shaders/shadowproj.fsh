@@ -1,45 +1,68 @@
-#ifdef GL_ES
-precision highp float; 
-#endif
+// Fragment shader for rendering the scene with shadows.
 
-varying vec4 v_lightSpacePosition0;
-varying vec4 v_lightSpacePosition1;
-varying vec4 v_color;
+// Linear depth calculation.
+// You could optionally upload this as a shader parameter.
+const float Near = 0.0;
+const float Far = 500.0;
+const float LinearDepthConstant = 1.0 / (Far - Near);
 
-uniform sampler2D s_shadowMap0;
-uniform sampler2D s_shadowMap1;
 
-float unpack(vec4 packedZValue)
-{	
-	const vec4 unpackFactors = vec4( 1.0 / (256.0 * 256.0 * 256.0), 1.0 / (256.0 * 256.0), 1.0 / 256.0, 1.0 );
-	return dot(packedZValue,unpackFactors);
-}
+uniform  vec3 v_lightSpacePosition;
 
-float getShadowFactor(vec4 lightZ, sampler2D s_shadowMap)
+// Uniform variables.
+uniform sampler2D DepthMap;
+
+
+// Varying variables.
+varying vec4 vWorldVertex;
+varying vec4 vPosition;
+
+
+// Unpack an RGBA pixel to floating point value.
+float unpack (vec4 colour)
 {
-	vec4 packedZValue = texture2D(s_shadowMap, lightZ.st);
-	float unpackedZValue = unpack(packedZValue);
-	return float(unpackedZValue > lightZ.z);
+    const vec4 bitShifts = vec4(1.0,
+                    1.0 / 255.0,
+                    1.0 / (255.0 * 255.0),
+                    1.0 / (255.0 * 255.0 * 255.0));
+    return dot(colour, bitShifts);
 }
 
-void main(void) 
-{	
-	float shadowFactor0=1.0;				
+// Fragment shader entry.
+void main ()
+{
+ 
+     vec4 clr = vec4(1,0,0.2,1);
+    // vWorldNormal is interpolated when passed into the fragment shader.
+    // We need to renormalize the vector so that it stays at unit length.
 
-	vec4 lightZ0 = v_lightSpacePosition0 / v_lightSpacePosition0.w;
-	lightZ0 = (lightZ0 + 1.0) / 2.0;
-	shadowFactor0 = getShadowFactor(lightZ0, s_shadowMap0);
+    
+    // Calculate shadow amount
+    vec3 depth = vPosition.xyz / vPosition.w;
+    //depth.z = length(vWorldVertex.xyz - v_lightSpacePosition) * LinearDepthConstant ;
+    float shadow = 1.0;
 
-
-	float shadowFactor1=1.0;				
-
-	vec4 lightZ1 = v_lightSpacePosition1 / v_lightSpacePosition1.w;
-	lightZ1 = (lightZ1 + 1.0) / 2.0;
-	shadowFactor1 = getShadowFactor(lightZ1, s_shadowMap1);
-
-	if(shadowFactor0 == 0.0 ){
-	gl_FragColor = v_color * 0.0;
-}else{
-	gl_FragColor = v_color * 1;
-}
+    float shadowDepth = unpack(texture2D(DepthMap, depth.xy));
+        if ( depth.z > shadowDepth ){
+            shadow = 0.5;
+            }
+           
+            if(depth.x < 0.0 ){
+      clr = vec4(0.5,1,0.2,1);
+            shadow = 1.0;
+            }
+            if( depth.x  < 500){
+      clr = vec4(0.7,0,0.8,1);
+            shadow = 1.0;
+            }
+            
+            if( length(depth.xx)  > 100 ){
+      clr = vec4(0.2,0.5,1,1);
+            shadow = 1.0;
+            }
+    
+    //
+    // Apply colour and shadow
+    //
+    gl_FragColor = clr * vec4(shadow);
 }
