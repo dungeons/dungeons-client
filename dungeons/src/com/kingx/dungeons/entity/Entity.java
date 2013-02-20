@@ -10,29 +10,16 @@ public abstract class Entity {
     protected float size;
     protected float speed;
 
-    private boolean active = false;
-
     public Entity(float x, float y, float z, float size, float speed) {
         this.position = new Vector3(x, y, z);
         this.size = size;
         this.speed = speed;
     }
 
-    public void update(float delta) {
-        if (active) {
-            doUpdate(delta);
-        }
-    }
-
-    /**
-     * Method overidable by subclasses, do not call directly
-     */
-    protected abstract void doUpdate(float delta);
-
     // Listners
     // TODO these listener eat up a lot of sapce look into java swing listeners and find a better solution
 
-    private ArrayList<EntityListener> listeners = new ArrayList<EntityListener>();
+    private final ArrayList<EntityListener> listeners = new ArrayList<EntityListener>();
 
     public void registerListener(EntityListener listener) {
         listeners.add(listener);
@@ -55,10 +42,6 @@ public abstract class Entity {
     }
 
     // ///
-
-    public void setActive(boolean active) {
-        this.active = active;
-    }
 
     public Vector3 getPosition() {
         return position;
@@ -88,6 +71,21 @@ public abstract class Entity {
 
     public void setPositionZ(float value) {
         position.z = value;
+        updatePositionListeners();
+    }
+
+    public void addPositionX(float value) {
+        position.x += value;
+        updatePositionListeners();
+    }
+
+    public void addPositionY(float value) {
+        position.y += value;
+        updatePositionListeners();
+    }
+
+    public void addPositionZ(float value) {
+        position.z += value;
         updatePositionListeners();
     }
 

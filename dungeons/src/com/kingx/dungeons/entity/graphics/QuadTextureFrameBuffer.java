@@ -91,7 +91,6 @@ public class QuadTextureFrameBuffer implements Disposable {
         currentTexture = (currentTexture + 1) % maxTextures;
         int x = (currentTexture % 2) * colorTexture.getWidth() / 2;
         int y = (currentTexture / 2) * colorTexture.getHeight() / 2;
-        System.out.println("Drawing on [" + x + "," + y + "," + (x + colorTexture.getWidth() / 2) + "," + (y + colorTexture.getHeight() / 2) + "]");
         Gdx.graphics.getGL20().glViewport(x, y, colorTexture.getWidth() / 2, colorTexture.getHeight() / 2);
 
     }

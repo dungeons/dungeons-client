@@ -8,7 +8,8 @@ const float LinearDepthConstant = 1.0 / (Far - Near);
 
 
 // Uniform variables.
-uniform  vec3 v_lightSpacePosition;
+uniform float u_mazeSize;
+uniform vec3 v_lightSpacePosition;
 uniform sampler2D DepthMap;
 
 
@@ -35,7 +36,7 @@ void main ()
 	
 	float shadow = 1.0;
 	
-	if(vWorldVertex.x >= 0 && vWorldVertex.x <= 10 && vWorldVertex.y >= 0 && vWorldVertex.y <= 10){
+	if(vWorldVertex.x >= 0 && vWorldVertex.x <= u_mazeSize && vWorldVertex.y >= 0 && vWorldVertex.y <= u_mazeSize){
 		for(int i = 0; i < 4; i++){
 			// Change position to position seen from this perspective
 			vec3 depth = vPosition[i].xyz /  vPosition[i].w;
@@ -44,12 +45,12 @@ void main ()
 			depth.z = length(vWorldVertex.xyz - v_lightSpacePosition) * LinearDepthConstant ;
 			
 			// Dont know why this is needed.
-			depth.z*=5;
+			depth.z*=7;
 
 			
 			// make sure that shadow is computed within lights area (90° area)
-
-            float bias = 0.001;
+            // FIXME This is not a sollution areas are still overlapping
+            float bias = 0.0015;
 			bool cond = false;
 			switch (i) {
 			case 0:
@@ -85,5 +86,5 @@ void main ()
 
 	
 	// Apply colour and shadow
-	gl_FragColor = vColor * vec4(shadow);
+	gl_FragColor = vColor.a * vec4(shadow);
 }

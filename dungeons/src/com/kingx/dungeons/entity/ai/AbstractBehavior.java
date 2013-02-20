@@ -17,10 +17,12 @@ public abstract class AbstractBehavior implements Behavior {
         setPuppet(puppet);
     }
 
+    @Override
     public void setPuppet(Entity puppet) {
         this.puppet = puppet;
     }
 
+    @Override
     public void update(float delta) {
         move(delta);
     }

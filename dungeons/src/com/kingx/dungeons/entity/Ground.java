@@ -17,7 +17,6 @@ public class Ground extends RenderableEntity {
     private ShaderProgram shadowGeneratorShader;
     private ShaderProgram shadowProjectShader;
     private QuadTextureFrameBuffer shadowMap;
-    private Camera[] lightCams;
     private Texture depthMap;
 
     public Ground(float size) {
@@ -36,12 +35,6 @@ public class Ground extends RenderableEntity {
         shadowGeneratorShader = Shader.getShader("shadowgen");
         shadowProjectShader = Shader.getShader("shadowproj");
 
-        Wanderer wand = App.getWanderer();
-        int lights = wand.getEyesCount();
-        lightCams = new Camera[lights];
-        for (int i = 0; i < lights; i++) {
-            lightCams[i] = wand.getEyes(i);
-        }
         shadowMap = new QuadTextureFrameBuffer(Format.RGBA8888, 1024, 1024, true);
 
     }
@@ -50,31 +43,39 @@ public class Ground extends RenderableEntity {
     protected void doRender(Camera cam) {
         // TODO cant directly reference one player entity, light will be generated for all of them
 
-        generateShadowMap();
-        depthMap.bind();
+        for (CleverEntity ce : App.getUpdateList()) {
+            if (ce instanceof ShadowCastingEntity) {
+                shadowMap = new QuadTextureFrameBuffer(Format.RGBA8888, 1024, 1024, true);
+                ShadowCastingEntity sce = (ShadowCastingEntity) ce;
+                Camera[] lights = sce.getLights();
+                generateShadowMap(lights);
+                depthMap.bind();
 
-        shadowProjectShader.begin();
-        shadowProjectShader.setUniformMatrix("ProjectionMatrix", cam.projection);
-        shadowProjectShader.setUniformMatrix("ViewMatrix", cam.view);
-        for (int i = 0; i < lightCams.length; i++) {
-            shadowProjectShader.setUniformMatrix("LightSourceProjectionViewMatrix[" + i + "]", lightCams[i].combined);
+                shadowProjectShader.begin();
+                shadowProjectShader.setUniformMatrix("ProjectionMatrix", cam.projection);
+                shadowProjectShader.setUniformMatrix("ViewMatrix", cam.view);
+                for (int i = 0; i < lights.length; i++) {
+                    shadowProjectShader.setUniformMatrix("LightSourceProjectionViewMatrix[" + i + "]", lights[i].combined);
+                }
+                shadowProjectShader.setUniformf("u_mazeSize", App.MAZE_BLOCKS_COUNT * App.MAZE_WALL_SIZE);
+                shadowProjectShader.setUniformf("v_lightSpacePosition", lights[0].position);
+                shadowProjectShader.setUniformi("DepthMap", 0);
+                shadowProjectShader.setUniformf("color", 0.4f, 0.6f, 0.7f, 1f);
+
+                poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
+                shadowProjectShader.end();
+            }
         }
-        shadowProjectShader.setUniformi("DepthMap", 0);
-        shadowProjectShader.setUniformf("v_lightSpacePosition", lightCams[0].position);
-        shadowProjectShader.setUniformf("color", 0.4f, 0.6f, 0.7f, 1f);
-
-        poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
-        shadowProjectShader.end();
     }
 
-    private void generateShadowMap() {
+    private void generateShadowMap(Camera[] lights) {
         shadowMap.begin();
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.gl.glClearColor(0, 0, 0, 0);
-        for (int i = 0; i < lightCams.length; i++) {
-            lightCams[i].update();
-            depthMap = generateShadowMap(lightCams[i]);
+        for (int i = 0; i < lights.length; i++) {
+            lights[i].update();
+            depthMap = generateShadowMap(lights[i]);
         }
 
         shadowMap.end();
@@ -89,11 +90,6 @@ public class Ground extends RenderableEntity {
         shadowGeneratorShader.end();
 
         return shadowMap.getColorBufferTexture();
-    }
-
-    @Override
-    protected void doUpdate(float delta) {
-        // ground doesn't move
     }
 
     public Texture getCbt() {

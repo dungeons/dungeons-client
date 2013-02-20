@@ -13,10 +13,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.kingx.dungeons.controller.CameraController;
 import com.kingx.dungeons.controller.PositionCamera;
-import com.kingx.dungeons.entity.Entity;
+import com.kingx.dungeons.entity.CleverEntity;
 import com.kingx.dungeons.entity.Ground;
-import com.kingx.dungeons.entity.MazeFactory;
 import com.kingx.dungeons.entity.Maze;
+import com.kingx.dungeons.entity.MazeFactory;
+import com.kingx.dungeons.entity.Police;
 import com.kingx.dungeons.entity.RenderableEntity;
 import com.kingx.dungeons.entity.Wanderer;
 
@@ -25,16 +26,16 @@ public class App implements ApplicationListener {
     private static Maze maze;
     private static CameraController followCamera;
 
-    private List<RenderableEntity> renderList = new ArrayList<RenderableEntity>();
-    private List<Entity> updateList = new ArrayList<Entity>();
+    private static final List<RenderableEntity> renderList = new ArrayList<RenderableEntity>();
+    private static final List<CleverEntity> updateList = new ArrayList<CleverEntity>();
 
-    private Ground ground;
+    private static Ground ground;
     private static boolean[][] footprint;
     public static App reference;
     private static Wanderer wanderer;
     private static boolean wireframe;
 
-    public static final int MAZE_BLOCKS_COUNT = 10;
+    public static final int MAZE_BLOCKS_COUNT = 25;
     public static final float MAZE_WALL_SIZE = 1f;
 
     public static Wanderer getWanderer() {
@@ -43,6 +44,14 @@ public class App implements ApplicationListener {
 
     public static Maze getMaze() {
         return maze;
+    }
+
+    public static List<RenderableEntity> getRenderList() {
+        return renderList;
+    }
+
+    public static List<CleverEntity> getUpdateList() {
+        return updateList;
     }
 
     @Override
@@ -58,13 +67,6 @@ public class App implements ApplicationListener {
 
     }
 
-    /*
-     * public List<Float> getPath(MapAI mapAI) { Map myMap = new Map(maze.getFootprint()); myMap.setNode(new MapEntityNodeFactory());
-     * 
-     * Point.Int start = mapAI.getRegion(); Point.Int finish = maze.getRandomBlock(start);
-     * 
-     * System.out.print(start + " : " + finish); return myMap.findPath(start, finish); }
-     */
     @Override
     public void dispose() {
     }
@@ -98,13 +100,21 @@ public class App implements ApplicationListener {
         wanderer = new Wanderer(maze);
         ground = new Ground(1000);
 
+        ArrayList<Police> police = new ArrayList<Police>();
+        for (int i = 0; i < 5; i++) {
+            police.add(new Police(maze));
+        }
+
         // Adding to render list
         renderList.add(ground);
         renderList.add(maze);
         renderList.add(wanderer);
+        renderList.addAll(police);
 
         // Adding to update list
         updateList.add(wanderer);
+        updateList.addAll(police);
+
         followCamera.setController(wanderer);
     }
 
@@ -112,8 +122,8 @@ public class App implements ApplicationListener {
         updateList(updateList, delta);
     }
 
-    private void updateList(List<Entity> list, float delta) {
-        for (Entity e : list) {
+    private void updateList(List<CleverEntity> list, float delta) {
+        for (CleverEntity e : list) {
             e.update(delta);
         }
     }

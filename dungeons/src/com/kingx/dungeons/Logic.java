@@ -1,12 +1,11 @@
 package com.kingx.dungeons;
 
-import com.kingx.dungeons.trash.Actor;
-
 public final class Logic implements Runnable {
 
+    // Singleton
     private static volatile Logic instance = null;
 
-    private App reference;
+    private final App reference;
 
     private Logic(App app) {
         this.reference = app;
@@ -24,36 +23,30 @@ public final class Logic implements Runnable {
         return instance;
     }
 
-
-    final float dt = 0.0166f;
+    private final float step = .0166f;
+    private final float maxStep = .25f;
 
     long currentTime = System.nanoTime();
-    private static final long FORMAT = 1000000000;
+    private final long BILLION = 1000000000;
     double accumulator = 0.0f;
 
-    private boolean quit = false;
+    private final boolean quit = false;
 
     @Override
     public void run() {
         while (!quit) {
             long newTime = System.nanoTime();
-            double frameTime = (double) (newTime - currentTime) / FORMAT;
+            double frameTime = (double) (newTime - currentTime) / BILLION;
             currentTime = newTime;
 
-            frameTime = Math.min(frameTime, 0.25); // note: max frame time to avoid spiral of death
+            frameTime = Math.min(frameTime, maxStep); // note: max frame time to avoid spiral of death
 
             accumulator += frameTime;
 
-            while (accumulator >= dt) {
-                reference.update(dt);
-                accumulator -= dt;
+            while (accumulator >= step) {
+                reference.update(step);
+                accumulator -= step;
             }
         }
     }
-
-    public static void move(Actor actor, float x, float y) {
-        
-    }
-
-  
 }

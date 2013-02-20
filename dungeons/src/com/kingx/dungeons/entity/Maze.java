@@ -13,9 +13,9 @@ import com.kingx.dungeons.geom.Point;
 
 public final class Maze extends RenderableEntity {
 
-    private boolean[][] footprint;
+    private final boolean[][] footprint;
     private int walls = -1;
-    private Mesh poly;
+    private final Mesh poly;
 
     public static final float SIZE = 1f;
 
@@ -44,7 +44,7 @@ public final class Maze extends RenderableEntity {
         }
     }
 
-    private Random rand = new Random();
+    private final Random rand = new Random();
     private ShaderProgram shader;
 
     public Point.Int getRandomBlock() {
@@ -96,11 +96,6 @@ public final class Maze extends RenderableEntity {
 
     public Mesh getPoly() {
         return poly;
-    }
-
-    @Override
-    protected void doUpdate(float delta) {
-        // Maze doesn't do anything
     }
 
     public void print() {

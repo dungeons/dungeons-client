@@ -6,7 +6,7 @@ import com.kingx.dungeons.entity.Entity;
 
 public final class AvatarBehavior extends PlayerControlledBehavior {
 
-    private Vector2 moveVector = new Vector2();
+    private final Vector2 moveVector = new Vector2();
     private float rotateValue = 0;
 
     public AvatarBehavior() {
@@ -50,7 +50,7 @@ public final class AvatarBehavior extends PlayerControlledBehavior {
 
     @Override
     public void move(float delta) {
-        this.resolveMove(moveVector.x * puppet.getSpeed(), moveVector.y * puppet.getSpeed());
+        this.resolveMove(moveVector.x * puppet.getSpeed() * delta, moveVector.y * puppet.getSpeed() * delta);
         puppet.addRotation(rotateValue);
     }
 

@@ -75,8 +75,8 @@ public final class PolyBuilder {
             { 0, 0, -1 } // Bottom
     };
 
-    private ArrayList<Float> verts = new ArrayList<Float>();
-    private ArrayList<Short> indices = new ArrayList<Short>();
+    private final ArrayList<Float> verts = new ArrayList<Float>();
+    private final ArrayList<Short> indices = new ArrayList<Short>();
 
     public PolyBuilder(Maze maze, Vector3 wallSize) {
         WALL_SIZE = wallSize;
@@ -86,7 +86,9 @@ public final class PolyBuilder {
 
                 float x = i * WALL_SIZE.x;
                 float y = j * WALL_SIZE.y;
-                makeWall(maze.getPositionX() + x, maze.getPositionY() + y, maze.getPositionZ());
+                if (!maze.getFootprint()[i][j]) {
+                    makeWall(maze.getPositionX() + x, maze.getPositionY() + y, maze.getPositionZ());
+                }
             }
         }
     }
@@ -117,7 +119,7 @@ public final class PolyBuilder {
         }
     }
 
-    // NOTE  used fo debugging
+    // NOTE used fo debugging
     private void makeFloor(float x, float y, float z) {
         for (int i = quads.length - 1; i < quads.length; i++) {
             if (allowed[i]) {
