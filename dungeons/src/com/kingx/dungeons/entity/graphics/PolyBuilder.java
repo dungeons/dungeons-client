@@ -22,13 +22,14 @@ public final class PolyBuilder {
     private static int getAllowedCount() {
         int count = 0;
         for (Boolean b : allowed) {
-            if (b)
+            if (b) {
                 count++;
+            }
         }
         return count;
     }
 
-    private final Vector3 WALL_SIZE ;
+    private final Vector3 WALL_SIZE;
     private static final float[][] positionOffset = { { 0, 0, 0 }, // 0/7
             { 1, 0, 0 }, // 1/7
             { 1, 1, 0 }, // 2/7
@@ -75,7 +76,7 @@ public final class PolyBuilder {
 
     private ArrayList<Float> verts = new ArrayList<Float>();
     private ArrayList<Short> indices = new ArrayList<Short>();
-    
+
     public PolyBuilder(MazeShadow maze, Vector3 wallSize) {
         WALL_SIZE = wallSize;
 
@@ -85,7 +86,7 @@ public final class PolyBuilder {
                 float x = i * WALL_SIZE.x;
                 float y = j * WALL_SIZE.y;
                 if (!maze.getFootprint()[i][j]) {
-                    makeWall(maze.getPositionX()    + x, maze.getPositionY() + y, maze.getPositionZ());
+                    makeWall(maze.getPositionX() + x, maze.getPositionY() + y, maze.getPositionZ());
                 } else {
                     // makeFloor(x,y);
                 }
@@ -97,10 +98,12 @@ public final class PolyBuilder {
     public Mesh generate() {
         float[] outVerts = new float[verts.size()];
         short[] outIndices = new short[indices.size()];
-        for (int i = 0; i < verts.size(); i++)
+        for (int i = 0; i < verts.size(); i++) {
             outVerts[i] = verts.get(i);
-        for (int i = 0; i < indices.size(); i++)
+        }
+        for (int i = 0; i < indices.size(); i++) {
             outIndices[i] = indices.get(i);
+        }
 
         Mesh mesh = new Mesh(true, outVerts.length, outIndices.length, VertexAttribute.Position(), VertexAttribute.ColorUnpacked(),
                 VertexAttribute.TexCoords(0), VertexAttribute.Normal());

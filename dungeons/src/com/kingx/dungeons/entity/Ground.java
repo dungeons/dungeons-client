@@ -42,7 +42,7 @@ public class Ground extends RenderableEntity {
         for (int i = 0; i < lights; i++) {
             lightCams[i] = wand.getEyes(i);
         }
-        shadowMap = new QuadTextureFrameBuffer(Format.RGBA8888, 256, 256, true);
+        shadowMap = new QuadTextureFrameBuffer(Format.RGBA8888, 1024, 1024, true);
 
     }
 
@@ -51,20 +51,15 @@ public class Ground extends RenderableEntity {
         // TODO cant directly reference one player entity, light will be generated for all of them
 
         generateShadowMap();
-
         depthMap.bind();
 
-        // Shadowmap gen
         shadowProjectShader.begin();
         shadowProjectShader.setUniformMatrix("ProjectionMatrix", cam.projection);
         shadowProjectShader.setUniformMatrix("ViewMatrix", cam.view);
-
         for (int i = 0; i < lightCams.length; i++) {
-            shadowProjectShader.setUniformMatrix("LightSourceProjectionMatrix[" + i + "]", lightCams[i].projection);
-            shadowProjectShader.setUniformMatrix("LightSourceViewMatrix[" + i + "]", lightCams[i].view);
+            shadowProjectShader.setUniformMatrix("LightSourceProjectionViewMatrix[" + i + "]", lightCams[i].combined);
         }
         shadowProjectShader.setUniformi("DepthMap", 0);
-
         shadowProjectShader.setUniformf("v_lightSpacePosition", lightCams[0].position);
         shadowProjectShader.setUniformf("color", 0.4f, 0.6f, 0.7f, 1f);
 

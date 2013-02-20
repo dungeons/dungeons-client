@@ -7,8 +7,7 @@ attribute vec3 a_position;
 uniform mat4 ProjectionMatrix;
 uniform mat4 ViewMatrix;
 
-uniform mat4 LightSourceProjectionMatrix[4];
-uniform mat4 LightSourceViewMatrix[4];
+uniform mat4 LightSourceProjectionViewMatrix[4];
 uniform vec4 color;
 
 // The scale matrix is used to push the projected vertex into the 0.0 - 1.0 region.
@@ -34,8 +33,8 @@ void main ()
     gl_Position = ProjectionMatrix * ViewMatrix * vWorldVertex;
     
     // Project the vertex from the light's point of view
-    vPosition[0] = ScaleMatrix * LightSourceProjectionMatrix[0] * LightSourceViewMatrix[0] * vWorldVertex;
-    vPosition[1] = ScaleMatrix * LightSourceProjectionMatrix[1] * LightSourceViewMatrix[1] * vWorldVertex;
-    vPosition[2] = ScaleMatrix * LightSourceProjectionMatrix[2] * LightSourceViewMatrix[2] * vWorldVertex;
-    vPosition[3] = ScaleMatrix * LightSourceProjectionMatrix[3] * LightSourceViewMatrix[3] * vWorldVertex;
+    vPosition[0] = ScaleMatrix * LightSourceProjectionViewMatrix[0] * vWorldVertex;
+    vPosition[1] = ScaleMatrix * LightSourceProjectionViewMatrix[1] * vWorldVertex;
+    vPosition[2] = ScaleMatrix * LightSourceProjectionViewMatrix[2] * vWorldVertex;
+    vPosition[3] = ScaleMatrix * LightSourceProjectionViewMatrix[3] * vWorldVertex;
 }

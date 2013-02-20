@@ -86,9 +86,9 @@ public class App implements ApplicationListener {
         System.out.println(followCamera.getCamera().position);
         renderList(renderList);
 
-        sb.begin();
+        //sb.begin();
         //sb.draw(ground.getCbt(), 0, 0, 100, 100, 1, 0, 0, 1);
-        sb.end();
+        //sb.end();
 
     }
 

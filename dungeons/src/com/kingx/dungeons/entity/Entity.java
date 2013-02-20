@@ -47,7 +47,7 @@ public abstract class Entity {
             el.positionChange(this.position.x, this.position.y, this.position.z);
         }
     }
-    
+
     private void updateRotationListeners() {
         for (EntityListener el : listeners) {
             el.rotationChange(this.rotation);

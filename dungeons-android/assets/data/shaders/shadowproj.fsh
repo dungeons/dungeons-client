@@ -49,19 +49,20 @@ void main ()
 			
 			// make sure that shadow is computed within lights area (90° area)
 
+            float bias = 0.001;
 			bool cond = false;
 			switch (i) {
 			case 0:
-				cond = depth.x >= 0.0 && depth.x <= 1.0 && depth.y >= 0.5;
+				cond = depth.x >= 0.0-bias && depth.x <= 1.0+bias && depth.y >= 0.5-bias;
 				break;
 			case 1:
-				cond = depth.y >= 0.0 && depth.y <= 1.0 && depth.x >= 0.5;
+				cond = depth.y >= 0.0-bias && depth.y <= 1.0+bias && depth.x >= 0.5-bias;
 				break;
 			case 2:
-				cond = depth.x >= 0.0 && depth.x <= 1.0 && depth.y <= 0.5;
+				cond = depth.x >= 0.0-bias && depth.x <= 1.0+bias && depth.y <= 0.5+bias;
 				break;
 			case 3:
-				cond = depth.y >= 0.0 && depth.y <= 1.0 && depth.x <= 0.5;
+				cond = depth.y >= 0.0-bias && depth.y <= 1.0+bias && depth.x <= 0.5+bias;
 				break;
 			}
 

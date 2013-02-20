@@ -17,7 +17,6 @@ public final class MazeShadow extends RenderableEntity {
     private int walls = -1;
     public Mesh poly;
 
-
     public MazeShadow(boolean[][] map, float size) {
         super(0, 0, 0, map.length * size, 0);
         this.footprint = map;
@@ -97,6 +96,7 @@ public final class MazeShadow extends RenderableEntity {
 
     int rot = 0;
 
+    @Override
     protected void doRender(Camera cam) {
         shader.begin();
         shader.setUniformMatrix("u_MVPMatrix", cam.combined);
