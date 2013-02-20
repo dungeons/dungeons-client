@@ -11,7 +11,6 @@ varying vec4 vPosition;
 
 
 /// Pack a floating point value into an RGBA (32bpp).
-// Used by SSM, PCF, and ESM.
 //
 // Note that video cards apply some sort of bias (error?) to pixels,
 // so we must correct for that by subtracting the next component's
@@ -39,12 +38,6 @@ void main ()
 {
     // Linear depth
     float linearDepth = length(vPosition) * LinearDepthConstant;
-   
-        
-        // Classic shadow mapping algorithm.
-        // Store screen-space z-coordinate or linear depth value (better precision)
-        //gl_FragColor = pack(gl_FragCoord.z);
-        
         gl_FragColor = pack(linearDepth);
     
 }
