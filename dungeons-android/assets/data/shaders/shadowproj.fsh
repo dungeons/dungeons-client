@@ -9,7 +9,7 @@ const float LinearDepthConstant = 1.0 / (Far - Near);
 
 // Uniform variables.
 uniform  vec3 v_lightSpacePosition;
-uniform sampler2D DepthMap[4];
+uniform sampler2D DepthMap;
 
 
 // Varying variables.
@@ -67,9 +67,10 @@ void main ()
 
 
 			if(cond){
-				
+				depth.x = (i % 2) * 0.5 + depth.x / 2.0;
+				depth.y = (i / 2) * 0.5 + depth.y / 2.0;
 				// gets value stored in depth map and compares it to value seen from this perspective
-				float shadowDepth = unpack(texture2D(DepthMap[i], depth.xy));
+				float shadowDepth = unpack(texture2D(DepthMap, depth.xy));
 				
 				// values with higher z value (being farther from camera) are in shadow
 				if(depth.z > shadowDepth){

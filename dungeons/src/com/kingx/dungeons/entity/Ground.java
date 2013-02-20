@@ -2,30 +2,23 @@ package com.kingx.dungeons.entity;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.Pixmap.Format;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Quaternion;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.kingx.dungeons.App;
-import com.kingx.dungeons.Assets;
+import com.kingx.dungeons.entity.graphics.QuadTextureFrameBuffer;
 import com.kingx.dungeons.entity.graphics.Shader;
 
 public class Ground extends RenderableEntity {
     private Mesh poly;
     private ShaderProgram shadowGeneratorShader;
     private ShaderProgram shadowProjectShader;
-    private FrameBuffer shadowMap;
+    private QuadTextureFrameBuffer shadowMap;
     private Camera[] lightCams;
-    private Texture[] depthMaps;
+    private Texture depthMap;
 
     public Ground(float size) {
         super(0, 0, 0, size, 0);
@@ -46,10 +39,10 @@ public class Ground extends RenderableEntity {
         Wanderer wand = App.getWanderer();
         int lights = wand.getEyesCount();
         lightCams = new Camera[lights];
-        depthMaps = new Texture[lights];
         for (int i = 0; i < lights; i++) {
             lightCams[i] = wand.getEyes(i);
         }
+        shadowMap = new QuadTextureFrameBuffer(Format.RGBA8888, 256, 256, true);
 
     }
 
@@ -57,26 +50,9 @@ public class Ground extends RenderableEntity {
     protected void doRender(Camera cam) {
         // TODO cant directly reference one player entity, light will be generated for all of them
 
-        for (int i = 0; i < lightCams.length; i++) {
-            lightCams[i].update();
-            depthMaps[i] = generateShadowMap(lightCams[i]);
-        }
+        generateShadowMap();
 
-        Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE0);
-        depthMaps[0].bind();
-        if (lightCams.length > 1) {
-            Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE1);
-            depthMaps[1].bind();
-        }
-        if (lightCams.length > 2) {
-            Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE2);
-            depthMaps[2].bind();
-        }
-        if (lightCams.length > 3) {
-            Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE3);
-            depthMaps[3].bind();
-        }
-        Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE0);
+        depthMap.bind();
 
         // Shadowmap gen
         shadowProjectShader.begin();
@@ -86,9 +62,9 @@ public class Ground extends RenderableEntity {
         for (int i = 0; i < lightCams.length; i++) {
             shadowProjectShader.setUniformMatrix("LightSourceProjectionMatrix[" + i + "]", lightCams[i].projection);
             shadowProjectShader.setUniformMatrix("LightSourceViewMatrix[" + i + "]", lightCams[i].view);
-            shadowProjectShader.setUniformi("DepthMap[" + i + "]", i);
         }
-        
+        shadowProjectShader.setUniformi("DepthMap", 0);
+
         shadowProjectShader.setUniformf("v_lightSpacePosition", lightCams[0].position);
         shadowProjectShader.setUniformf("color", 0.4f, 0.6f, 0.7f, 1f);
 
@@ -96,18 +72,26 @@ public class Ground extends RenderableEntity {
         shadowProjectShader.end();
     }
 
-    private Texture generateShadowMap(Camera lightCam) {
-        shadowMap = new FrameBuffer(Format.RGBA8888, 256, 256, true);
+    private void generateShadowMap() {
         shadowMap.begin();
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.gl.glClearColor(0, 0, 0, 0);
+        for (int i = 0; i < lightCams.length; i++) {
+            lightCams[i].update();
+            depthMap = generateShadowMap(lightCams[i]);
+        }
+
+        shadowMap.end();
+    }
+
+    private Texture generateShadowMap(Camera lightCam) {
+        shadowMap.nextTexture();
         shadowGeneratorShader.begin();
         shadowGeneratorShader.setUniformMatrix("ProjectionMatrix", lightCam.projection);
         shadowGeneratorShader.setUniformMatrix("ViewMatrix", lightCam.view);
         App.getMaze().poly.render(shadowGeneratorShader, GL20.GL_TRIANGLES);
         shadowGeneratorShader.end();
-        shadowMap.end();
 
         return shadowMap.getColorBufferTexture();
     }
@@ -117,8 +101,8 @@ public class Ground extends RenderableEntity {
         // TODO Auto-generated method stub
     }
 
-    public Texture[] getCbt() {
-        return depthMaps;
+    public Texture getCbt() {
+        return depthMap;
     }
 
 }
