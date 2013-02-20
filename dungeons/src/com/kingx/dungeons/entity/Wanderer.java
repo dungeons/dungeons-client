@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.kingx.dungeons.Input;
-import com.kingx.dungeons.controller.EyesCameraController;
+import com.kingx.dungeons.controller.PositionCamera;
 import com.kingx.dungeons.entity.ai.PlayerControlledBehavior;
 import com.kingx.dungeons.entity.graphics.Shader;
 import com.kingx.dungeons.geom.Point;
@@ -17,9 +17,9 @@ public class Wanderer extends RenderableEntity {
     private Mesh mesh;
     private ShaderProgram shader;
     private PlayerControlledBehavior avatar;
-    private EyesCameraController[] eyes;
+    private PositionCamera[] eyes;
 
-    public Wanderer(MazeShadow maze) {
+    public Wanderer(Maze maze) {
         super(0, 0, 0, 0.2f, 0.05f);
         Point.Int p = maze.getRandomBlock();
         this.setPositionX(Maze.SIZE * (p.x + 0.5f));
@@ -28,7 +28,7 @@ public class Wanderer extends RenderableEntity {
 
         avatar = Input.getInstance().getControlledEntity(this);
 
-        eyes = new EyesCameraController[4];
+        eyes = new PositionCamera[4];
         int offset = 1;
         for (int i = 0; i < eyes.length; i++) {
             Camera camera = new PerspectiveCamera(90, 512, 512);
@@ -38,7 +38,7 @@ public class Wanderer extends RenderableEntity {
             camera.direction.y = Math.round(Math.sin(Math.PI / 2 * (i + offset)));
             camera.direction.z = 0.001f;
             camera.position.z = 0.1f;
-            eyes[i] = new EyesCameraController(camera);
+            eyes[i] = new PositionCamera(camera);
             eyes[i].setController(this);
         }
 
@@ -68,7 +68,6 @@ public class Wanderer extends RenderableEntity {
 
     @Override
     protected void doUpdate(float delta) {
-        System.out.println("updating");
         avatar.update(delta);
     }
 

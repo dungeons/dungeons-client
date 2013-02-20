@@ -85,7 +85,7 @@ public class Ground extends RenderableEntity {
         shadowGeneratorShader.begin();
         shadowGeneratorShader.setUniformMatrix("ProjectionMatrix", lightCam.projection);
         shadowGeneratorShader.setUniformMatrix("ViewMatrix", lightCam.view);
-        App.getMaze().poly.render(shadowGeneratorShader, GL20.GL_TRIANGLES);
+        App.getMaze().getPoly().render(shadowGeneratorShader, GL20.GL_TRIANGLES);
         shadowGeneratorShader.end();
 
         return shadowMap.getColorBufferTexture();
@@ -93,7 +93,7 @@ public class Ground extends RenderableEntity {
 
     @Override
     protected void doUpdate(float delta) {
-        // TODO Auto-generated method stub
+        // ground doesn't move
     }
 
     public Texture getCbt() {

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.math.Vector3;
-import com.kingx.dungeons.entity.MazeShadow;
+import com.kingx.dungeons.entity.Maze;
 
 public final class PolyBuilder {
 
@@ -30,6 +30,7 @@ public final class PolyBuilder {
     }
 
     private final Vector3 WALL_SIZE;
+    private final int VERTS_PER_QUAD = 4;
     private static final float[][] positionOffset = { { 0, 0, 0 }, // 0/7
             { 1, 0, 0 }, // 1/7
             { 1, 1, 0 }, // 2/7
@@ -45,7 +46,7 @@ public final class PolyBuilder {
             { 0, 1 } // 3/3
     };
 
-    final float[][] cubeColorData = {
+    private final float[][] cubeColorData = {
             // Front face (red)
             { 1.0f, 0.0f, 0.0f, 1.0f },
             // Right face (green)
@@ -77,7 +78,7 @@ public final class PolyBuilder {
     private ArrayList<Float> verts = new ArrayList<Float>();
     private ArrayList<Short> indices = new ArrayList<Short>();
 
-    public PolyBuilder(MazeShadow maze, Vector3 wallSize) {
+    public PolyBuilder(Maze maze, Vector3 wallSize) {
         WALL_SIZE = wallSize;
 
         for (int i = 0; i < maze.getFootprint().length; i++) {
@@ -85,14 +86,9 @@ public final class PolyBuilder {
 
                 float x = i * WALL_SIZE.x;
                 float y = j * WALL_SIZE.y;
-                if (!maze.getFootprint()[i][j]) {
-                    makeWall(maze.getPositionX() + x, maze.getPositionY() + y, maze.getPositionZ());
-                } else {
-                    // makeFloor(x,y);
-                }
+                makeWall(maze.getPositionX() + x, maze.getPositionY() + y, maze.getPositionZ());
             }
         }
-
     }
 
     public Mesh generate() {
@@ -112,8 +108,6 @@ public final class PolyBuilder {
         return mesh;
     }
 
-    private boolean trigger = true;
-
     private void makeWall(float x, float y, float z) {
 
         for (int i = 0; i < quads.length; i++) {
@@ -123,6 +117,7 @@ public final class PolyBuilder {
         }
     }
 
+    // NOTE  used fo debugging
     private void makeFloor(float x, float y, float z) {
         for (int i = quads.length - 1; i < quads.length; i++) {
             if (allowed[i]) {
@@ -131,7 +126,7 @@ public final class PolyBuilder {
         }
     }
 
-    int off = 0;
+    private int off = 0;
 
     private void makeQuad(float x, float y, float z, int face) {
         for (int i = 0; i < quads[face].length; i++) {
@@ -157,8 +152,7 @@ public final class PolyBuilder {
         indices.add((short) (off + 1));
         indices.add((short) (off + 2));
 
-        off += 4;
-
+        off += VERTS_PER_QUAD;
     }
 
 }

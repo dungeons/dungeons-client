@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.kingx.dungeons.geom.Point;
-import com.kingx.dungeons.geom.Point.Int;
 
 public final class MazeFactory {
 
     private static MazeBuilder builder = new MazeBuilder();
 
-    public static MazeShadow getMazeShadow(boolean[][] maze, float wallSize) {
-        return new MazeShadow(maze, wallSize);
+    public static Maze getMazeShadow(boolean[][] maze, float wallSize) {
+        return new Maze(maze, wallSize);
     }
 
     public static boolean[][] getMaze(int mazeBlockCount) {

@@ -42,7 +42,7 @@ public final class AvatarBehavior extends PlayerControlledBehavior {
                 moveVector.add(1 * dir, 0);
                 break;
             case Keys.F:
-                rotateValue += dir/10f;
+                rotateValue += dir / 10f;
                 break;
         }
         return false;
@@ -54,41 +54,35 @@ public final class AvatarBehavior extends PlayerControlledBehavior {
         puppet.addRotation(rotateValue);
     }
 
-    // / Unused
-
-    @Override
-    public boolean keyTyped(char character) {
-        // TODO Auto-generated method stub
-        return false;
-    }
-
+    // TODO Create input for touch devices
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        // TODO Auto-generated method stub
+        return false;
+    }
+
+    // NOTE curently not planned to future use
+    @Override
+    public boolean keyTyped(char character) {
         return false;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
-        // TODO Auto-generated method stub
         return false;
     }
 
     @Override
     public boolean scrolled(int amount) {
-        // TODO Auto-generated method stub
         return false;
     }
 }

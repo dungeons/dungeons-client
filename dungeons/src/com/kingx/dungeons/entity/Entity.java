@@ -76,11 +76,6 @@ public abstract class Entity {
         return position.z;
     }
 
-    public void setPosition(Vector3 value) {
-        position = value;
-        updatePositionListeners();
-    }
-
     public void setPositionX(float value) {
         position.x = value;
         updatePositionListeners();
@@ -93,21 +88,6 @@ public abstract class Entity {
 
     public void setPositionZ(float value) {
         position.z = value;
-        updatePositionListeners();
-    }
-
-    public void addPositionX(float value) {
-        position.x += value;
-        updatePositionListeners();
-    }
-
-    public void addPositionY(float value) {
-        position.y += value;
-        updatePositionListeners();
-    }
-
-    public void addPositionZ(float value) {
-        position.z += value;
         updatePositionListeners();
     }
 

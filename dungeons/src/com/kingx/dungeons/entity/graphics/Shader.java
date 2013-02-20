@@ -24,19 +24,19 @@ public class Shader {
             compile();
         }
 
-       
         public void setFragment(String fragment) {
             this.fragment = fragment;
             compile();
         }
-        
+
         private void compile() {
-            if(vertex != null && fragment != null){
+            if (vertex != null && fragment != null) {
                 program = new ShaderProgram(vertex, fragment);
-                if (!program.isCompiled()) throw new GdxRuntimeException("Couldn't compile flat shader: " + program.getLog());
+                if (!program.isCompiled()) {
+                    throw new GdxRuntimeException("Couldn't compile flat shader: " + program.getLog());
+                }
             }
         }
-
 
         public String getVertex() {
             return vertex;
@@ -45,14 +45,13 @@ public class Shader {
         public String getFragment() {
             return fragment;
         }
-        
+
         public ShaderProgram getShader() {
             return program;
         }
 
     }
 
-    private static final String SHADER_TYPE_DELIMITER = "_";
     private static final HashMap<String, ShaderStructure> map = new HashMap<String, ShaderStructure>();
     static {
         FileHandle dirHandle;
@@ -71,7 +70,7 @@ public class Shader {
 
             String ext = f.extension();
             String name = f.nameWithoutExtension();
-            
+
             ShaderStructure ss;
             if (!map.containsKey(name)) {
                 ss = new ShaderStructure();
@@ -79,7 +78,7 @@ public class Shader {
                 ss = map.get(name);
             }
 
-            System.out.println("Parsing: "+f);
+            System.out.println("Parsing: " + f);
 
             switch (ShaderType.valueOf(ext)) {
                 case vsh:
@@ -97,22 +96,14 @@ public class Shader {
         }
     }
 
-    public static String getVertex(String name) {
-        return getStructure(name).getVertex();
-    }
-
-    public static String getFragment(String name) {
-        return getStructure(name).getFragment();
-    }
-    
     public static ShaderProgram getShader(String name) {
         return getStructure(name).getShader();
     }
 
     private static ShaderStructure getStructure(String name) {
         ShaderStructure value = map.get(name);
-        if(value == null){
-            throw new IllegalArgumentException("Specified Shader does not exists: "+name);
+        if (value == null) {
+            throw new IllegalArgumentException("Specified Shader does not exists: " + name);
         }
         return value;
     }

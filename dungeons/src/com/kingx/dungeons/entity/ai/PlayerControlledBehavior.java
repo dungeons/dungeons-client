@@ -9,12 +9,8 @@ public abstract class PlayerControlledBehavior extends AbstractBehavior implemen
         super(null);
     }
 
-    
     public PlayerControlledBehavior(Entity puppet) {
         super(puppet);
     }
-
-
-   
 
 }

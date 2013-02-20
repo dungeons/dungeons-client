@@ -1,7 +1,6 @@
 package com.kingx.dungeons.entity;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.math.Vector3;
 import com.kingx.dungeons.App;
 
 public abstract class RenderableEntity extends Entity {
@@ -41,10 +40,6 @@ public abstract class RenderableEntity extends Entity {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
-    }
-
-    public Vector3 toOrigin() {
-        return new Vector3(this.getPositionX() + this.size / 2, this.getPositionY() + this.size / 2, this.getPositionZ());
     }
 
 }

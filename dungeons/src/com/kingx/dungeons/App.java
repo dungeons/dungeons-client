@@ -12,17 +12,17 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.kingx.dungeons.controller.CameraController;
-import com.kingx.dungeons.controller.PositionCameraController;
+import com.kingx.dungeons.controller.PositionCamera;
 import com.kingx.dungeons.entity.Entity;
 import com.kingx.dungeons.entity.Ground;
 import com.kingx.dungeons.entity.MazeFactory;
-import com.kingx.dungeons.entity.MazeShadow;
+import com.kingx.dungeons.entity.Maze;
 import com.kingx.dungeons.entity.RenderableEntity;
 import com.kingx.dungeons.entity.Wanderer;
 
 public class App implements ApplicationListener {
 
-    private static MazeShadow maze;
+    private static Maze maze;
     private static CameraController followCamera;
 
     private List<RenderableEntity> renderList = new ArrayList<RenderableEntity>();
@@ -41,7 +41,7 @@ public class App implements ApplicationListener {
         return wanderer;
     }
 
-    public static MazeShadow getMaze() {
+    public static Maze getMaze() {
         return maze;
     }
 
@@ -83,7 +83,6 @@ public class App implements ApplicationListener {
             sb = new SpriteBatch();
         }
         followCamera.getCamera().update();
-        System.out.println(followCamera.getCamera().position);
         renderList(renderList);
 
         //sb.begin();
@@ -93,12 +92,9 @@ public class App implements ApplicationListener {
     }
 
     private void init() {
-        // TODO Auto-generated method stub
-
         // Entities creation
         footprint = MazeFactory.getMaze(MAZE_BLOCKS_COUNT);
         maze = MazeFactory.getMazeShadow(footprint, MAZE_WALL_SIZE);
-        System.out.println("wanderer");
         wanderer = new Wanderer(maze);
         ground = new Ground(1000);
 
@@ -141,7 +137,8 @@ public class App implements ApplicationListener {
     public CameraController setUpCamera(int width, int height) {
         PerspectiveCamera camera = new PerspectiveCamera(67, width, height);
         camera.position.z = 15f;
-        CameraController cameraController = new PositionCameraController(camera);
+        camera.direction.set(0, 0, -1f);
+        CameraController cameraController = new PositionCamera(camera);
         return cameraController;
     }
 
