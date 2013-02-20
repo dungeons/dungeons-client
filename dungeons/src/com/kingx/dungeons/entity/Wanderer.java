@@ -34,8 +34,8 @@ public class Wanderer extends RenderableEntity {
             Camera camera = new PerspectiveCamera(90, 512, 512);
             camera.near = 0.0001f;
             camera.far = 500;
-            camera.direction.x = (float) Math.round(Math.cos(Math.PI / 2 * (i + offset)));
-            camera.direction.y = (float) Math.round(Math.sin(Math.PI / 2 * (i + offset)));
+            camera.direction.x = Math.round(Math.cos(Math.PI / 2 * (i + offset)));
+            camera.direction.y = Math.round(Math.sin(Math.PI / 2 * (i + offset)));
             camera.direction.z = 0.001f;
             camera.position.z = 0.1f;
             eyes[i] = new EyesCameraController(camera);
@@ -63,7 +63,7 @@ public class Wanderer extends RenderableEntity {
         mesh.setVertices(new float[] { -this.getHalfSize(), -this.getHalfSize(), 0, this.getHalfSize(), -this.getHalfSize(), 0, this.getHalfSize(),
                 this.getHalfSize(), 0, -this.getHalfSize(), this.getHalfSize(), 0 });
         mesh.setIndices(new short[] { 0, 1, 2, 2, 3, 0 });
-        shader = Shader.getShader("wanderer");
+        shader = Shader.getShader("normal");
     }
 
     @Override
