@@ -87,8 +87,9 @@ public class Ground extends RenderableEntity {
         shadowProjectShader.setUniformMatrix("ViewMatrix", cam.view);
         shadowProjectShader.setUniformMatrix("LightSourceProjectionMatrix", lightCam.projection);
         shadowProjectShader.setUniformMatrix("LightSourceViewMatrix", lightCam.view);
-        
+
         shadowProjectShader.setUniformf("v_lightSpacePosition", lightCam.position);
+        shadowProjectShader.setUniformf("color", 0.4f,0.6f,0.7f,1f);
         
         poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
         shadowProjectShader.end();
