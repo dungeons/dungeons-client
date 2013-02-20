@@ -24,90 +24,106 @@ public class Ground extends RenderableEntity {
     private ShaderProgram shadowGeneratorShader;
     private ShaderProgram shadowProjectShader;
     private FrameBuffer shadowMap;
-    private Camera lightCam;
+    private Camera[] lightCams;
+    private Texture[] depthMaps;
 
     public Ground(float size) {
-        super(0, 0, 0, size, 0);
+	super(0, 0, 0, size, 0);
+
     }
 
     @Override
     protected void initRender() {
-        float[] outVerts = new float[] { -getHalfSize(), -getHalfSize(), 0, getHalfSize(), -getHalfSize(), 0, getHalfSize(), getHalfSize(), 0,
-                -getHalfSize(), getHalfSize(), 0 };
-        short[] outIndices = new short[] { 1, 2, 0, 3 };
-        poly = new Mesh(true, outVerts.length, outIndices.length, VertexAttribute.Position());
-        poly.setVertices(outVerts);
-        poly.setIndices(outIndices);
+	float[] outVerts = new float[] { -getHalfSize(), -getHalfSize(), 0, getHalfSize(), -getHalfSize(), 0, getHalfSize(), getHalfSize(), 0,
+		-getHalfSize(), getHalfSize(), 0 };
+	short[] outIndices = new short[] { 1, 2, 0, 3 };
+	poly = new Mesh(true, outVerts.length, outIndices.length, VertexAttribute.Position());
+	poly.setVertices(outVerts);
+	poly.setIndices(outIndices);
 
-        shadowGeneratorShader = Shader.getShader("shadowgen");
-        shadowProjectShader = Shader.getShader("shadowproj");
+	shadowGeneratorShader = Shader.getShader("shadowgen");
+	shadowProjectShader = Shader.getShader("shadowproj");
 
-        shadowMap = new FrameBuffer(Format.RGBA8888, 1024, 1024, true);
+	Wanderer wand = App.getWanderer();
+	int lights = wand.getEyesCount();
+	lightCams = new Camera[lights];
+	depthMaps = new Texture[lights];
+	for (int i = 0; i < lights; i++) {
+	    lightCams[i] = wand.getEyes(i);
+	}
 
     }
-
-    private float angle = 1;
-    private Texture cbt;
 
     @Override
     protected void doRender(Camera cam) {
-        // TODO cant directly reference one player entity, light will be generated for all of them
-        lightCam = App.getWanderer().getEyes().getCamera();
+	// TODO cant directly reference one player entity, light will be generated for all of them
 
-        lightCam.update();
+	// texture #0
 
-        // texture #0
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
-                | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
-        shadowMap.begin();
-        Gdx.gl.glClearColor(1, 1, 1, 1);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-        Gdx.gl.glClearColor(0, 0, 0, 0);
-        
-        
-        shadowGeneratorShader.begin();
-        shadowGeneratorShader.setUniformMatrix("ProjectionMatrix", lightCam.projection);
-        shadowGeneratorShader.setUniformMatrix("ViewMatrix", lightCam.view);
-        App.getMaze().poly.render(shadowGeneratorShader, GL20.GL_TRIANGLES);
-        shadowGeneratorShader.end();
-        shadowMap.end();
-       // cbt.bind();
-        
-        
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+	for (int i = 0; i < lightCams.length; i++) {
+	    lightCams[i].update();
+	    depthMaps[i] = generateShadowMap(lightCams[i]);
+	}
 
-        cbt = shadowMap.getColorBufferTexture();
-        cbt.bind();
-        // Shadowmap gen
-        shadowProjectShader.begin();
+	Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE0);
+	depthMaps[0].bind();
+	if (lightCams.length > 1) {
+	    Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE1);
+	    depthMaps[1].bind();
+	}
+	if (lightCams.length > 2) {
+	    Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE2);
+	    depthMaps[2].bind();
+	}
+	if (lightCams.length > 3) {
+	    Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE3);
+	    depthMaps[3].bind();
+	}
+	Gdx.gl20.glActiveTexture(GL20.GL_TEXTURE0);
 
-        shadowProjectShader.setUniformi("DepthMap", 0);
+	// Shadowmap gen
+	shadowProjectShader.begin();
 
-        shadowProjectShader.setUniformMatrix("ProjectionMatrix", cam.projection);
-        shadowProjectShader.setUniformMatrix("ViewMatrix", cam.view);
-        shadowProjectShader.setUniformMatrix("LightSourceProjectionMatrix", lightCam.projection);
-        shadowProjectShader.setUniformMatrix("LightSourceViewMatrix", lightCam.view);
+	shadowProjectShader.setUniformMatrix("ProjectionMatrix", cam.projection);
+	shadowProjectShader.setUniformMatrix("ViewMatrix", cam.view);
 
-        shadowProjectShader.setUniformf("v_lightSpacePosition", lightCam.position);
-        shadowProjectShader.setUniformf("color", 0.4f,0.6f,0.7f,1f);
-        
-        poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
-        shadowProjectShader.end();
+	for (int i = 0; i < lightCams.length; i++) {
+	    shadowProjectShader.setUniformMatrix("LightSourceProjectionMatrix[" + i + "]", lightCams[i].projection);
+	    shadowProjectShader.setUniformMatrix("LightSourceViewMatrix[" + i + "]", lightCams[i].view);
+	    shadowProjectShader.setUniformi("DepthMap[" + i + "]", i);
+	}
+	shadowProjectShader.setUniformf("v_lightSpacePosition", lightCams[0].position);
+	shadowProjectShader.setUniformf("color", 0.4f, 0.6f, 0.7f, 1f);
 
-
-       
+	poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
+	shadowProjectShader.end();
 
     }
-    
+
+    private Texture generateShadowMap(Camera lightCam) {
+	shadowMap = new FrameBuffer(Format.RGBA8888, 128, 128, true);
+	shadowMap.begin();
+	Gdx.gl.glClearColor(1, 1, 1, 1);
+	Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+	Gdx.gl.glClearColor(0, 0, 0, 0);
+	shadowGeneratorShader.begin();
+	shadowGeneratorShader.setUniformMatrix("ProjectionMatrix", lightCam.projection);
+	shadowGeneratorShader.setUniformMatrix("ViewMatrix", lightCam.view);
+	App.getMaze().poly.render(shadowGeneratorShader, GL20.GL_TRIANGLES);
+	shadowGeneratorShader.end();
+	shadowMap.end();
+
+	return shadowMap.getColorBufferTexture();
+    }
 
     @Override
     protected void doUpdate(float delta) {
-        // TODO Auto-generated method stub
+	// TODO Auto-generated method stub
 
     }
 
-    public Texture getCbt() {
-        return cbt;
+    public Texture[] getCbt() {
+	return depthMaps;
     }
 
 }

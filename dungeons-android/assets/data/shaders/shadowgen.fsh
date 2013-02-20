@@ -2,7 +2,7 @@
 
 // Linear depth calculation.
 // You could optionally upload this as a shader parameter.
-const float Near = 0f;
+const float Near = 0;
 const float Far = 500.0;
 const float LinearDepthConstant = 1.0 / (Far - Near);
 
