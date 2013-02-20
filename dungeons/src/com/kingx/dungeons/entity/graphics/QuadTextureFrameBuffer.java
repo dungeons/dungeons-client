@@ -304,4 +304,5 @@ public class QuadTextureFrameBuffer implements Disposable {
     public int getWidth() {
         return colorTexture.getWidth();
     }
+
 }

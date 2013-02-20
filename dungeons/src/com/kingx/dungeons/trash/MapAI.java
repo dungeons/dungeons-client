@@ -49,10 +49,8 @@ public class MapAI extends AbstractBehavior {
         if (goal == null) {
             goal = nextGoal();
         }
-        System.out.println(delta);
 
         float step = puppet.getSpeed() * delta;
-        System.out.println(step + " 87");
         moveIt(step);
     }
 
@@ -65,11 +63,8 @@ public class MapAI extends AbstractBehavior {
         double distance = Math.sqrt(tx * tx + ty * ty);
 
         if (step < distance) {
-            System.out.println("move: 0 " + puppet.getPosition());
-            System.out.println((float) (Math.cos(ang) * step));
             puppet.addPositionX((float) (Math.cos(ang) * step));
             puppet.addPositionY((float) (Math.sin(ang) * step));
-            System.out.println("move: 1 " + puppet.getPosition());
         } else {
             step -= distance;
             puppet.setPositionX(goal.x);
@@ -86,7 +81,6 @@ public class MapAI extends AbstractBehavior {
         Point.Int start = getRegion();
         Point.Int finish = App.getMaze().getRandomBlock(start);
 
-        System.out.print(start + " : " + finish);
         return myMap.findPath(start, finish);
     }
 

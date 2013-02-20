@@ -8,7 +8,6 @@ const float LinearDepthConstant = 1.0 / (Far - Near);
 
 
 // Uniform variables.
-uniform float u_mazeSize;
 uniform vec3 v_lightSpacePosition;
 uniform sampler2D DepthMap;
 
@@ -34,9 +33,8 @@ void main ()
 {
 	/// THESE COMMENTS REPRESENT WHAT I THINK THIS CODE DOES. I HAVE NO IDEA WHAT IS CORRECT
 	
-	float shadow = 1.0;
+	bool shadow = false;
 	
-	if(vWorldVertex.x >= 0 && vWorldVertex.x <= u_mazeSize && vWorldVertex.y >= 0 && vWorldVertex.y <= u_mazeSize){
 		for(int i = 0; i < 4; i++){
 			// Change position to position seen from this perspective
 			vec3 depth = vPosition[i].xyz /  vPosition[i].w;
@@ -52,6 +50,7 @@ void main ()
             // FIXME This is not a sollution areas are still overlapping
             float bias = 0.0015;
 			bool cond = false;
+
 			switch (i) {
 			case 0:
 				cond = depth.x >= 0.0-bias && depth.x <= 1.0+bias && depth.y >= 0.5-bias;
@@ -67,7 +66,6 @@ void main ()
 				break;
 			}
 
-
 			if(cond){
 				depth.x = (i % 2) * 0.5 + depth.x / 2.0;
 				depth.y = (i / 2) * 0.5 + depth.y / 2.0;
@@ -76,15 +74,14 @@ void main ()
 				
 				// values with higher z value (being farther from camera) are in shadow
 				if(depth.z > shadowDepth){
-					shadow = 0.5;
+					shadow = true;
 				}
 			}
 		}
-	}else{
-		shadow = 0.2;
-	}
 
-	
-	// Apply colour and shadow
-	gl_FragColor = vColor.a * vec4(shadow);
+	if(shadow){
+	gl_FragColor = vec4(1,1,1,1);
+    }else{
+	gl_FragColor = vec4(0,0,0,1);
+}
 }

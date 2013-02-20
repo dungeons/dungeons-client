@@ -38,7 +38,6 @@ public abstract class AbstractBehavior implements Behavior {
 
         Int leftPoint = new Point.Int((int) (left / App.MAZE_WALL_SIZE), (int) (y / App.MAZE_WALL_SIZE));
         Int rightPoint = new Point.Int((int) (right / App.MAZE_WALL_SIZE), (int) (y / App.MAZE_WALL_SIZE));
-        System.out.println(leftPoint);
 
         if (!isWalkable(leftPoint)) {
             x = (leftPoint.x + 1) * App.MAZE_WALL_SIZE + puppet.getHalfSize();
