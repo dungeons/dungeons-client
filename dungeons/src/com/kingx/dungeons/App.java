@@ -3,6 +3,8 @@ package com.kingx.dungeons;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.artemis.World;
+import com.artemis.managers.GroupManager;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -20,6 +22,8 @@ import com.kingx.dungeons.entity.MazeFactory;
 import com.kingx.dungeons.entity.Police;
 import com.kingx.dungeons.entity.RenderableEntity;
 import com.kingx.dungeons.entity.Wanderer;
+
+import engine.system.MovementSystem;
 
 public class App implements ApplicationListener {
 
@@ -59,7 +63,8 @@ public class App implements ApplicationListener {
         reference = this;
         ShaderProgram.pedantic = false;
 
-        Logic logic = Logic.getInstance(this);
+        world = new World();
+        Logic logic = Logic.getInstance(this, world);
 
         Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
         Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
@@ -73,6 +78,7 @@ public class App implements ApplicationListener {
 
     private boolean glInit = false;
     private SpriteBatch sb;
+    private World world;
 
     @Override
     public void render() {
@@ -101,7 +107,7 @@ public class App implements ApplicationListener {
         ground = new Ground(1000);
 
         ArrayList<Police> police = new ArrayList<Police>();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 1000; i++) {
             police.add(new Police(maze));
         }
 
@@ -116,6 +122,22 @@ public class App implements ApplicationListener {
         updateList.addAll(police);
 
         followCamera.setController(wanderer);
+
+        //   spriteRenderSystem = world.setSystem(new SpriteRenderSystem(camera), true);
+        //  healthRenderSystem = world.setSystem(new HealthRenderSystem(camera), true);
+        // hudRenderSystem = world.setSystem(new HudRenderSystem(camera), true);
+
+        world.setManager(new GroupManager());
+
+        world.setSystem(new MovementSystem());
+        world.initialize();
+
+        // EntityFactory.createPlayer(world, 0, 0).addToWorld();
+
+        //  for (int i = 0; 500 > i; i++) {
+        //     EntityFactory.createStar(world).addToWorld();
+        // }
+
     }
 
     public void update(float delta) {

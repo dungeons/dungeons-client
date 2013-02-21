@@ -70,7 +70,7 @@ public class Ground extends RenderableEntity {
                 Camera[] lights = sce.getLights();
                 generateShadowMap(lights);
 
-                System.out.println(sce);
+                // System.out.println(sce);
                 depthMap.bind();
 
                 shadowProjectShader.begin();
