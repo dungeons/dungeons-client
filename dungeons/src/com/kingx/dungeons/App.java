@@ -101,7 +101,7 @@ public class App implements ApplicationListener {
         ground = new Ground(1000);
 
         ArrayList<Police> police = new ArrayList<Police>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 100; i++) {
             police.add(new Police(maze));
         }
 

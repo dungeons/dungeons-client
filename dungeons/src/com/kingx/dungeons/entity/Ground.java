@@ -48,8 +48,8 @@ public class Ground extends RenderableEntity {
     @Override
     protected void doRender(Camera cam) {
 
-        Gdx.gl.glClearColor(0.4f, 0.6f, 0.7f, 1f);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+        // Gdx.gl.glClearColor(0.4f, 0.6f, 0.7f, 1f);
+        //Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
         // No culling of back faces
         //Gdx.gl.glDisable(GL20.GL_CULL_FACE);
@@ -58,8 +58,8 @@ public class Ground extends RenderableEntity {
         // Gdx.gl.glDisable(GL20.GL_DEPTH_TEST);
 
         // Enable blending
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE);
+        //     Gdx.gl.glEnable(GL20.GL_BLEND);
+        //    Gdx.gl.glBlendFunc(GL20.GL_ONE, GL20.GL_ONE);
         // TODO cant directly reference one player entity, light will be generated for all of them
 
         // No culling of back faces
@@ -86,12 +86,11 @@ public class Ground extends RenderableEntity {
                 poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
                 shadowProjectShader.end();
 
-                //break;
+                break;
             }
         }
-        Gdx.gl.glDisable(GL20.GL_BLEND);
+        //   Gdx.gl.glDisable(GL20.GL_BLEND);
         //}
-        System.out.println("END");
 
         // No culling of back faces
         Gdx.gl.glDisable(GL20.GL_CULL_FACE);
