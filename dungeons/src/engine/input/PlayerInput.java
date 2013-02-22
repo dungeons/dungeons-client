@@ -1,30 +1,17 @@
-package com.kingx.dungeons.entity.ai;
+package engine.input;
 
-import com.artemis.Entity;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.math.Vector2;
 
-public final class AvatarBehavior implements InputProcessor {
+import engine.component.InputComponent;
 
-    private final Vector2 moveVector = new Vector2();
-    private float rotateValue = 0;
-    private Entity puppet;
+public final class PlayerInput implements InputProcessor {
 
-    public AvatarBehavior() {
-        this(null);
-    }
+    private InputSet keys;
+    private InputComponent components;
 
-    public AvatarBehavior(Entity puppet) {
-        this.puppet = puppet;
-    }
-
-    public Entity getPuppet() {
-        return puppet;
-    }
-
-    public void setPuppet(Entity puppet) {
-        this.puppet = puppet;
+    public PlayerInput(InputSet is, InputComponent ic) {
+        keys = is;
+        components = ic;
     }
 
     /// input
@@ -40,24 +27,15 @@ public final class AvatarBehavior implements InputProcessor {
     }
 
     private boolean action(int keycode, int dir) {
-        switch (keycode) {
-            case Keys.W:
-                moveVector.add(0, 1 * dir);
-                break;
-            case Keys.S:
-                moveVector.add(0, -1 * dir);
-                break;
-            case Keys.A:
-                moveVector.add(-1 * dir, 0);
-                break;
-            case Keys.D:
-                moveVector.add(1 * dir, 0);
-                break;
-            case Keys.F:
-                rotateValue += dir / 10f;
-                break;
+        if (keycode == keys.getUp()) {
+            components.vector.add(0, 1 * dir);
+        } else if (keycode == keys.getDown()) {
+            components.vector.add(0, -1 * dir);
+        } else if (keycode == keys.getLeft()) {
+            components.vector.add(-1 * dir, 0);
+        } else if (keycode == keys.getRight()) {
+            components.vector.add(1 * dir, 0);
         }
-
         return false;
     }
 
