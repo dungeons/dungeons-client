@@ -19,12 +19,12 @@ public final class MazeFactory {
 
     private static class MazeBuilder {
 
-        private Random random = new Random();
-        private Point.Int[] ways = new Point.Int[4];
-        private boolean[] flags = new boolean[4];
+        private final Random random = new Random();
+        private final Point.Int[] ways = new Point.Int[4];
+        private final boolean[] flags = new boolean[4];
         private boolean[][] maze;
 
-        private ArrayList<Point.Int> trail = new ArrayList<Point.Int>();
+        private final ArrayList<Point.Int> trail = new ArrayList<Point.Int>();
         private Point.Int current;
 
         private boolean[][] generate(int size) {
@@ -77,7 +77,7 @@ public final class MazeFactory {
             }
         }
 
-        private Point.Int[] tempPoints = new Point.Int[4];
+        private final Point.Int[] tempPoints = new Point.Int[4];
 
         private boolean penetrateWall(Point.Int p) {
             fillAdajcentBlocks(tempPoints, p);

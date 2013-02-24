@@ -63,7 +63,7 @@ public class Ground extends RenderableEntity {
         // TODO cant directly reference one player entity, light will be generated for all of them
 
         // No culling of back faces
-        for (CleverEntity ce : App.getUpdateList()) {
+        /*for (CleverEntity ce : App.getUpdateList()) {
             //CleverEntity ce = App.getUpdateList().get(r.nextInt(App.getUpdateList().size()));
             if (ce instanceof ShadowCastingEntity) {
                 ShadowCastingEntity sce = (ShadowCastingEntity) ce;
@@ -88,7 +88,7 @@ public class Ground extends RenderableEntity {
 
                 break;
             }
-        }
+        }*/
         //   Gdx.gl.glDisable(GL20.GL_BLEND);
         //}
 

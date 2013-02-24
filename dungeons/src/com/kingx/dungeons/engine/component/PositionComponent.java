@@ -11,4 +11,9 @@ public class PositionComponent extends Component {
         this.z = z;
     }
 
+    @Override
+    public String toString() {
+        return "PositionComponent [x=" + x + ", y=" + y + ", z=" + z + "]";
+    }
+
 }

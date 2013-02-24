@@ -16,6 +16,7 @@ import com.kingx.dungeons.controller.CameraController;
 import com.kingx.dungeons.controller.PositionCamera;
 import com.kingx.dungeons.engine.concrete.WandererCreation;
 import com.kingx.dungeons.engine.system.MovementSystem;
+import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.entity.CleverEntity;
 import com.kingx.dungeons.entity.Ground;
 import com.kingx.dungeons.entity.Maze;
@@ -79,6 +80,7 @@ public class App implements ApplicationListener {
     private boolean glInit = false;
     private SpriteBatch sb;
     private World world;
+    private RenderGeometrySystem renderGeometrySystem;
 
     @Override
     public void render() {
@@ -92,6 +94,8 @@ public class App implements ApplicationListener {
         }
         followCamera.getCamera().update();
         renderList(renderList);
+
+        renderGeometrySystem.process();
 
         //sb.begin();
         //sb.draw(ground.getCbt(), 0, 0, 100, 100, 1, 0, 0, 1);
@@ -128,7 +132,7 @@ public class App implements ApplicationListener {
         // hudRenderSystem = world.setSystem(new HudRenderSystem(camera), true);
 
         world.setSystem(new MovementSystem());
-        // world.setSystem(new RenderGeometry(followCamera.getCamera()));
+        renderGeometrySystem = world.setSystem(new RenderGeometrySystem(followCamera.getCamera()), true);
         world.initialize();
 
         Point.Int p = maze.getRandomBlock();
