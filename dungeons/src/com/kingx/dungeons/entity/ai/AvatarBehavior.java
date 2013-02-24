@@ -1,33 +1,21 @@
 package com.kingx.dungeons.entity.ai;
 
-import com.artemis.Entity;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
+import com.kingx.dungeons.entity.Entity;
 
-public final class AvatarBehavior implements InputProcessor {
+public final class AvatarBehavior extends PlayerControlledBehavior {
 
     private final Vector2 moveVector = new Vector2();
     private float rotateValue = 0;
-    private Entity puppet;
 
     public AvatarBehavior() {
         this(null);
     }
 
     public AvatarBehavior(Entity puppet) {
-        this.puppet = puppet;
+        super(puppet);
     }
-
-    public Entity getPuppet() {
-        return puppet;
-    }
-
-    public void setPuppet(Entity puppet) {
-        this.puppet = puppet;
-    }
-
-    /// input
 
     @Override
     public boolean keyDown(int keycode) {
@@ -57,15 +45,15 @@ public final class AvatarBehavior implements InputProcessor {
                 rotateValue += dir / 10f;
                 break;
         }
-
         return false;
     }
 
-    //  @Override
-    //  public void move(float delta) {
-    //     this.resolveMove(moveVector.x * puppet.getSpeed() * delta, moveVector.y * puppet.getSpeed() * delta);
-    //   puppet.addRotation(rotateValue);
-    //}
+    @Override
+    public void move(float delta) {
+        this.resolveMove(moveVector.x * puppet.getSpeed() * delta, moveVector.y * puppet.getSpeed() * delta);
+        puppet.addRotation(rotateValue);
+    }
+
     // TODO Create input for touch devices
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {

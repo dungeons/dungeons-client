@@ -1,4 +1,4 @@
-package engine.component;
+package com.kingx.dungeons.engine.component;
 
 import com.artemis.Component;
 

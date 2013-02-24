@@ -1,12 +1,11 @@
-package engine.concrete;
+package com.kingx.dungeons.engine.concrete;
 
 import com.artemis.Entity;
 import com.artemis.World;
+import com.kingx.dungeons.engine.component.PositionComponent;
+import com.kingx.dungeons.engine.component.SizeComponent;
+import com.kingx.dungeons.engine.component.SpeedComponent;
 
-import engine.ConcreteEntity;
-import engine.component.PositionComponent;
-import engine.component.SizeComponent;
-import engine.component.SpeedComponent;
 
 public class WandererEntity extends ConcreteEntity {
 

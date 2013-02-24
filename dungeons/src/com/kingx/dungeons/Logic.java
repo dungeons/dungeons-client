@@ -57,6 +57,7 @@ public final class Logic implements Runnable {
     }
 
     private void update(float delta) {
+        //System.out.println("UPDATE");
         world.setDelta(delta);
         world.process();
         app.update(delta);

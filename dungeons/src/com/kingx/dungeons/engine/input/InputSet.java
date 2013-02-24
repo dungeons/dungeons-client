@@ -1,4 +1,4 @@
-package engine.input;
+package com.kingx.dungeons.engine.input;
 
 import com.badlogic.gdx.Input.Keys;
 

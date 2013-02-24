@@ -55,7 +55,7 @@ public class Map {
     protected static boolean CAN_MOVE_DIAGONALY = false;
 
     /** holds nodes. first dim represents x-axis, second y-axis. */
-    private AbstractNode[][] nodes;
+    private final AbstractNode[][] nodes;
 
     /** width + 1 is size of first dimension of nodes. */
     protected int width;
@@ -65,7 +65,7 @@ public class Map {
     /** a Factory to create instances of specified nodes. */
     private NodeFactory nodeFactory;
 
-    private boolean[][] footprint;
+    private final boolean[][] footprint;
 
     /**
      * constructs a squared map with given width and hight.
@@ -81,7 +81,7 @@ public class Map {
         this.footprint = footprint;
         this.width = footprint.length;
         this.hight = footprint[0].length;
-        nodes = (AbstractNode[][]) new AbstractNode[width][hight];
+        nodes = new AbstractNode[width][hight];
     }
 
     public void setNode(NodeFactory nf) {
@@ -95,7 +95,7 @@ public class Map {
     private void initEmptyNodes() {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < hight; j++) {
-                nodes[i][j] = (AbstractNode) nodeFactory.createNode(i, j);
+                nodes[i][j] = nodeFactory.createNode(i, j);
                 nodes[i][j].setWalkable(footprint[i][j]);
             }
         }
@@ -228,7 +228,6 @@ public class Map {
                 }
             }
 
-            System.out.println(openList.isEmpty());
             if (openList.isEmpty()) { // no path exists
                 return new LinkedList<AbstractNode>(); // return empty list
             }
@@ -242,9 +241,9 @@ public class Map {
     public final List<Point.Float> findPath(Point.Int a, Point.Int b) {
         List<AbstractNode> path = findPath(a.x, a.y, b.x, b.y);
         List<Point.Float> result = null;
-        if(path != null){
+        if (path != null) {
             result = new ArrayList<Point.Float>();
-            for(int i = 0; i < path.size(); i++){
+            for (int i = 0; i < path.size(); i++) {
                 AbstractNode pathPoint = path.get(i);
                 result.add(new Point.Float(pathPoint.getxPosition(), pathPoint.getyPosition()));
             }
@@ -268,7 +267,7 @@ public class Map {
         boolean done = false;
         while (!done) {
             path.addFirst(curr);
-            curr = (AbstractNode) curr.getPrevious();
+            curr = curr.getPrevious();
 
             if (curr.equals(start)) {
                 done = true;

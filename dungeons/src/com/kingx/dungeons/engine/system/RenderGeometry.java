@@ -1,4 +1,4 @@
-package engine.system;
+package com.kingx.dungeons.engine.system;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,10 +13,10 @@ import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
+import com.kingx.dungeons.engine.component.MeshComponent;
+import com.kingx.dungeons.engine.component.PositionComponent;
+import com.kingx.dungeons.engine.component.ShaderComponent;
 
-import engine.component.MeshComponent;
-import engine.component.PositionComponent;
-import engine.component.ShaderComponent;
 
 public class RenderGeometry extends EntitySystem {
     @Mapper
@@ -62,6 +62,7 @@ public class RenderGeometry extends EntitySystem {
     }
 
     protected void process(Entity e) {
+        System.out.println(pm.has(e));
         if (pm.has(e)) {
             PositionComponent pc = pm.getSafe(e);
             ShaderComponent sc = sm.getSafe(e);

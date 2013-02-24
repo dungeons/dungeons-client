@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.artemis.World;
-import com.artemis.managers.GroupManager;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -15,6 +14,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.kingx.dungeons.controller.CameraController;
 import com.kingx.dungeons.controller.PositionCamera;
+import com.kingx.dungeons.engine.concrete.WandererCreation;
+import com.kingx.dungeons.engine.system.MovementSystem;
 import com.kingx.dungeons.entity.CleverEntity;
 import com.kingx.dungeons.entity.Ground;
 import com.kingx.dungeons.entity.Maze;
@@ -22,8 +23,7 @@ import com.kingx.dungeons.entity.MazeFactory;
 import com.kingx.dungeons.entity.Police;
 import com.kingx.dungeons.entity.RenderableEntity;
 import com.kingx.dungeons.entity.Wanderer;
-
-import engine.system.MovementSystem;
+import com.kingx.dungeons.geom.Point;
 
 public class App implements ApplicationListener {
 
@@ -127,12 +127,14 @@ public class App implements ApplicationListener {
         //  healthRenderSystem = world.setSystem(new HealthRenderSystem(camera), true);
         // hudRenderSystem = world.setSystem(new HudRenderSystem(camera), true);
 
-        world.setManager(new GroupManager());
-
         world.setSystem(new MovementSystem());
+        // world.setSystem(new RenderGeometry(followCamera.getCamera()));
         world.initialize();
 
-        // EntityFactory.createPlayer(world, 0, 0).addToWorld();
+        Point.Int p = maze.getRandomBlock();
+
+        WandererCreation wanderer2 = new WandererCreation(world, Maze.SIZE * (p.x + 0.5f), Maze.SIZE * (p.y + 0.5f), 0.2f, 5f);
+        wanderer2.createEntity().addToWorld();
 
         //  for (int i = 0; 500 > i; i++) {
         //     EntityFactory.createStar(world).addToWorld();

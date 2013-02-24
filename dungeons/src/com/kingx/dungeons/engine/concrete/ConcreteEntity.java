@@ -1,4 +1,4 @@
-package engine;
+package com.kingx.dungeons.engine.concrete;
 
 import com.artemis.Entity;
 

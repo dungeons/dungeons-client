@@ -1,8 +1,8 @@
-package engine.input;
+package com.kingx.dungeons.engine.input;
 
 import com.badlogic.gdx.InputProcessor;
+import com.kingx.dungeons.engine.component.InputComponent;
 
-import engine.component.InputComponent;
 
 public final class PlayerInput implements InputProcessor {
 

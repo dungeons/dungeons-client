@@ -1,11 +1,11 @@
-package engine.input;
+package com.kingx.dungeons.engine.input;
 
 import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.kingx.dungeons.engine.component.InputComponent;
 
-import engine.component.InputComponent;
 
 public final class InputManager {
 

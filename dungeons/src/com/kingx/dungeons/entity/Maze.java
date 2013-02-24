@@ -57,7 +57,6 @@ public final class Maze extends RenderableEntity {
     }
 
     public Point.Int getRandomBlock(Point.Int start) {
-        print(footprint);
         Point.Int p = new Point.Int();
         do {
             p.x = rand.nextInt(footprint.length);
