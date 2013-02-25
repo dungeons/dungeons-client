@@ -9,8 +9,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutput;
+import java.io.ObjectOutputStream;
 
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 import com.kingx.dungeons.entity.MazeBuilder;
 
@@ -56,15 +62,33 @@ public class Editor extends JPanel {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                int x = e.getX() / Map.BLOCK_SIZE;
-                int y = e.getY() / Map.BLOCK_SIZE;
+                if (SwingUtilities.isLeftMouseButton(e)) {
 
-                map.switchBlock(x, y);
-                repaint();
+                    int x = e.getX() / Map.BLOCK_SIZE;
+                    int y = e.getY() / Map.BLOCK_SIZE;
+
+                    map.switchBlock(x, y);
+                    repaint();
+                } else if (SwingUtilities.isRightMouseButton(e)) {
+                    save();
+                }
             }
         };
         addMouseMotionListener(listener);
         addMouseListener(listener);
+    }
+
+    protected void save() {
+        if (JOptionPane.showConfirmDialog(null, "Do you want save ?") == JOptionPane.YES_OPTION) {
+            // Serialize data object to a file
+            try {
+                ObjectOutput out = new ObjectOutputStream(new FileOutputStream("map.dng"));
+                out.writeObject(map.getMaze());
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
