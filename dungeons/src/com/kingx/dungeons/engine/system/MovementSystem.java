@@ -23,7 +23,6 @@ public class MovementSystem extends EntitySystem {
     }
 
     protected void process(Entity e) {
-        System.out.println("MOVEMENT");
         PositionComponent position = postionMapper.get(e);
         SpeedComponent speed = speedMapper.get(e);
         InputComponent moveVector = inputMapper.get(e);

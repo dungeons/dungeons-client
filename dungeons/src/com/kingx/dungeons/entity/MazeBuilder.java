@@ -9,10 +9,6 @@ public class MazeBuilder {
 
     private static MazeBuilder builder = new MazeBuilder();
 
-    public static Maze getMazeShadow(boolean[][] maze, float wallSize) {
-        return new Maze(maze, wallSize);
-    }
-
     public static boolean[][] getMaze(int mazeBlockCount) {
         return builder.generate(mazeBlockCount);
     }

@@ -23,13 +23,13 @@ import com.kingx.dungeons.entity.MazeBuilder;
 @SuppressWarnings("serial")
 public class Editor extends JPanel {
 
-    private Map map;
+    private final Map map;
 
     public Editor() {
         addDragListeners();
         setOpaque(true);
         setBackground(new Color(240, 240, 240));
-        map = new Map(MazeBuilder.getMaze(25));
+        map = new Map(MazeBuilder.getMaze(20));
     }
 
     /**

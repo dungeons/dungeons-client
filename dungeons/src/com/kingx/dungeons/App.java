@@ -12,8 +12,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.kingx.dungeons.controller.CameraController;
-import com.kingx.dungeons.controller.PositionCamera;
 import com.kingx.dungeons.engine.concrete.WandererCreation;
 import com.kingx.dungeons.engine.system.MovementSystem;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
@@ -29,7 +27,7 @@ import com.kingx.dungeons.geom.Point;
 public class App implements ApplicationListener {
 
     private static Maze maze;
-    private static CameraController followCamera;
+    private static Camera followCamera;
 
     private static final List<RenderableEntity> renderList = new ArrayList<RenderableEntity>();
     private static final List<CleverEntity> updateList = new ArrayList<CleverEntity>();
@@ -92,7 +90,7 @@ public class App implements ApplicationListener {
             glInit = true;
             sb = new SpriteBatch();
         }
-        followCamera.getCamera().update();
+        followCamera.update();
         renderList(renderList);
 
         renderGeometrySystem.process();
@@ -105,15 +103,18 @@ public class App implements ApplicationListener {
 
     private void init() {
         // Entities creation
-        footprint = MazeBuilder.getMaze(MAZE_BLOCKS_COUNT);
-        maze = MazeBuilder.getMazeShadow(footprint, MAZE_WALL_SIZE);
+        footprint = Assets.map;
+        if (Assets.map == null) {
+            footprint = MazeBuilder.getMaze(MAZE_BLOCKS_COUNT);
+        }
+        maze = new Maze(footprint, MAZE_WALL_SIZE);
         wanderer = new Wanderer(maze);
         ground = new Ground(1000);
 
         ArrayList<Police> police = new ArrayList<Police>();
-        for (int i = 0; i < 1000; i++) {
-            police.add(new Police(maze));
-        }
+        /* for (int i = 0; i < 1000; i++) {
+             police.add(new Police(maze));
+         }*/
 
         // Adding to render list
         renderList.add(ground);
@@ -125,14 +126,15 @@ public class App implements ApplicationListener {
         updateList.add(wanderer);
         updateList.addAll(police);
 
-        followCamera.setController(wanderer);
+        //followCamera.setController(wanderer);
 
         //   spriteRenderSystem = world.setSystem(new SpriteRenderSystem(camera), true);
         //  healthRenderSystem = world.setSystem(new HealthRenderSystem(camera), true);
         // hudRenderSystem = world.setSystem(new HudRenderSystem(camera), true);
 
         world.setSystem(new MovementSystem());
-        renderGeometrySystem = world.setSystem(new RenderGeometrySystem(followCamera.getCamera()), true);
+        // world.setSystem(new PositionCameraSystem(followCamera));
+        renderGeometrySystem = world.setSystem(new RenderGeometrySystem(followCamera), true);
         world.initialize();
 
         Point.Int p = maze.getRandomBlock();
@@ -167,17 +169,16 @@ public class App implements ApplicationListener {
         if (followCamera == null) {
             followCamera = setUpCamera(width, height);
         } else {
-            followCamera.getCamera().viewportWidth = width;
-            followCamera.getCamera().viewportHeight = height;
+            followCamera.viewportWidth = width;
+            followCamera.viewportHeight = height;
         }
     }
 
-    public CameraController setUpCamera(int width, int height) {
+    public Camera setUpCamera(int width, int height) {
         PerspectiveCamera camera = new PerspectiveCamera(67, width, height);
         camera.position.z = 15f;
         camera.direction.set(0, 0, -1f);
-        CameraController cameraController = new PositionCamera(camera);
-        return cameraController;
+        return camera;
     }
 
     @Override
@@ -197,7 +198,7 @@ public class App implements ApplicationListener {
     }
 
     public static Camera getDefaultCam() {
-        return followCamera.getCamera();
+        return followCamera;
     }
 
     public static boolean[][] getFootprint() {
