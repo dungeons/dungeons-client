@@ -20,7 +20,7 @@ import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.entity.CleverEntity;
 import com.kingx.dungeons.entity.Ground;
 import com.kingx.dungeons.entity.Maze;
-import com.kingx.dungeons.entity.MazeFactory;
+import com.kingx.dungeons.entity.MazeBuilder;
 import com.kingx.dungeons.entity.Police;
 import com.kingx.dungeons.entity.RenderableEntity;
 import com.kingx.dungeons.entity.Wanderer;
@@ -105,8 +105,8 @@ public class App implements ApplicationListener {
 
     private void init() {
         // Entities creation
-        footprint = MazeFactory.getMaze(MAZE_BLOCKS_COUNT);
-        maze = MazeFactory.getMazeShadow(footprint, MAZE_WALL_SIZE);
+        footprint = MazeBuilder.getMaze(MAZE_BLOCKS_COUNT);
+        maze = MazeBuilder.getMazeShadow(footprint, MAZE_WALL_SIZE);
         wanderer = new Wanderer(maze);
         ground = new Ground(1000);
 

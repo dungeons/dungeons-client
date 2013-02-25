@@ -1,4 +1,4 @@
-package com.kingx.dungeons;
+package com.kingx.dungeons.android;
 
 import android.os.Bundle;
 

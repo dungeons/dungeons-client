@@ -3,6 +3,7 @@
 dungeons/bin
 dungeons-android/bin
 dungeons-desktop/bin
+dungeons-editor/bin
 dungeons-desktop/assets
 
 # Logs and databases #
