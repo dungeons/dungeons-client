@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.kingx.dungeons.engine.concrete.WandererCreation;
+import com.kingx.dungeons.engine.system.CollisionSystem;
 import com.kingx.dungeons.engine.system.MovementSystem;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.entity.CleverEntity;
@@ -133,6 +134,7 @@ public class App implements ApplicationListener {
         // hudRenderSystem = world.setSystem(new HudRenderSystem(camera), true);
 
         world.setSystem(new MovementSystem());
+        world.setSystem(new CollisionSystem());
         // world.setSystem(new PositionCameraSystem(followCamera));
         renderGeometrySystem = world.setSystem(new RenderGeometrySystem(followCamera), true);
         world.initialize();
@@ -140,6 +142,7 @@ public class App implements ApplicationListener {
         Point.Int p = maze.getRandomBlock();
 
         WandererCreation wanderer2 = new WandererCreation(world, Maze.SIZE * (p.x + 0.5f), Maze.SIZE * (p.y + 0.5f), 0.2f, 5f);
+        wanderer2.setCamera(followCamera);
         wanderer2.createEntity().addToWorld();
 
         //  for (int i = 0; 500 > i; i++) {

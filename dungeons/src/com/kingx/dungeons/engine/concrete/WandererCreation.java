@@ -2,9 +2,11 @@ package com.kingx.dungeons.engine.concrete;
 
 import com.artemis.Entity;
 import com.artemis.World;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.InputComponent;
 import com.kingx.dungeons.engine.component.MeshComponent;
 import com.kingx.dungeons.engine.component.PositionComponent;
@@ -24,6 +26,7 @@ public class WandererCreation extends ConcreteEntity {
     private final float speed;
     private final Mesh mesh;
     private final ShaderProgram shader;
+    private Camera camera;
 
     public WandererCreation(World world, float x, float y, float size, float speed) {
         this.world = world;
@@ -39,6 +42,14 @@ public class WandererCreation extends ConcreteEntity {
         shader = Shader.getShader("purple");
     }
 
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public void setCamera(Camera camera) {
+        this.camera = camera;
+    }
+
     @Override
     public Entity createEntity() {
         Entity e = world.createEntity();
@@ -49,6 +60,11 @@ public class WandererCreation extends ConcreteEntity {
         e.addComponent(new SizeComponent(size));
         e.addComponent(new MeshComponent(mesh));
         e.addComponent(new ShaderComponent(shader));
+
+        if (camera != null) {
+            e.addComponent(new FollowCameraComponent(camera, 10f));
+        }
+
         InputManager.getInstance().registerInput(InputSet.Player1, ic);
         return e;
     }

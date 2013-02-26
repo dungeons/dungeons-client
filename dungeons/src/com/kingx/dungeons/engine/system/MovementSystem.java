@@ -6,6 +6,7 @@ import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.annotations.Mapper;
 import com.artemis.utils.ImmutableBag;
+import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.InputComponent;
 import com.kingx.dungeons.engine.component.PositionComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
@@ -17,6 +18,8 @@ public class MovementSystem extends EntitySystem {
     ComponentMapper<SpeedComponent> speedMapper;
     @Mapper
     ComponentMapper<InputComponent> inputMapper;
+    @Mapper
+    ComponentMapper<FollowCameraComponent> cameraMapper;
 
     public MovementSystem() {
         super(Aspect.getAspectForAll(PositionComponent.class, SpeedComponent.class, InputComponent.class));
@@ -29,6 +32,12 @@ public class MovementSystem extends EntitySystem {
 
         position.x += moveVector.vector.x * speed.speed * world.delta;
         position.y += moveVector.vector.y * speed.speed * world.delta;
+        if (cameraMapper.has(e)) {
+            FollowCameraComponent cameraComponent = cameraMapper.get(e);
+            cameraComponent.camera.position.x = position.x;
+            cameraComponent.camera.position.y = position.y;
+            cameraComponent.camera.position.z = cameraComponent.height;
+        }
     }
 
     @Override
