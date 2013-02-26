@@ -56,6 +56,7 @@ public class RenderGeometrySystem extends EntitySystem {
 
         sc.shader.begin();
         sc.shader.setUniformMatrix("u_MVPMatrix", camera.combined);
+        sc.shader.setUniformf("u_color", sc.color);
         mc.mesh.render(sc.shader, GL10.GL_TRIANGLES);
         sc.shader.end();
 

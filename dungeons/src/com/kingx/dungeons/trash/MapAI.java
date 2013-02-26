@@ -1,87 +1,77 @@
 package com.kingx.dungeons.trash;
 
-import java.util.List;
+public class MapAI {
 
-import com.kingx.dungeons.App;
-import com.kingx.dungeons.entity.Entity;
-import com.kingx.dungeons.entity.ai.AbstractBehavior;
-import com.kingx.dungeons.geom.Point;
-import com.kingx.dungeons.geom.Point.Float;
-import com.kingx.dungeons.pathfinding.Map;
-import com.kingx.dungeons.pathfinding.MapEntityNodeFactory;
+    /* private static final float REGION = 1f;
 
-public class MapAI extends AbstractBehavior {
+     public MapAI() {
+         this(null);
+     }
 
-    private static final float REGION = 1f;
+     public MapAI(Entity puppet) {
+         super(puppet);
+     }
 
-    public MapAI() {
-        this(null);
-    }
+     public Point.Int getRegion() {
+         return new Point.Int((int) ((puppet.getPositionX() + puppet.getSize()) / REGION), (int) ((puppet.getPositionY() + puppet.getSize()) / REGION));
+     }
 
-    public MapAI(Entity puppet) {
-        super(puppet);
-    }
+     private Point.Float goal = null;
+     private List<Float> path;
+     private int goalIndex = 0;
 
-    public Point.Int getRegion() {
-        return new Point.Int((int) ((puppet.getPositionX() + puppet.getSize()) / REGION), (int) ((puppet.getPositionY() + puppet.getSize()) / REGION));
-    }
+     private Float nextGoal() {
+         if (path == null || goalIndex == path.size()) {
+             path = getPath();
+             goalIndex = 0;
+         }
+         goal = path.get(goalIndex++);
 
-    private Point.Float goal = null;
-    private List<Float> path;
-    private int goalIndex = 0;
+         // Goal is in center of region
+         goal.x += REGION / 2f;
+         goal.y += REGION / 2f;
 
-    private Float nextGoal() {
-        if (path == null || goalIndex == path.size()) {
-            path = getPath();
-            goalIndex = 0;
-        }
-        goal = path.get(goalIndex++);
+         return goal;
+     }
 
-        // Goal is in center of region
-        goal.x += REGION / 2f;
-        goal.y += REGION / 2f;
+     @Override
+     public void move(float delta) {
+         if (goal == null) {
+             goal = nextGoal();
+         }
 
-        return goal;
-    }
+         float step = puppet.getSpeed() * delta;
+         moveIt(step);
+     }
 
-    @Override
-    public void move(float delta) {
-        if (goal == null) {
-            goal = nextGoal();
-        }
+     private void moveIt(float step) {
 
-        float step = puppet.getSpeed() * delta;
-        moveIt(step);
-    }
+         float tx = goal.x - puppet.getPositionX();
+         float ty = goal.y - puppet.getPositionY();
+         double ang = Math.atan2(ty, tx);
 
-    private void moveIt(float step) {
+         double distance = Math.sqrt(tx * tx + ty * ty);
 
-        float tx = goal.x - puppet.getPositionX();
-        float ty = goal.y - puppet.getPositionY();
-        double ang = Math.atan2(ty, tx);
+         if (step < distance) {
+             puppet.addPositionX((float) (Math.cos(ang) * step));
+             puppet.addPositionY((float) (Math.sin(ang) * step));
+         } else {
+             step -= distance;
+             puppet.setPositionX(goal.x);
+             puppet.setPositionY(goal.y);
+             goal = nextGoal();
+             moveIt(step);
+         }
+     }
 
-        double distance = Math.sqrt(tx * tx + ty * ty);
+     public List<Float> getPath() {
+         Map myMap = new Map(App.getMazeEntity().getFootprint());
+         myMap.setNode(new MapEntityNodeFactory());
 
-        if (step < distance) {
-            puppet.addPositionX((float) (Math.cos(ang) * step));
-            puppet.addPositionY((float) (Math.sin(ang) * step));
-        } else {
-            step -= distance;
-            puppet.setPositionX(goal.x);
-            puppet.setPositionY(goal.y);
-            goal = nextGoal();
-            moveIt(step);
-        }
-    }
+         Point.Int start = getRegion();
+         Point.Int finish = App.getMazeEntity().getRandomBlock(start);
 
-    public List<Float> getPath() {
-        Map myMap = new Map(App.getMaze().getFootprint());
-        myMap.setNode(new MapEntityNodeFactory());
-
-        Point.Int start = getRegion();
-        Point.Int finish = App.getMaze().getRandomBlock(start);
-
-        return myMap.findPath(start, finish);
-    }
-
+         return myMap.findPath(start, finish);
+     }
+    */
 }

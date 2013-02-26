@@ -11,13 +11,15 @@ import com.kingx.dungeons.engine.component.InputComponent;
 import com.kingx.dungeons.engine.component.MeshComponent;
 import com.kingx.dungeons.engine.component.PositionComponent;
 import com.kingx.dungeons.engine.component.ShaderComponent;
+import com.kingx.dungeons.engine.component.ShadowComponent;
 import com.kingx.dungeons.engine.component.SizeComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
 import com.kingx.dungeons.engine.input.InputManager;
 import com.kingx.dungeons.engine.input.InputSet;
+import com.kingx.dungeons.entity.graphics.Colors;
 import com.kingx.dungeons.entity.graphics.Shader;
 
-public class WandererCreation extends ConcreteEntity {
+public class Wanderer extends ConcreteEntity {
 
     private final World world;
     private final float x;
@@ -28,7 +30,7 @@ public class WandererCreation extends ConcreteEntity {
     private final ShaderProgram shader;
     private Camera camera;
 
-    public WandererCreation(World world, float x, float y, float size, float speed) {
+    public Wanderer(World world, float x, float y, float size, float speed) {
         this.world = world;
         this.x = x;
         this.y = y;
@@ -39,7 +41,7 @@ public class WandererCreation extends ConcreteEntity {
         mesh.setVertices(new float[] { -size / 2, -size / 2, 0, size / 2, -size / 2, 0, size / 2, size / 2, 0, -size / 2, size / 2, 0 });
         mesh.setIndices(new short[] { 0, 1, 2, 2, 3, 0 });
 
-        shader = Shader.getShader("purple");
+        shader = Shader.getShader("normal");
     }
 
     public Camera getCamera() {
@@ -59,7 +61,8 @@ public class WandererCreation extends ConcreteEntity {
         e.addComponent(ic);
         e.addComponent(new SizeComponent(size));
         e.addComponent(new MeshComponent(mesh));
-        e.addComponent(new ShaderComponent(shader));
+        e.addComponent(new ShaderComponent(shader, Colors.AVATAR.color));
+        e.addComponent(new ShadowComponent());
 
         if (camera != null) {
             e.addComponent(new FollowCameraComponent(camera, 10f));

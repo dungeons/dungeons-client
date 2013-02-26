@@ -1,31 +1,18 @@
-package com.kingx.dungeons.entity;
+package com.kingx.dungeons.entity.graphics;
 
-import java.util.Random;
-
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector3;
-import com.kingx.dungeons.entity.graphics.PolyBuilder;
-import com.kingx.dungeons.entity.graphics.Shader;
+import com.kingx.dungeons.App;
 import com.kingx.dungeons.geom.Point;
 
-public final class Maze extends RenderableEntity {
+public class MazeMap {
 
     private final boolean[][] footprint;
     private int walls = -1;
-    private final Mesh poly;
 
     public static final float SIZE = 1f;
 
-    public Maze(boolean[][] map, float size) {
-        super(0, 0, 0, map.length * size, 0);
+    public MazeMap(boolean[][] map) {
         this.footprint = map;
         walls = this.getWalls();
-        Vector3 polySize = new Vector3(size, size, size);
-        poly = new PolyBuilder(this, polySize).generate();
-
     }
 
     private int getWalls() {
@@ -44,14 +31,11 @@ public final class Maze extends RenderableEntity {
         }
     }
 
-    private final Random rand = new Random();
-    private ShaderProgram shader;
-
     public Point.Int getRandomBlock() {
         Point.Int p = new Point.Int();
         do {
-            p.x = rand.nextInt(footprint.length);
-            p.y = rand.nextInt(footprint[p.x].length);
+            p.x = App.rand.nextInt(footprint.length);
+            p.y = App.rand.nextInt(footprint[p.x].length);
         } while (!footprint[p.x][p.y]);
         return p;
     }
@@ -59,26 +43,10 @@ public final class Maze extends RenderableEntity {
     public Point.Int getRandomBlock(Point.Int start) {
         Point.Int p = new Point.Int();
         do {
-            p.x = rand.nextInt(footprint.length);
-            p.y = rand.nextInt(footprint[p.x].length);
+            p.x = App.rand.nextInt(footprint.length);
+            p.y = App.rand.nextInt(footprint[p.x].length);
         } while (!footprint[p.x][p.y] || p.equals(start));
         return p;
-    }
-
-    @Override
-    protected void initRender() {
-        // render
-        shader = Shader.getShader("normal");
-
-    }
-
-    @Override
-    protected void doRender(Camera cam) {
-        shader.begin();
-        shader.setUniformMatrix("u_MVPMatrix", cam.combined);
-        poly.render(shader, GL20.GL_TRIANGLES);
-        shader.end();
-
     }
 
     public boolean[][] getFootprint() {
@@ -93,16 +61,12 @@ public final class Maze extends RenderableEntity {
         return footprint[0].length;
     }
 
-    public Mesh getPoly() {
-        return poly;
-    }
-
     public void print() {
-        Maze.print(footprint);
+        print(footprint);
     }
 
     public static void print(boolean[][] maze) {
-        Maze.print(maze, null);
+        print(maze, null);
     }
 
     public static void print(boolean[][] maze, Point.Int current) {

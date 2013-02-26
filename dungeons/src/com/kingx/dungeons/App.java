@@ -1,7 +1,6 @@
 package com.kingx.dungeons;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Random;
 
 import com.artemis.World;
 import com.badlogic.gdx.ApplicationListener;
@@ -9,53 +8,38 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.kingx.dungeons.engine.concrete.WandererCreation;
+import com.kingx.dungeons.engine.concrete.Maze;
+import com.kingx.dungeons.engine.concrete.Wanderer;
 import com.kingx.dungeons.engine.system.CollisionSystem;
 import com.kingx.dungeons.engine.system.MovementSystem;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
-import com.kingx.dungeons.entity.CleverEntity;
-import com.kingx.dungeons.entity.Ground;
-import com.kingx.dungeons.entity.Maze;
+import com.kingx.dungeons.engine.system.RenderShadowSystem;
 import com.kingx.dungeons.entity.MazeBuilder;
-import com.kingx.dungeons.entity.Police;
-import com.kingx.dungeons.entity.RenderableEntity;
-import com.kingx.dungeons.entity.Wanderer;
+import com.kingx.dungeons.entity.graphics.MazeMap;
 import com.kingx.dungeons.geom.Point;
 
 public class App implements ApplicationListener {
 
-    private static Maze maze;
+    public static final Random rand = new Random();
     private static Camera followCamera;
 
-    private static final List<RenderableEntity> renderList = new ArrayList<RenderableEntity>();
-    private static final List<CleverEntity> updateList = new ArrayList<CleverEntity>();
+    // private static final List<RenderableEntity> renderList = new ArrayList<RenderableEntity>();
+    // private static final List<CleverEntity> updateList = new ArrayList<CleverEntity>();
 
-    private static Ground ground;
     private static boolean[][] footprint;
     public static App reference;
-    private static Wanderer wanderer;
     private static boolean wireframe;
+    public static Mesh superhack;
 
     public static final int MAZE_BLOCKS_COUNT = 25;
     public static final float MAZE_WALL_SIZE = 1f;
 
-    public static Wanderer getWanderer() {
-        return wanderer;
-    }
-
-    public static Maze getMaze() {
-        return maze;
-    }
-
-    public static List<RenderableEntity> getRenderList() {
-        return renderList;
-    }
-
-    public static List<CleverEntity> getUpdateList() {
-        return updateList;
+    public static Mesh getMaze() {
+        return superhack;
     }
 
     @Override
@@ -80,6 +64,7 @@ public class App implements ApplicationListener {
     private SpriteBatch sb;
     private World world;
     private RenderGeometrySystem renderGeometrySystem;
+    private RenderShadowSystem renderShadowSystem;
 
     @Override
     public void render() {
@@ -92,13 +77,16 @@ public class App implements ApplicationListener {
             sb = new SpriteBatch();
         }
         followCamera.update();
-        renderList(renderList);
+        //   renderList(renderList);
 
+        renderShadowSystem.process();
         renderGeometrySystem.process();
 
-        //sb.begin();
-        //sb.draw(ground.getCbt(), 0, 0, 100, 100, 1, 0, 0, 1);
-        //sb.end();
+        if (renderShadowSystem.getCbt() != null) {
+            sb.begin();
+            sb.draw(renderShadowSystem.getCbt(), 0, 0, 200, 200, 1, 0, 0, 1);
+            sb.end();
+        }
 
     }
 
@@ -108,24 +96,21 @@ public class App implements ApplicationListener {
         if (Assets.map == null) {
             footprint = MazeBuilder.getMaze(MAZE_BLOCKS_COUNT);
         }
-        maze = new Maze(footprint, MAZE_WALL_SIZE);
-        wanderer = new Wanderer(maze);
-        ground = new Ground(1000);
+        MazeMap maze = new MazeMap(footprint);
 
-        ArrayList<Police> police = new ArrayList<Police>();
         /* for (int i = 0; i < 1000; i++) {
              police.add(new Police(maze));
          }*/
 
         // Adding to render list
-        renderList.add(ground);
-        renderList.add(maze);
-        renderList.add(wanderer);
-        renderList.addAll(police);
+        //renderList.add(ground);
+        // renderList.add(mazeEntity);
+        //renderList.add(wanderer);
+        //renderList.addAll(police);
 
         // Adding to update list
-        updateList.add(wanderer);
-        updateList.addAll(police);
+        // updateList.add(wanderer);
+        // updateList.addAll(police);
 
         //followCamera.setController(wanderer);
 
@@ -136,14 +121,17 @@ public class App implements ApplicationListener {
         world.setSystem(new MovementSystem());
         world.setSystem(new CollisionSystem());
         // world.setSystem(new PositionCameraSystem(followCamera));
+        renderShadowSystem = world.setSystem(new RenderShadowSystem(followCamera), true);
         renderGeometrySystem = world.setSystem(new RenderGeometrySystem(followCamera), true);
         world.initialize();
 
         Point.Int p = maze.getRandomBlock();
 
-        WandererCreation wanderer2 = new WandererCreation(world, Maze.SIZE * (p.x + 0.5f), Maze.SIZE * (p.y + 0.5f), 0.2f, 5f);
+        Wanderer wanderer2 = new Wanderer(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 5f);
+        Maze mazeCreation = new Maze(world, maze);
         wanderer2.setCamera(followCamera);
         wanderer2.createEntity().addToWorld();
+        mazeCreation.createEntity().addToWorld();
 
         //  for (int i = 0; 500 > i; i++) {
         //     EntityFactory.createStar(world).addToWorld();
@@ -151,21 +139,21 @@ public class App implements ApplicationListener {
 
     }
 
-    public void update(float delta) {
-        updateList(updateList, delta);
-    }
-
-    private void updateList(List<CleverEntity> list, float delta) {
-        for (CleverEntity e : list) {
-            e.update(delta);
+    /*    public void update(float delta) {
+            updateList(updateList, delta);
         }
-    }
 
-    private void renderList(List<RenderableEntity> list) {
-        for (RenderableEntity e : list) {
-            e.render();
+        private void updateList(List<CleverEntity> list, float delta) {
+            for (CleverEntity e : list) {
+                e.update(delta);
+            }
         }
-    }
+
+        private void renderList(List<RenderableEntity> list) {
+            for (RenderableEntity e : list) {
+                e.render();
+            }
+        }*/
 
     @Override
     public void resize(int width, int height) {

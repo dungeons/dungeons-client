@@ -60,6 +60,6 @@ public final class Logic implements Runnable {
         //System.out.println("UPDATE");
         world.setDelta(delta);
         world.process();
-        app.update(delta);
+        //app.update(delta);
     }
 }

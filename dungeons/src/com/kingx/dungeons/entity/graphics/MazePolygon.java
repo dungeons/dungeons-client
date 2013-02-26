@@ -5,9 +5,8 @@ import java.util.ArrayList;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.math.Vector3;
-import com.kingx.dungeons.entity.Maze;
 
-public final class PolyBuilder {
+public final class MazePolygon {
 
     private static final Boolean[] allowed = { true,// Front
             true,// Right
@@ -78,7 +77,7 @@ public final class PolyBuilder {
     private final ArrayList<Float> verts = new ArrayList<Float>();
     private final ArrayList<Short> indices = new ArrayList<Short>();
 
-    public PolyBuilder(Maze maze, Vector3 wallSize) {
+    public MazePolygon(MazeMap maze, Vector3 wallSize) {
         WALL_SIZE = wallSize;
 
         for (int i = 0; i < maze.getFootprint().length; i++) {
@@ -87,7 +86,7 @@ public final class PolyBuilder {
                 float x = i * WALL_SIZE.x;
                 float y = j * WALL_SIZE.y;
                 if (!maze.getFootprint()[i][j]) {
-                    makeWall(maze.getPositionX() + x, maze.getPositionY() + y, maze.getPositionZ());
+                    makeWall(x, y, 0);
                 }
             }
         }

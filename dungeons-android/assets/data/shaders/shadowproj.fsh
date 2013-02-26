@@ -8,6 +8,8 @@ const float LinearDepthConstant = 1.0 / (Far - Near);
 
 
 // Uniform variables.
+uniform vec4 u_source_color;
+uniform vec4 u_ground_color;
 uniform vec3 v_lightSpacePosition;
 uniform sampler2D DepthMap;
 
@@ -26,6 +28,11 @@ float unpack (vec4 colour)
 	1.0 / (255.0 * 255.0),
 	1.0 / (255.0 * 255.0 * 255.0));
 	return dot(colour, bitShifts);
+}
+// Unpack an RGBA pixel to floating point value.
+float interpolate (float a, float b, float stage, float gradient)
+{
+	return a + ((b - a) * stage / gradient);
 }
 
 // Fragment shader entry.
@@ -78,10 +85,36 @@ void main ()
 				}
 			}
 		}
-
-	if(shadow){
-	gl_FragColor = vec4(1,1,1,1);
-    }else{
-	gl_FragColor = vec4(0,0,0,1);
+		float radius = 5f;
+		int gradients = 5;
+		float distance = length(vWorldVertex - v_lightSpacePosition);
+		if(distance > radius){
+shadow = true;
 }
+		distance = clamp(distance,0,radius);
+		distance/=radius;
+		float corrected = 1.0/(distance)-0.1 ;
+		float c1 = 0.0;
+		float c2 = 1.0;
+		float alpha = c1 + ((c2 - c1) * corrected / gradients);
+		float stage = max(corrected,0);
+		
+		float del = 40.0;
+		float r = floor(interpolate(u_source_color.r ,u_ground_color.r, distance, 1.0)*del) / del;
+		float g = floor(interpolate(u_source_color.g ,u_ground_color.g, distance, 1.0)*del) / del;
+		float b = floor(interpolate(u_source_color.b ,u_ground_color.b, distance, 1.0)*del) / del;
+  
+	if(shadow){
+	   gl_FragColor = u_ground_color;
+    }else{
+	   gl_FragColor = vec4(r,g,b,1.0);
+    }
+   
+ //  float d = distance;
+  // switch(d){
+//case 0: gl_FragColor = vec4(1,1,1,1); break;
+//case 1: gl_FragColor = vec4(1,1,0,1); break;
+//case 2: gl_FragColor = vec4(1,0,0,1); break;
+
+    
 }
