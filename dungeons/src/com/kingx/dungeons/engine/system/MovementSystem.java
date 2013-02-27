@@ -3,15 +3,14 @@ package com.kingx.dungeons.engine.system;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
-import com.artemis.EntitySystem;
 import com.artemis.annotations.Mapper;
-import com.artemis.utils.ImmutableBag;
+import com.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.InputComponent;
 import com.kingx.dungeons.engine.component.PositionComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
 
-public class MovementSystem extends EntitySystem {
+public class MovementSystem extends EntityProcessingSystem {
     @Mapper
     ComponentMapper<PositionComponent> postionMapper;
     @Mapper
@@ -25,6 +24,7 @@ public class MovementSystem extends EntitySystem {
         super(Aspect.getAspectForAll(PositionComponent.class, SpeedComponent.class, InputComponent.class));
     }
 
+    @Override
     protected void process(Entity e) {
         PositionComponent position = postionMapper.get(e);
         SpeedComponent speed = speedMapper.get(e);
@@ -39,20 +39,4 @@ public class MovementSystem extends EntitySystem {
             cameraComponent.camera.position.z = cameraComponent.height;
         }
     }
-
-    @Override
-    protected final void processEntities(ImmutableBag<Entity> entities) {
-        System.out.println(entities.size());
-        for (int i = 0, s = entities.size(); s > i; i++) {
-            process(entities.get(i));
-        }
-    }
-
-    @Override
-    protected boolean checkProcessing() {
-        System.out.println("check");
-        // TODO Auto-generated method stub
-        return true;
-    }
-
 }

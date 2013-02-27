@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.kingx.dungeons.entity.graphics;
+package com.kingx.dungeons.graphics;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -84,6 +84,7 @@ public class QuadTextureFrameBuffer implements Disposable {
     /** format **/
     protected final Pixmap.Format format;
 
+    /** current texture index */
     private int currentTexture = -1;
     private final int maxTextures = 4;
 

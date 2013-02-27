@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
-import com.kingx.dungeons.entity.MazeBuilder;
+import com.kingx.dungeons.geom.MazeBuilder;
 
 @SuppressWarnings("serial")
 public class Editor extends JPanel {

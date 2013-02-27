@@ -3,9 +3,8 @@ package com.kingx.dungeons.engine.system;
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
-import com.artemis.EntitySystem;
 import com.artemis.annotations.Mapper;
-import com.artemis.utils.ImmutableBag;
+import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -18,11 +17,11 @@ import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.MeshComponent;
 import com.kingx.dungeons.engine.component.PositionComponent;
 import com.kingx.dungeons.engine.component.ShadowComponent;
-import com.kingx.dungeons.entity.graphics.Colors;
-import com.kingx.dungeons.entity.graphics.QuadTextureFrameBuffer;
-import com.kingx.dungeons.entity.graphics.Shader;
+import com.kingx.dungeons.graphics.Colors;
+import com.kingx.dungeons.graphics.QuadTextureFrameBuffer;
+import com.kingx.dungeons.graphics.Shader;
 
-public class RenderShadowSystem extends EntitySystem {
+public class RenderShadowSystem extends EntityProcessingSystem {
     @Mapper
     ComponentMapper<PositionComponent> pm;
     @Mapper
@@ -39,7 +38,7 @@ public class RenderShadowSystem extends EntitySystem {
     private final Mesh poly;
     private final float BOUNDS = 500f;
     private Texture depthMap;
-    private ShaderProgram groundShader;
+    private static final int TEXTURE_SIZE = 512;
 
     public RenderShadowSystem(Camera camera) {
         super(Aspect.getAspectForAll(PositionComponent.class, MeshComponent.class, ShadowComponent.class));
@@ -51,11 +50,10 @@ public class RenderShadowSystem extends EntitySystem {
         poly.setVertices(outVerts);
         poly.setIndices(outIndices);
 
-        groundShader = Shader.getShader("ground");
         shadowGeneratorShader = Shader.getShader("shadowgen");
         shadowProjectShader = Shader.getShader("shadowproj");
 
-        shadowMap = new QuadTextureFrameBuffer(Format.RGBA8888, 1024, 1024, true);
+        shadowMap = new QuadTextureFrameBuffer(Format.RGBA8888, TEXTURE_SIZE, TEXTURE_SIZE, true);
 
     }
 
@@ -70,33 +68,11 @@ public class RenderShadowSystem extends EntitySystem {
     }
 
     @Override
-    protected boolean checkProcessing() {
-        return true;
-    }
-
-    @Override
-    protected void processEntities(ImmutableBag<Entity> entities) {
-        for (int i = 0; entities.size() > i; i++) {
-            process(entities.get(i));
-        }
-    }
-
     protected void process(Entity e) {
         if (begin) {
-            System.out.println("RenderShadowSystem");
             PositionComponent pc = pm.getSafe(e);
             ShadowComponent sc = sm.getSafe(e);
             MeshComponent mc = mm.getSafe(e);
-
-            /*  camera.combined.translate(pc.x, pc.y, pc.z);
-
-              sc.shader.begin();
-              sc.shader.setUniformMatrix("u_MVPMatrix", camera.combined);
-              mc.mesh.render(sc.shader, GL10.GL_TRIANGLES);
-              sc.shader.end();
-
-              camera.combined.translate(-pc.x, -pc.y, -pc.z);
-            */
 
             Camera[] lights = sc.lights;
             for (Camera light : lights) {
@@ -105,9 +81,7 @@ public class RenderShadowSystem extends EntitySystem {
             }
             generateShadowMap(lights);
 
-            // System.out.println(sce);
             depthMap.bind();
-
             shadowProjectShader.begin();
             shadowProjectShader.setUniformMatrix("ProjectionMatrix", camera.projection);
             shadowProjectShader.setUniformMatrix("ViewMatrix", camera.view);
@@ -118,21 +92,18 @@ public class RenderShadowSystem extends EntitySystem {
             shadowProjectShader.setUniformf("u_source_color", Colors.SHADOW.color);
             shadowProjectShader.setUniformf("u_ground_color", Colors.GROUND.color);
             shadowProjectShader.setUniformi("DepthMap", 0);
-            // shadowProjectShader.setUniformf("color", 0.4f, 0.6f, 0.7f, 1f);
-
             poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
             shadowProjectShader.end();
-
-            /*  groundShader.begin();
-              groundShader.setUniformMatrix("PVMMatrix", cam.combined);
-              groundShader.setUniformf("u_mazeSize", App.MAZE_BLOCKS_COUNT * App.MAZE_WALL_SIZE);
-              poly.render(groundShader, GL20.GL_TRIANGLE_STRIP);
-              groundShader.end();*/
-
         }
 
     }
 
+    /**
+     * Generates a depthmap for each light
+     * 
+     * @param lights
+     *            lights for depthmap generation
+     */
     private void generateShadowMap(Camera[] lights) {
         shadowMap.begin();
         Gdx.gl.glClearColor(1, 1, 1, 1);
@@ -157,7 +128,7 @@ public class RenderShadowSystem extends EntitySystem {
         return shadowMap.getColorBufferTexture();
     }
 
-    public Texture getCbt() {
+    public Texture getDepthMap() {
         return depthMap;
     }
 

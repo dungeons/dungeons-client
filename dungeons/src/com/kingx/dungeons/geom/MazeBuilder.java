@@ -1,9 +1,8 @@
-package com.kingx.dungeons.entity;
+package com.kingx.dungeons.geom;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import com.kingx.dungeons.geom.Point;
 
 public class MazeBuilder {
 

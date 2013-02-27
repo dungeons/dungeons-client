@@ -1,4 +1,4 @@
-package com.kingx.dungeons.entity.graphics;
+package com.kingx.dungeons.graphics;
 
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.geom.Point;
@@ -15,6 +15,11 @@ public class MazeMap {
         walls = this.getWalls();
     }
 
+    /**
+     * Returns number of non-walkable blocks
+     * 
+     * @return non-walkable blocks count
+     */
     private int getWalls() {
         if (walls == -1) {
             int counter = 0;
@@ -31,15 +36,26 @@ public class MazeMap {
         }
     }
 
+    /**
+     * Searches for a walkable block
+     * 
+     * @return first walkable block
+     */
     public Point.Int getRandomBlock() {
         Point.Int p = new Point.Int();
         do {
             p.x = App.rand.nextInt(footprint.length);
             p.y = App.rand.nextInt(footprint[p.x].length);
         } while (!footprint[p.x][p.y]);
+
         return p;
     }
 
+    /**
+     * Searches for a walkable block different from block specified
+     * 
+     * @return first walkable block
+     */
     public Point.Int getRandomBlock(Point.Int start) {
         Point.Int p = new Point.Int();
         do {

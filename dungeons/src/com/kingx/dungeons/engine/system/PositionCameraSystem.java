@@ -21,7 +21,6 @@ public class PositionCameraSystem extends CameraSystem {
         PositionComponent position = postionMapper.get(e);
         camera.position.x = position.x;
         camera.position.y = position.y;
-
     }
 
 }

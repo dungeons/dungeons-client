@@ -18,14 +18,15 @@ import com.kingx.dungeons.engine.system.CollisionSystem;
 import com.kingx.dungeons.engine.system.MovementSystem;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
-import com.kingx.dungeons.entity.MazeBuilder;
-import com.kingx.dungeons.entity.graphics.MazeMap;
+import com.kingx.dungeons.geom.MazeBuilder;
 import com.kingx.dungeons.geom.Point;
+import com.kingx.dungeons.graphics.MazeMap;
 
 public class App implements ApplicationListener {
 
+    public static final boolean DEBUG = false;
     public static final Random rand = new Random();
-    private static Camera followCamera;
+    private static Camera camera;
 
     // private static final List<RenderableEntity> renderList = new ArrayList<RenderableEntity>();
     // private static final List<CleverEntity> updateList = new ArrayList<CleverEntity>();
@@ -70,21 +71,19 @@ public class App implements ApplicationListener {
     public void render() {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
                 | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
-
         if (!glInit) {
             init();
             glInit = true;
             sb = new SpriteBatch();
         }
-        followCamera.update();
-        //   renderList(renderList);
+        camera.update();
 
         renderShadowSystem.process();
         renderGeometrySystem.process();
 
-        if (renderShadowSystem.getCbt() != null) {
+        if (DEBUG && renderShadowSystem.getDepthMap() != null) {
             sb.begin();
-            sb.draw(renderShadowSystem.getCbt(), 0, 0, 100, 100, 1, 0, 0, 1);
+            sb.draw(renderShadowSystem.getDepthMap(), 0, 0, 100, 100, 1, 0, 0, 1);
             sb.end();
         }
 
@@ -98,70 +97,30 @@ public class App implements ApplicationListener {
         }
         MazeMap maze = new MazeMap(footprint);
 
-        /* for (int i = 0; i < 1000; i++) {
-             police.add(new Police(maze));
-         }*/
-
-        // Adding to render list
-        //renderList.add(ground);
-        // renderList.add(mazeEntity);
-        //renderList.add(wanderer);
-        //renderList.addAll(police);
-
-        // Adding to update list
-        // updateList.add(wanderer);
-        // updateList.addAll(police);
-
-        //followCamera.setController(wanderer);
-
-        //   spriteRenderSystem = world.setSystem(new SpriteRenderSystem(camera), true);
-        //  healthRenderSystem = world.setSystem(new HealthRenderSystem(camera), true);
-        // hudRenderSystem = world.setSystem(new HudRenderSystem(camera), true);
-
         world.setSystem(new MovementSystem());
         world.setSystem(new CollisionSystem());
-        // world.setSystem(new PositionCameraSystem(followCamera));
-        renderShadowSystem = world.setSystem(new RenderShadowSystem(followCamera), true);
-        renderGeometrySystem = world.setSystem(new RenderGeometrySystem(followCamera), true);
+        renderShadowSystem = world.setSystem(new RenderShadowSystem(camera), true);
+        renderGeometrySystem = world.setSystem(new RenderGeometrySystem(camera), true);
         world.initialize();
 
         Point.Int p = maze.getRandomBlock();
 
-        Wanderer wanderer2 = new Wanderer(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 5f);
-        Maze mazeCreation = new Maze(world, maze);
-        wanderer2.setCamera(followCamera);
-        wanderer2.createEntity().addToWorld();
-        mazeCreation.createEntity().addToWorld();
+        Wanderer wanderer = new Wanderer(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 5f);
+        wanderer.setCamera(camera);
+        wanderer.createEntity().addToWorld();
 
-        //  for (int i = 0; 500 > i; i++) {
-        //     EntityFactory.createStar(world).addToWorld();
-        // }
+        Maze mazeCreation = new Maze(world, maze);
+        mazeCreation.createEntity().addToWorld();
 
     }
 
-    /*    public void update(float delta) {
-            updateList(updateList, delta);
-        }
-
-        private void updateList(List<CleverEntity> list, float delta) {
-            for (CleverEntity e : list) {
-                e.update(delta);
-            }
-        }
-
-        private void renderList(List<RenderableEntity> list) {
-            for (RenderableEntity e : list) {
-                e.render();
-            }
-        }*/
-
     @Override
     public void resize(int width, int height) {
-        if (followCamera == null) {
-            followCamera = setUpCamera(width, height);
+        if (camera == null) {
+            camera = setUpCamera(width, height);
         } else {
-            followCamera.viewportWidth = width;
-            followCamera.viewportHeight = height;
+            camera.viewportWidth = width;
+            camera.viewportHeight = height;
         }
     }
 
@@ -189,7 +148,7 @@ public class App implements ApplicationListener {
     }
 
     public static Camera getDefaultCam() {
-        return followCamera;
+        return camera;
     }
 
     public static boolean[][] getFootprint() {

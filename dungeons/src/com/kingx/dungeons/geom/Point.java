@@ -23,9 +23,8 @@ public abstract class Point {
             this.x = p.x;
             this.y = p.y;
         }
-        
+
         public boolean equals(int i, int j) {
-            // TODO Auto-generated method stub
             return x == i && y == j;
         }
 
@@ -58,10 +57,6 @@ public abstract class Point {
                 return false;
             return true;
         }
-        
-        
-
-
     }
 
     public static final class Float {
@@ -85,7 +80,7 @@ public abstract class Point {
             this.x = p.x;
             this.y = p.y;
         }
-        
+
         public boolean equals(int i, int j) {
             // TODO Auto-generated method stub
             return x == i && y == j;
@@ -121,10 +116,6 @@ public abstract class Point {
             return true;
         }
 
-        
-        
-
     }
 
-   
 }

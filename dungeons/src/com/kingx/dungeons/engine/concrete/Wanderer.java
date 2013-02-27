@@ -14,10 +14,10 @@ import com.kingx.dungeons.engine.component.ShaderComponent;
 import com.kingx.dungeons.engine.component.ShadowComponent;
 import com.kingx.dungeons.engine.component.SizeComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
-import com.kingx.dungeons.engine.input.InputManager;
-import com.kingx.dungeons.engine.input.InputSet;
-import com.kingx.dungeons.entity.graphics.Colors;
-import com.kingx.dungeons.entity.graphics.Shader;
+import com.kingx.dungeons.graphics.Colors;
+import com.kingx.dungeons.graphics.Shader;
+import com.kingx.dungeons.input.InputManager;
+import com.kingx.dungeons.input.InputSet;
 
 public class Wanderer extends ConcreteEntity {
 

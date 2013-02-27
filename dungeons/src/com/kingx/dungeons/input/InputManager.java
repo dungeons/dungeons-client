@@ -1,4 +1,4 @@
-package com.kingx.dungeons.engine.input;
+package com.kingx.dungeons.input;
 
 import java.util.HashMap;
 

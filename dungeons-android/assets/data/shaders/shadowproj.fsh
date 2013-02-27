@@ -93,13 +93,8 @@ shadow = true;
 }
 		distance = clamp(distance,0,radius);
 		distance/=radius;
-		float corrected = 1.0/(distance)-0.1 ;
-		float c1 = 0.0;
-		float c2 = 1.0;
-		float alpha = c1 + ((c2 - c1) * corrected / gradients);
-		float stage = max(corrected,0);
 		
-		float del = 60.0;
+		float del = 85.0;
 		float r = round(interpolate(u_source_color.r ,u_ground_color.r, distance, 1.0)*del) / del;
 		float g = round(interpolate(u_source_color.g ,u_ground_color.g, distance, 1.0)*del) / del;
 		float b = round(interpolate(u_source_color.b ,u_ground_color.b, distance, 1.0)*del) / del;

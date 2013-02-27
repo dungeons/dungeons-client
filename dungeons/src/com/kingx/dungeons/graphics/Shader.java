@@ -1,4 +1,4 @@
-package com.kingx.dungeons.entity.graphics;
+package com.kingx.dungeons.graphics;
 
 import java.util.HashMap;
 
@@ -11,7 +11,8 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class Shader {
 
     private enum ShaderType {
-        vsh, fsh;
+        vsh,
+        fsh;
     }
 
     private static class ShaderStructure {
@@ -36,14 +37,6 @@ public class Shader {
                     throw new GdxRuntimeException("Couldn't compile flat shader: " + program.getLog());
                 }
             }
-        }
-
-        public String getVertex() {
-            return vertex;
-        }
-
-        public String getFragment() {
-            return fragment;
         }
 
         public ShaderProgram getShader() {

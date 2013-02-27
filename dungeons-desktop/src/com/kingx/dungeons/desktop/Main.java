@@ -9,8 +9,8 @@ public class Main {
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = "dungeon";
         cfg.useGL20 = true;
-        cfg.width = 300;
-        cfg.height = 200;
+        cfg.width = 640;
+        cfg.height = 480;
 
         new LwjglApplication(new App(), cfg);
     }

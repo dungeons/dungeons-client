@@ -9,10 +9,10 @@ import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.MeshComponent;
 import com.kingx.dungeons.engine.component.PositionComponent;
 import com.kingx.dungeons.engine.component.ShaderComponent;
-import com.kingx.dungeons.entity.graphics.Colors;
-import com.kingx.dungeons.entity.graphics.MazeMap;
-import com.kingx.dungeons.entity.graphics.MazePolygon;
-import com.kingx.dungeons.entity.graphics.Shader;
+import com.kingx.dungeons.graphics.Colors;
+import com.kingx.dungeons.graphics.MazeMap;
+import com.kingx.dungeons.graphics.MazePolygon;
+import com.kingx.dungeons.graphics.Shader;
 
 public class Maze extends ConcreteEntity {
 

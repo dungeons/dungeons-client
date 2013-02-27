@@ -1,13 +1,12 @@
-package com.kingx.dungeons.engine.input;
+package com.kingx.dungeons.input;
 
 import com.badlogic.gdx.InputProcessor;
 import com.kingx.dungeons.engine.component.InputComponent;
 
-
 public final class PlayerInput implements InputProcessor {
 
-    private InputSet keys;
-    private InputComponent components;
+    private final InputSet keys;
+    private final InputComponent components;
 
     public PlayerInput(InputSet is, InputComponent ic) {
         keys = is;
@@ -39,11 +38,6 @@ public final class PlayerInput implements InputProcessor {
         return false;
     }
 
-    //  @Override
-    //  public void move(float delta) {
-    //     this.resolveMove(moveVector.x * puppet.getSpeed() * delta, moveVector.y * puppet.getSpeed() * delta);
-    //   puppet.addRotation(rotateValue);
-    //}
     // TODO Create input for touch devices
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
@@ -60,7 +54,7 @@ public final class PlayerInput implements InputProcessor {
         return false;
     }
 
-    // NOTE curently not planned to future use
+    // NOTE currently not planned to future use
     @Override
     public boolean keyTyped(char character) {
         return false;
