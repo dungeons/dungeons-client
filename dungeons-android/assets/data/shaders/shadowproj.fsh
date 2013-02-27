@@ -85,9 +85,9 @@ void main ()
 				}
 			}
 		}
-		float radius = 5f;
+		float radius = 5;
 		int gradients = 5;
-		float distance = length(vWorldVertex - v_lightSpacePosition);
+		float distance = length(vWorldVertex.xyz - v_lightSpacePosition.xyz);
 		if(distance > radius){
 shadow = true;
 }
@@ -99,10 +99,10 @@ shadow = true;
 		float alpha = c1 + ((c2 - c1) * corrected / gradients);
 		float stage = max(corrected,0);
 		
-		float del = 40.0;
-		float r = floor(interpolate(u_source_color.r ,u_ground_color.r, distance, 1.0)*del) / del;
-		float g = floor(interpolate(u_source_color.g ,u_ground_color.g, distance, 1.0)*del) / del;
-		float b = floor(interpolate(u_source_color.b ,u_ground_color.b, distance, 1.0)*del) / del;
+		float del = 60.0;
+		float r = round(interpolate(u_source_color.r ,u_ground_color.r, distance, 1.0)*del) / del;
+		float g = round(interpolate(u_source_color.g ,u_ground_color.g, distance, 1.0)*del) / del;
+		float b = round(interpolate(u_source_color.b ,u_ground_color.b, distance, 1.0)*del) / del;
   
 	if(shadow){
 	   gl_FragColor = u_ground_color;
