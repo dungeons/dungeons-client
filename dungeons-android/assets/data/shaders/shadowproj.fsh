@@ -51,7 +51,6 @@ void main ()
 			
 			// Dont know why this is needed.
 			depth.z*=7;
-
 			
 			// make sure that shadow is computed within lights area (90° area)
             // FIXME This is not a sollution, areas are still overlapping

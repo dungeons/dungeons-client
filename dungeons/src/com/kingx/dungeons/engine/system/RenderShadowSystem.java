@@ -32,6 +32,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
     private final Camera camera;
 
     private boolean begin;
+    private final ShaderProgram lightShader;
     private final ShaderProgram shadowGeneratorShader;
     private final ShaderProgram shadowProjectShader;
     private final QuadTextureFrameBuffer shadowMap;
@@ -50,6 +51,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         poly.setVertices(outVerts);
         poly.setIndices(outIndices);
 
+        lightShader = Shader.getShader("pointLight");
         shadowGeneratorShader = Shader.getShader("shadowgen");
         shadowProjectShader = Shader.getShader("shadowproj");
 
@@ -80,6 +82,14 @@ public class RenderShadowSystem extends EntityProcessingSystem {
                 light.position.y = pc.y;
             }
             generateShadowMap(lights);
+
+            lightShader.begin();
+            lightShader.setUniformMatrix("u_MVPMatrix", camera.combined);
+            lightShader.setUniformMatrix("u_MVMatrix", camera.view);
+            lightShader.setUniformf("u_lightPos", 0, 0, 0);
+            lightShader.setUniformf("u_color", Colors.SHADOW.color);
+            App.getMaze().render(lightShader, GL20.GL_TRIANGLES);
+            lightShader.end();
 
             depthMap.bind();
             shadowProjectShader.begin();
