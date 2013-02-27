@@ -1,13 +1,10 @@
 package com.kingx.dungeons.engine.system;
 
-import java.util.List;
-
 import com.artemis.Aspect;
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.EntitySystem;
 import com.artemis.annotations.Mapper;
-import com.artemis.utils.Bag;
 import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -16,7 +13,6 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas.AtlasRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.MeshComponent;
@@ -36,16 +32,14 @@ public class RenderShadowSystem extends EntitySystem {
 
     private final Camera camera;
 
-    private Bag<AtlasRegion> regionsByEntity;
-    private List<Entity> sortedEntities;
     private boolean begin;
-    private final ShaderProgram groundShader;
     private final ShaderProgram shadowGeneratorShader;
     private final ShaderProgram shadowProjectShader;
     private final QuadTextureFrameBuffer shadowMap;
     private final Mesh poly;
     private final float BOUNDS = 500f;
     private Texture depthMap;
+    private ShaderProgram groundShader;
 
     public RenderShadowSystem(Camera camera) {
         super(Aspect.getAspectForAll(PositionComponent.class, MeshComponent.class, ShadowComponent.class));

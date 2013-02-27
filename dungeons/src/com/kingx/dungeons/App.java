@@ -84,7 +84,7 @@ public class App implements ApplicationListener {
 
         if (renderShadowSystem.getCbt() != null) {
             sb.begin();
-            sb.draw(renderShadowSystem.getCbt(), 0, 0, 200, 200, 1, 0, 0, 1);
+            sb.draw(renderShadowSystem.getCbt(), 0, 0, 100, 100, 1, 0, 0, 1);
             sb.end();
         }
 
