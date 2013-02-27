@@ -28,12 +28,12 @@ public final class Logic implements Runnable {
         return instance;
     }
 
+    private final long BILLION = 1000000000;
+    private long currentTime = System.nanoTime();
+
     private final float step = .0166f;
     private final float maxStep = .25f;
-
-    long currentTime = System.nanoTime();
-    private final long BILLION = 1000000000;
-    double accumulator = 0.0f;
+    private float accumulator = 0.0f;
 
     private final boolean quit = false;
 

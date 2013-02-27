@@ -54,7 +54,7 @@ void main ()
 
 			
 			// make sure that shadow is computed within lights area (90° area)
-            // FIXME This is not a sollution areas are still overlapping
+            // FIXME This is not a sollution, areas are still overlapping
             float bias = 0.0015;
 			bool cond = false;
 
@@ -86,11 +86,8 @@ void main ()
 			}
 		}
 		float radius = 5;
-		int gradients = 5;
 		float distance = length(vWorldVertex.xyz - v_lightSpacePosition.xyz);
-		if(distance > radius){
-shadow = true;
-}
+        shadow = distance > radius ? true : shadow;
 		distance = clamp(distance,0,radius);
 		distance/=radius;
 		
@@ -99,17 +96,9 @@ shadow = true;
 		float g = round(interpolate(u_source_color.g ,u_ground_color.g, distance, 1.0)*del) / del;
 		float b = round(interpolate(u_source_color.b ,u_ground_color.b, distance, 1.0)*del) / del;
   
-	if(shadow){
-	   gl_FragColor = u_ground_color;
-    }else{
-	   gl_FragColor = vec4(r,g,b,1.0);
-    }
-   
- //  float d = distance;
-  // switch(d){
-//case 0: gl_FragColor = vec4(1,1,1,1); break;
-//case 1: gl_FragColor = vec4(1,1,0,1); break;
-//case 2: gl_FragColor = vec4(1,0,0,1); break;
-
-    
+	    if(shadow){
+	  		gl_FragColor = u_ground_color;
+        }else{
+	 		gl_FragColor = vec4(r,g,b,1.0);
+        }
 }
