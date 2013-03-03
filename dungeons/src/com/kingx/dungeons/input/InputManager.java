@@ -14,6 +14,7 @@ public final class InputManager {
 
     private InputManager() {
         Gdx.input.setInputProcessor(im);
+        im.addProcessor(new GlobalInput());
     };
 
     public static InputManager getInstance() {

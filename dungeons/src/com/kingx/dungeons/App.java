@@ -35,6 +35,7 @@ public class App implements ApplicationListener {
     public static App reference;
     private static boolean wireframe;
     public static Mesh superhack;
+    public static int rot;
 
     public static final int MAZE_BLOCKS_COUNT = 25;
     public static final float MAZE_WALL_SIZE = 1f;
@@ -78,8 +79,8 @@ public class App implements ApplicationListener {
         }
         camera.update();
 
-        renderShadowSystem.process();
         renderGeometrySystem.process();
+        renderShadowSystem.process();
 
         if (DEBUG && renderShadowSystem.getDepthMap() != null) {
             sb.begin();
@@ -155,4 +156,7 @@ public class App implements ApplicationListener {
         return footprint;
     }
 
+    public static void toggleCamera() {
+        rot += 1;
+    }
 }

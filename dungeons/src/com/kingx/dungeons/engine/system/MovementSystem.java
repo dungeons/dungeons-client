@@ -32,10 +32,12 @@ public class MovementSystem extends EntityProcessingSystem {
 
         position.x += moveVector.vector.x * speed.speed * world.delta;
         position.y += moveVector.vector.y * speed.speed * world.delta;
+
         if (cameraMapper.has(e)) {
             FollowCameraComponent cameraComponent = cameraMapper.get(e);
             cameraComponent.camera.position.x = position.x;
-            cameraComponent.camera.position.y = position.y;
+            cameraComponent.camera.position.y = position.y - 2f;
+            cameraComponent.camera.lookAt(position.x, position.y, position.z);
             cameraComponent.camera.position.z = cameraComponent.height;
         }
     }

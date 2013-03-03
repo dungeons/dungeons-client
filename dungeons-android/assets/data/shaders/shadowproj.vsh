@@ -31,10 +31,11 @@ void main ()
     // Standard basic lighting preperation
     vWorldVertex = vec4(a_position, 1.0);
     gl_Position = ProjectionMatrix * ViewMatrix * vWorldVertex;
+    vec4 local = vec4(a_position.x,a_position.y,0, 1.0);
     
     // Project the vertex from the light's point of view
-    vPosition[0] = ScaleMatrix * LightSourceProjectionViewMatrix[0] * vWorldVertex;
-    vPosition[1] = ScaleMatrix * LightSourceProjectionViewMatrix[1] * vWorldVertex;
-    vPosition[2] = ScaleMatrix * LightSourceProjectionViewMatrix[2] * vWorldVertex;
-    vPosition[3] = ScaleMatrix * LightSourceProjectionViewMatrix[3] * vWorldVertex;
+    vPosition[0] = ScaleMatrix * LightSourceProjectionViewMatrix[0] * local;
+    vPosition[1] = ScaleMatrix * LightSourceProjectionViewMatrix[1] * local;
+    vPosition[2] = ScaleMatrix * LightSourceProjectionViewMatrix[2] * local;
+    vPosition[3] = ScaleMatrix * LightSourceProjectionViewMatrix[3] * local;
 }

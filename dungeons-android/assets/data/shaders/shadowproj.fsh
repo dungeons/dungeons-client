@@ -12,6 +12,7 @@ uniform vec4 u_source_color;
 uniform vec4 u_ground_color;
 uniform vec3 v_lightSpacePosition;
 uniform sampler2D DepthMap;
+uniform float u_mapOffset;
 
 
 // Varying variables.
@@ -39,22 +40,20 @@ float interpolate (float a, float b, float stage, float gradient)
 void main ()
 {
 	/// THESE COMMENTS REPRESENT WHAT I THINK THIS CODE DOES. I HAVE NO IDEA WHAT IS CORRECT
-	
+    vec4 worldPostitoin = vWorldVertex;
+worldPostitoin.z = 0.0;
 	bool shadow = false;
-	
+	vec3 depth;
 		for(int i = 0; i < 4; i++){
 			// Change position to position seen from this perspective
-			vec3 depth = vPosition[i].xyz /  vPosition[i].w;
+			depth = vPosition[i].xyz /  vPosition[i].w;
 			
 			// interpolates across z buffer so value si within the bound
-			depth.z = length(vWorldVertex.xyz - v_lightSpacePosition) * LinearDepthConstant ;
-			
-			// Dont know why this is needed.
-			depth.z*=7;
-			
+			// length(worldPostitoin.xy - v_lightSpacePosition.xy) removers the light circle around player but causes wall flickering.
+			depth.z = length(worldPostitoin.xy) * (LinearDepthConstant) ;
 			// make sure that shadow is computed within lights area (90° area)
             // FIXME This is not a sollution, areas are still overlapping
-            float bias = 0.0015;
+            float bias = 0.0;
 			bool cond = false;
 
 			switch (i) {
@@ -85,7 +84,7 @@ void main ()
 			}
 		}
 		float radius = 5;
-		float distance = length(vWorldVertex.xyz - v_lightSpacePosition.xyz);
+		float distance = length(worldPostitoin.xyz - v_lightSpacePosition.xyz);
         shadow = distance > radius ? true : shadow;
 		distance = clamp(distance,0,radius);
 		distance/=radius;
@@ -95,9 +94,10 @@ void main ()
 		float g = round(interpolate(u_source_color.g ,u_ground_color.g, distance, 1.0)*del) / del;
 		float b = round(interpolate(u_source_color.b ,u_ground_color.b, distance, 1.0)*del) / del;
   
-	    if(shadow){
+	    if(vWorldVertex.z  >= .99 || shadow){
 	  		gl_FragColor = u_ground_color;
         }else{
 	 		gl_FragColor = vec4(r,g,b,1.0);
         }
+        
 }

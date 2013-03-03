@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.kingx.dungeons.engine.component.MeshComponent;
 import com.kingx.dungeons.engine.component.PositionComponent;
 import com.kingx.dungeons.engine.component.ShaderComponent;
+import com.kingx.dungeons.engine.tags.GeometryRenderTag;
 
 public class RenderGeometrySystem extends EntityProcessingSystem {
     @Mapper
@@ -22,7 +23,7 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
     private final Camera camera;
 
     public RenderGeometrySystem(Camera camera) {
-        super(Aspect.getAspectForAll(PositionComponent.class, ShaderComponent.class, MeshComponent.class));
+        super(Aspect.getAspectForAll(PositionComponent.class, ShaderComponent.class, MeshComponent.class, GeometryRenderTag.class));
         this.camera = camera;
     }
 

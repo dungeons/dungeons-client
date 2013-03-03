@@ -7,6 +7,7 @@ import com.artemis.annotations.Mapper;
 import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -32,14 +33,13 @@ public class RenderShadowSystem extends EntityProcessingSystem {
     private final Camera camera;
 
     private boolean begin;
-    private final ShaderProgram lightShader;
     private final ShaderProgram shadowGeneratorShader;
     private final ShaderProgram shadowProjectShader;
     private final QuadTextureFrameBuffer shadowMap;
     private final Mesh poly;
     private final float BOUNDS = 500f;
     private Texture depthMap;
-    private static final int TEXTURE_SIZE = 512;
+    private static final int TEXTURE_SIZE = 1024;
 
     public RenderShadowSystem(Camera camera) {
         super(Aspect.getAspectForAll(PositionComponent.class, MeshComponent.class, ShadowComponent.class));
@@ -51,7 +51,6 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         poly.setVertices(outVerts);
         poly.setIndices(outIndices);
 
-        lightShader = Shader.getShader("pointLight");
         shadowGeneratorShader = Shader.getShader("shadowgen");
         shadowProjectShader = Shader.getShader("shadowproj");
 
@@ -83,13 +82,13 @@ public class RenderShadowSystem extends EntityProcessingSystem {
             }
             generateShadowMap(lights);
 
-            lightShader.begin();
-            lightShader.setUniformMatrix("u_MVPMatrix", camera.combined);
-            lightShader.setUniformMatrix("u_MVMatrix", camera.view);
-            lightShader.setUniformf("u_lightPos", 0, 0, 0);
-            lightShader.setUniformf("u_color", Colors.SHADOW.color);
-            App.getMaze().render(lightShader, GL20.GL_TRIANGLES);
-            lightShader.end();
+            //            lightShader.begin();
+            //            lightShader.setUniformMatrix("u_MVPMatrix", camera.combined);
+            //            lightShader.setUniformMatrix("u_MVMatrix", camera.view);
+            //            lightShader.setUniformf("u_lightPos", 0, 0, 0);
+            //            lightShader.setUniformf("u_color", Colors.SHADOW.color);
+            //            App.getMaze().render(lightShader, GL20.GL_TRIANGLES);
+            //            lightShader.end();
 
             depthMap.bind();
             shadowProjectShader.begin();
@@ -103,6 +102,9 @@ public class RenderShadowSystem extends EntityProcessingSystem {
             shadowProjectShader.setUniformf("u_ground_color", Colors.GROUND.color);
             shadowProjectShader.setUniformi("DepthMap", 0);
             poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
+            shadowProjectShader.setUniformf("u_source_color", Color.PINK);
+            shadowProjectShader.setUniformf("u_ground_color", Colors.BASE.color);
+            App.getMaze().render(shadowProjectShader, GL20.GL_TRIANGLES);
             shadowProjectShader.end();
         }
 

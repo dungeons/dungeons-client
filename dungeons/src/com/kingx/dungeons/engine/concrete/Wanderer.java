@@ -14,6 +14,7 @@ import com.kingx.dungeons.engine.component.ShaderComponent;
 import com.kingx.dungeons.engine.component.ShadowComponent;
 import com.kingx.dungeons.engine.component.SizeComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
+import com.kingx.dungeons.engine.tags.GeometryRenderTag;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.Shader;
 import com.kingx.dungeons.input.InputManager;
@@ -56,13 +57,15 @@ public class Wanderer extends ConcreteEntity {
     public Entity createEntity() {
         Entity e = world.createEntity();
         InputComponent ic = new InputComponent(0, 0);
-        e.addComponent(new PositionComponent(x, y, size / 2f));
+        PositionComponent pc = new PositionComponent(x, y, size / 2f);
+        e.addComponent(pc);
         e.addComponent(new SpeedComponent(speed));
         e.addComponent(ic);
         e.addComponent(new SizeComponent(size));
         e.addComponent(new MeshComponent(mesh));
         e.addComponent(new ShaderComponent(shader, Colors.AVATAR.color));
         e.addComponent(new ShadowComponent());
+        e.addComponent(new GeometryRenderTag());
 
         if (camera != null) {
             e.addComponent(new FollowCameraComponent(camera, 10f));
