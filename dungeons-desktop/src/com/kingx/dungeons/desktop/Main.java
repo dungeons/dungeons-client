@@ -12,6 +12,6 @@ public class Main {
         cfg.width = 640;
         cfg.height = 480;
 
-        new LwjglApplication(new App(), cfg);
+        new LwjglApplication(new App(args), cfg);
     }
 }

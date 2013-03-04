@@ -50,6 +50,7 @@ public final class Logic implements Runnable {
 
             if (accumulator < step) {
                 try {
+                    // Takes a nap for the remaining time.
                     Thread.sleep((long) ((step - accumulator) * 1000));
                 } catch (InterruptedException e) {
                     e.printStackTrace();

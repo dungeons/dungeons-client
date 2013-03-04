@@ -1,5 +1,7 @@
 package com.kingx.dungeons;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Random;
 
 import com.artemis.World;
@@ -26,7 +28,7 @@ import com.kingx.dungeons.graphics.MazeMap;
 
 public class App implements ApplicationListener {
 
-    public static final boolean DEBUG = false;
+    public static boolean DEBUG;
     public static final Random rand = new Random();
     private static Camera camera;
 
@@ -41,6 +43,15 @@ public class App implements ApplicationListener {
 
     public static final int MAZE_BLOCKS_COUNT = 25;
     public static final float MAZE_WALL_SIZE = 1f;
+    private final HashSet<String> params;
+
+    public App(String[] args) {
+        params = new HashSet<String>();
+        if (args != null) {
+            params.addAll(Arrays.asList(args));
+        }
+        DEBUG = params.contains("debug") || params.contains("-debug") || params.contains("--debug");
+    }
 
     public static Mesh getMaze() {
         return superhack;
