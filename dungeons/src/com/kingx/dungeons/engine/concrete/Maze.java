@@ -16,12 +16,11 @@ import com.kingx.dungeons.graphics.Shader;
 
 public class Maze extends ConcreteEntity {
 
-    private final World world;
     private final Mesh mesh;
     private final ShaderProgram shader;
 
     public Maze(World world, MazeMap maze) {
-        this.world = world;
+        super(world);
         mesh = new MazePolygon(maze, new Vector3(1f, 1f, 1f)).generate();
         App.superhack = mesh;
         shader = Shader.getShader("normal");
@@ -29,7 +28,7 @@ public class Maze extends ConcreteEntity {
 
     @Override
     public Entity createEntity() {
-        Entity e = world.createEntity();
+        Entity e = this.getEntity();
         e.addComponent(new PositionComponent(0, 0, 0));
         e.addComponent(new MeshComponent(mesh));
         e.addComponent(new ShaderComponent(shader, Colors.BASE.color));

@@ -14,7 +14,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.kingx.dungeons.engine.concrete.Maze;
 import com.kingx.dungeons.engine.concrete.Wanderer;
+import com.kingx.dungeons.engine.concrete.Zombie;
 import com.kingx.dungeons.engine.system.CollisionSystem;
+import com.kingx.dungeons.engine.system.MonsterSystem;
 import com.kingx.dungeons.engine.system.MovementSystem;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
@@ -67,6 +69,11 @@ public class App implements ApplicationListener {
     private World world;
     private RenderGeometrySystem renderGeometrySystem;
     private RenderShadowSystem renderShadowSystem;
+    private static Wanderer player;
+
+    public static Wanderer getPlayer() {
+        return player;
+    }
 
     @Override
     public void render() {
@@ -99,16 +106,23 @@ public class App implements ApplicationListener {
         MazeMap maze = new MazeMap(footprint);
 
         world.setSystem(new MovementSystem());
+        world.setSystem(new MonsterSystem());
         world.setSystem(new CollisionSystem());
         renderShadowSystem = world.setSystem(new RenderShadowSystem(camera), true);
         renderGeometrySystem = world.setSystem(new RenderGeometrySystem(camera), true);
         world.initialize();
 
         Point.Int p = maze.getRandomBlock();
+        System.out.println(p);
 
-        Wanderer wanderer = new Wanderer(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 5f);
-        wanderer.setCamera(camera);
-        wanderer.createEntity().addToWorld();
+        player = new Wanderer(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 5f);
+        player.setCamera(camera);
+        player.createEntity().addToWorld();
+
+        p = maze.getRandomBlock(p);
+        System.out.println(p);
+        Zombie zombie = new Zombie(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 5f);
+        zombie.createEntity().addToWorld();
 
         Maze mazeCreation = new Maze(world, maze);
         mazeCreation.createEntity().addToWorld();

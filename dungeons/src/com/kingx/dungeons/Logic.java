@@ -48,10 +48,18 @@ public final class Logic implements Runnable {
 
             accumulator += frameTime;
 
-            while (accumulator >= step) {
+            if (accumulator < step) {
+                try {
+                    Thread.sleep((long) ((step - accumulator) * 1000));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                while (accumulator >= step) {
 
-                update(step);
-                accumulator -= step;
+                    update(step);
+                    accumulator -= step;
+                }
             }
         }
     }

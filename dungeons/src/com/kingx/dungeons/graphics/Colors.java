@@ -11,6 +11,8 @@ public enum Colors {
     GROUND(0.40f, 0.36f, 0.21f, 1f),
     WALL_LIGHT(0.50f, 0.44f, 0.32f, 1f),
     WALL_SHADOW(0.27f, 0.21f, 0.14f, 1f),
+    ZOMBIE_NORMAL(1, 1, 1, 1f),
+    ZOMBIE_ALARM(1f, 0f, 0f, 1f),
     AVATAR(1, 1, 1, 1f);
 
     public final Color color;

@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
-import com.kingx.dungeons.engine.component.InputComponent;
+import com.kingx.dungeons.engine.component.MoveComponent;
 
 public final class InputManager {
 
@@ -21,7 +21,7 @@ public final class InputManager {
         return instance;
     }
 
-    public boolean registerInput(InputSet is, InputComponent ic) {
+    public boolean registerInput(InputSet is, MoveComponent ic) {
         PlayerInput e = map.get(is);
         if (e == null) {
             PlayerInput pi = new PlayerInput(is, ic);

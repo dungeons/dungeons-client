@@ -1,14 +1,14 @@
 package com.kingx.dungeons.input;
 
 import com.badlogic.gdx.InputProcessor;
-import com.kingx.dungeons.engine.component.InputComponent;
+import com.kingx.dungeons.engine.component.MoveComponent;
 
 public final class PlayerInput implements InputProcessor {
 
     private final InputSet keys;
-    private final InputComponent components;
+    private final MoveComponent components;
 
-    public PlayerInput(InputSet is, InputComponent ic) {
+    public PlayerInput(InputSet is, MoveComponent ic) {
         keys = is;
         components = ic;
     }
