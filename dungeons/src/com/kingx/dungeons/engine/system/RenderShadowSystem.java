@@ -7,7 +7,6 @@ import com.artemis.annotations.Mapper;
 import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -98,12 +97,12 @@ public class RenderShadowSystem extends EntityProcessingSystem {
                 shadowProjectShader.setUniformMatrix("LightSourceProjectionViewMatrix[" + i + "]", lights[i].combined);
             }
             shadowProjectShader.setUniformf("v_lightSpacePosition", lights[0].position);
-            shadowProjectShader.setUniformf("u_source_color", Colors.SHADOW.color);
-            shadowProjectShader.setUniformf("u_ground_color", Colors.GROUND.color);
+            shadowProjectShader.setUniformf("u_source_color", Colors.GROUND.color);
+            shadowProjectShader.setUniformf("u_ground_color", Colors.SHADOW.color);
             shadowProjectShader.setUniformi("DepthMap", 0);
             poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
-            shadowProjectShader.setUniformf("u_source_color", Color.PINK);
-            shadowProjectShader.setUniformf("u_ground_color", Colors.BASE.color);
+            shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT.color);
+            shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW.color);
             App.getMaze().render(shadowProjectShader, GL20.GL_TRIANGLES);
             shadowProjectShader.end();
         }
