@@ -39,8 +39,8 @@ public class CollisionSystem extends EntityProcessingSystem {
     protected void resolveMove(PositionComponent position, SizeComponent size) {
 
         float halfSize = size.size / 2f;
-        float x = position.x;
-        float y = position.y;
+        float x = position.vector.x;
+        float y = position.vector.y;
 
         float leftBound = x - halfSize;
         float rightBound = x + halfSize;
@@ -64,8 +64,8 @@ public class CollisionSystem extends EntityProcessingSystem {
             y = upPoint.y - halfSize;
         }
 
-        position.x = x;
-        position.y = y;
+        position.vector.x = x;
+        position.vector.y = y;
     }
 
     /**

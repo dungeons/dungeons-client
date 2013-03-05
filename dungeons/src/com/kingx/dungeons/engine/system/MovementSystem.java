@@ -30,14 +30,15 @@ public class MovementSystem extends EntityProcessingSystem {
         SpeedComponent speed = speedMapper.get(e);
         MoveComponent moveVector = inputMapper.get(e);
 
-        position.x += moveVector.vector.x * speed.speed * world.delta;
-        position.y += moveVector.vector.y * speed.speed * world.delta;
+        position.vector.x += moveVector.vector.x * speed.speed * world.delta;
+        position.vector.y += moveVector.vector.y * speed.speed * world.delta;
 
+        System.out.println(position);
         if (cameraMapper.has(e)) {
             FollowCameraComponent cameraComponent = cameraMapper.get(e);
-            cameraComponent.camera.position.x = position.x;
-            cameraComponent.camera.position.y = position.y - 2f;
-            cameraComponent.camera.lookAt(position.x, position.y, position.z);
+            cameraComponent.camera.position.x = position.vector.x;
+            cameraComponent.camera.position.y = position.vector.y - 2f;
+            cameraComponent.camera.lookAt(position.vector.x, position.vector.y, position.vector.z);
             cameraComponent.camera.position.z = cameraComponent.height;
         }
     }

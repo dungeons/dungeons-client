@@ -10,10 +10,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector3;
 import com.kingx.dungeons.engine.concrete.Maze;
 import com.kingx.dungeons.engine.concrete.Wanderer;
 import com.kingx.dungeons.engine.concrete.Zombie;
@@ -23,12 +23,15 @@ import com.kingx.dungeons.engine.system.MovementSystem;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
 import com.kingx.dungeons.geom.MazeBuilder;
+import com.kingx.dungeons.geom.MazePoly;
 import com.kingx.dungeons.geom.Point;
 import com.kingx.dungeons.graphics.MazeMap;
+import com.kingx.dungeons.graphics.MazePolygon;
 
 public class App implements ApplicationListener {
 
     public static boolean DEBUG;
+    public static boolean NOSLEEP;
     public static final Random rand = new Random();
     private static Camera camera;
 
@@ -38,7 +41,7 @@ public class App implements ApplicationListener {
     private static boolean[][] footprint;
     public static App reference;
     private static boolean wireframe;
-    public static Mesh superhack;
+    public static MazePoly mazeMesh;
     public static int rot;
 
     public static final int MAZE_BLOCKS_COUNT = 25;
@@ -51,10 +54,11 @@ public class App implements ApplicationListener {
             params.addAll(Arrays.asList(args));
         }
         DEBUG = params.contains("debug") || params.contains("-debug") || params.contains("--debug");
+        NOSLEEP = params.contains("nosleep") || params.contains("-nosleep") || params.contains("--nosleep");
     }
 
-    public static Mesh getMaze() {
-        return superhack;
+    public static MazePoly getMaze() {
+        return mazeMesh;
     }
 
     @Override
@@ -115,27 +119,28 @@ public class App implements ApplicationListener {
             footprint = MazeBuilder.getMaze(MAZE_BLOCKS_COUNT);
         }
         MazeMap maze = new MazeMap(footprint);
+        mazeMesh = new MazePolygon(maze, new Vector3(1f, 1f, 1f)).generate();
 
         world.setSystem(new MovementSystem());
-        world.setSystem(new MonsterSystem());
+        world.setSystem(new MonsterSystem(mazeMesh));
         world.setSystem(new CollisionSystem());
         renderShadowSystem = world.setSystem(new RenderShadowSystem(camera), true);
         renderGeometrySystem = world.setSystem(new RenderGeometrySystem(camera), true);
         world.initialize();
 
         Point.Int p = maze.getRandomBlock();
-        System.out.println(p);
 
         player = new Wanderer(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 5f);
         player.setCamera(camera);
         player.createEntity().addToWorld();
 
-        p = maze.getRandomBlock(p);
-        System.out.println(p);
-        Zombie zombie = new Zombie(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 5f);
-        zombie.createEntity().addToWorld();
+        for (int i = 0; i < 50; i++) {
+            p = maze.getRandomBlock();
+            Zombie zombie = new Zombie(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 5f);
+            zombie.createEntity().addToWorld();
+        }
 
-        Maze mazeCreation = new Maze(world, maze);
+        Maze mazeCreation = new Maze(world, mazeMesh);
         mazeCreation.createEntity().addToWorld();
 
     }

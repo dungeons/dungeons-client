@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.math.Vector3;
+import com.kingx.dungeons.geom.MazePoly;
 
 public final class MazePolygon {
 
@@ -68,7 +69,7 @@ public final class MazePolygon {
         }
     }
 
-    public Mesh generate() {
+    public MazePoly generate() {
         float[] outVerts = new float[verts.size()];
         short[] outIndices = new short[indices.size()];
         for (int i = 0; i < verts.size(); i++) {
@@ -77,11 +78,9 @@ public final class MazePolygon {
         for (int i = 0; i < indices.size(); i++) {
             outIndices[i] = indices.get(i);
         }
-
         Mesh mesh = new Mesh(true, outVerts.length, outIndices.length, VertexAttribute.Position(), VertexAttribute.TexCoords(0), VertexAttribute.Normal());
-        mesh.setVertices(outVerts);
-        mesh.setIndices(outIndices);
-        return mesh;
+
+        return new MazePoly(mesh, outVerts, outIndices);
     }
 
     private void makeWall(float x, float y, float z) {

@@ -76,18 +76,10 @@ public class RenderShadowSystem extends EntityProcessingSystem {
 
             Camera[] lights = sc.lights;
             for (Camera light : lights) {
-                light.position.x = pc.x;
-                light.position.y = pc.y;
+                light.position.x = pc.vector.x;
+                light.position.y = pc.vector.y;
             }
             generateShadowMap(lights);
-
-            //            lightShader.begin();
-            //            lightShader.setUniformMatrix("u_MVPMatrix", camera.combined);
-            //            lightShader.setUniformMatrix("u_MVMatrix", camera.view);
-            //            lightShader.setUniformf("u_lightPos", 0, 0, 0);
-            //            lightShader.setUniformf("u_color", Colors.SHADOW.color);
-            //            App.getMaze().render(lightShader, GL20.GL_TRIANGLES);
-            //            lightShader.end();
 
             depthMap.bind();
             shadowProjectShader.begin();
@@ -103,7 +95,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
             poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
             shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT.color);
             shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW.color);
-            App.getMaze().render(shadowProjectShader, GL20.GL_TRIANGLES);
+            App.getMaze().getMesh().render(shadowProjectShader, GL20.GL_TRIANGLES);
             shadowProjectShader.end();
         }
 
@@ -133,7 +125,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowGeneratorShader.begin();
         shadowGeneratorShader.setUniformMatrix("ProjectionMatrix", lightCam.projection);
         shadowGeneratorShader.setUniformMatrix("ViewMatrix", lightCam.view);
-        App.getMaze().render(shadowGeneratorShader, GL20.GL_TRIANGLES);
+        App.getMaze().getMesh().render(shadowGeneratorShader, GL20.GL_TRIANGLES);
         shadowGeneratorShader.end();
 
         return shadowMap.getColorBufferTexture();

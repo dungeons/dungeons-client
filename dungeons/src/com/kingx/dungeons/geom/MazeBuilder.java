@@ -3,7 +3,6 @@ package com.kingx.dungeons.geom;
 import java.util.ArrayList;
 import java.util.Random;
 
-
 public class MazeBuilder {
 
     private static MazeBuilder builder = new MazeBuilder();

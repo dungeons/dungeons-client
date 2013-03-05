@@ -33,14 +33,14 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
         ShaderComponent sc = sm.getSafe(e);
         MeshComponent mc = mm.getSafe(e);
 
-        camera.combined.translate(pc.x, pc.y, pc.z);
+        camera.combined.translate(pc.vector.x, pc.vector.y, pc.vector.z);
         sc.shader.begin();
         sc.shader.setUniformMatrix("u_MVPMatrix", camera.combined);
         sc.shader.setUniformf("u_color", sc.color);
         mc.mesh.render(sc.shader, GL10.GL_TRIANGLES);
         sc.shader.end();
 
-        camera.combined.translate(-pc.x, -pc.y, -pc.z);
+        camera.combined.translate(-pc.vector.x, -pc.vector.y, -pc.vector.z);
     }
 
 }
