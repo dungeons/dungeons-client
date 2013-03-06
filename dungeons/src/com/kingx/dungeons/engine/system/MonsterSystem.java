@@ -37,15 +37,12 @@ public class MonsterSystem extends EntityProcessingSystem {
     @Override
     protected void process(Entity e) {
         PositionComponent position = postionMapper.get(e);
-        SpeedComponent speed = speedMapper.get(e);
         MonsterComponent monster = monsterMapper.get(e);
         PositionComponent playerPos = postionMapper.get(App.getPlayer().getEntity());
-
         ShaderComponent shader = shaderMapper.getSafe(e);
 
         Ray ray = getRay(playerPos.vector, position.vector);
 
-        Vector3 lol = new Vector3();
         if (distance(playerPos.vector, position.vector) <= monster.alertRadius) {
             if (Collision.intersectRayTrianglesBetweenPoints(ray, verts, playerPos.vector, position.vector)) {
                 shader.color = Colors.ZOMBIE_NORMAL.color;

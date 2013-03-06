@@ -40,4 +40,9 @@ public class MazePoly {
         return indices;
     }
 
+    @Override
+    public String toString() {
+        return "MazePoly [mesh=" + mesh + ", verts=" + convertedVerts.length + ", indices=" + indices.length + "]";
+    }
+
 }

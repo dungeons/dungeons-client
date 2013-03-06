@@ -134,7 +134,7 @@ public class App implements ApplicationListener {
         player.setCamera(camera);
         player.createEntity().addToWorld();
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 500; i++) {
             p = maze.getRandomBlock();
             Zombie zombie = new Zombie(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 5f);
             zombie.createEntity().addToWorld();

@@ -61,7 +61,7 @@ public class Zombie extends ConcreteEntity {
         e.addComponent(new ShaderComponent(shader, Colors.ZOMBIE_NORMAL.color));
         e.addComponent(new MeshComponent(mesh));
         e.addComponent(new GeometryRenderTag());
-        e.addComponent(new MonsterComponent(Colors.ZOMBIE_ALARM.color, 20f));
+        e.addComponent(new MonsterComponent(Colors.ZOMBIE_ALARM.color, 3f));
         return e;
     }
 }

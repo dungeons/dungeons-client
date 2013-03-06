@@ -127,7 +127,6 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowGeneratorShader.setUniformMatrix("ViewMatrix", lightCam.view);
         App.getMaze().getMesh().render(shadowGeneratorShader, GL20.GL_TRIANGLES);
         shadowGeneratorShader.end();
-
         return shadowMap.getColorBufferTexture();
     }
 

@@ -3,7 +3,7 @@ package com.kingx.dungeons.editor;
 public class Map {
 
     static final int BLOCK_SIZE = 20;
-    private boolean[][] maze;
+    private final boolean[][] maze;
 
     public Map(boolean[][] maze) {
         this.maze = maze;
@@ -14,9 +14,7 @@ public class Map {
     }
 
     public void switchBlock(int x, int y) {
-        System.out.println(maze[x][y]);
         maze[x][y] = !maze[x][y];
-        System.out.println(maze[x][y]);
     }
 
 }
