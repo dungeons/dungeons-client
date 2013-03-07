@@ -13,4 +13,9 @@ public class ShaderComponent extends Component {
         this.color = color;
     }
 
+    @Override
+    public String toString() {
+        return "ShaderComponent [shader=" + shader + ", color=" + color + "]";
+    }
+
 }

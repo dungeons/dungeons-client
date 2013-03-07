@@ -8,8 +8,6 @@ public class ShadowComponent extends Component {
 
     public Camera[] lights;
 
-    // public Color shadowColor;
-
     public ShadowComponent() {
 
         lights = new Camera[4];

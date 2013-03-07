@@ -9,23 +9,15 @@ public final class Logic implements Runnable {
 
     private final World world;
 
-    private final App app;
-
-    private Logic(App app, World world) {
-        this.app = app;
+    private Logic(World world) {
         this.world = world;
     }
 
-    public static Logic getInstance(App app, World world) {
+    public static void init(World world) {
         if (instance == null) {
-            synchronized (Logic.class) {
-                if (instance == null) {
-                    instance = new Logic(app, world);
-                    new Thread(instance).start();
-                }
-            }
+            instance = new Logic(world);
+            new Thread(instance).start();
         }
-        return instance;
     }
 
     private final long BILLION = 1000000000;
@@ -59,7 +51,6 @@ public final class Logic implements Runnable {
                 }
             } else {
                 while (accumulator >= step) {
-
                     update(step);
                     accumulator -= step;
                 }

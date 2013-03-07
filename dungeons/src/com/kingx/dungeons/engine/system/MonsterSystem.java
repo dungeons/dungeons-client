@@ -27,7 +27,6 @@ public class MonsterSystem extends EntityProcessingSystem {
     @Mapper
     ComponentMapper<MonsterComponent> monsterMapper;
     private final float[] verts;
-    private long timestamp;
 
     public MonsterSystem(MazePoly mazeMesh) {
         super(Aspect.getAspectForAll(PositionComponent.class, SpeedComponent.class, MoveComponent.class, MonsterComponent.class));
@@ -62,21 +61,5 @@ public class MonsterSystem extends EntityProcessingSystem {
         float tx = a.x - b.x;
         float ty = a.y - b.y;
         return (float) Math.sqrt(tx * tx + ty * ty);
-    }
-
-    /**
-     * Called before processing of entities begins.
-     */
-    @Override
-    protected void begin() {
-        timestamp = System.currentTimeMillis();
-    }
-
-    /**
-     * Called after the processing of entities ends.
-     */
-    @Override
-    protected void end() {
-        System.out.println((System.currentTimeMillis() - timestamp) + " ms");
     }
 }

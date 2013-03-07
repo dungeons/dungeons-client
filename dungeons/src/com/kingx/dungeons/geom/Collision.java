@@ -17,7 +17,6 @@ import com.badlogic.gdx.math.collision.Ray;
 public class Collision {
 
     private static Vector3 tmp = new Vector3();
-    private static Vector3 best = new Vector3();
     private static Vector3 tmp1 = new Vector3();
     private static Vector3 tmp2 = new Vector3();
     private static Vector3 tmp3 = new Vector3();
@@ -49,8 +48,8 @@ public class Collision {
 
     private static Vector3 tmp4 = new Vector3();
 
-    private static Vector3 tmp(Vector3 tmp4) {
-        return tmp.set(tmp4);
+    private static Vector3 tmp(Vector3 v) {
+        return tmp4.set(v);
     }
 
     /**

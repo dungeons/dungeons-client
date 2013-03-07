@@ -12,4 +12,9 @@ public class FollowCameraComponent extends Component {
         this.height = height;
     }
 
+    @Override
+    public String toString() {
+        return "FollowCameraComponent [camera=" + camera + ", height=" + height + "]";
+    }
+
 }

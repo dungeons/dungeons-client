@@ -1,9 +1,9 @@
 package com.kingx.dungeons.input;
 
-import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.InputAdapter;
 import com.kingx.dungeons.engine.component.MoveComponent;
 
-public final class PlayerInput implements InputProcessor {
+public final class PlayerInput extends InputAdapter {
 
     private final InputSet keys;
     private final MoveComponent components;
@@ -12,8 +12,6 @@ public final class PlayerInput implements InputProcessor {
         keys = is;
         components = ic;
     }
-
-    /// input
 
     @Override
     public boolean keyDown(int keycode) {
@@ -35,38 +33,6 @@ public final class PlayerInput implements InputProcessor {
         } else if (keycode == keys.getRight()) {
             components.vector.add(1 * dir, 0);
         }
-        return false;
-    }
-
-    // TODO Create input for touch devices
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    // NOTE currently not planned to future use
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
         return false;
     }
 }

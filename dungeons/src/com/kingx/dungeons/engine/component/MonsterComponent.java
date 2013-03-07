@@ -12,4 +12,9 @@ public class MonsterComponent extends Component {
         this.alertRadius = alertRadius;
     }
 
+    @Override
+    public String toString() {
+        return "MonsterComponent [alertColor=" + alertColor + ", alertRadius=" + alertRadius + "]";
+    }
+
 }

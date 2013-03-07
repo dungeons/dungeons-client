@@ -25,18 +25,18 @@ import com.kingx.dungeons.engine.system.RenderShadowSystem;
 import com.kingx.dungeons.geom.MazeBuilder;
 import com.kingx.dungeons.geom.MazePoly;
 import com.kingx.dungeons.geom.Point;
+import com.kingx.dungeons.geom.Point.Int;
 import com.kingx.dungeons.graphics.MazeMap;
 import com.kingx.dungeons.graphics.MazePolygon;
 
 public class App implements ApplicationListener {
 
+    // Global switches
     public static boolean DEBUG;
     public static boolean NOSLEEP;
+
     public static final Random rand = new Random();
     private static Camera camera;
-
-    // private static final List<RenderableEntity> renderList = new ArrayList<RenderableEntity>();
-    // private static final List<CleverEntity> updateList = new ArrayList<CleverEntity>();
 
     private static boolean[][] footprint;
     public static App reference;
@@ -58,26 +58,17 @@ public class App implements ApplicationListener {
         NOSLEEP = params.contains("nosleep") || params.contains("-nosleep") || params.contains("--nosleep");
     }
 
-    public static MazePoly getMaze() {
-        return mazeMesh;
-    }
-
     @Override
     public void create() {
         reference = this;
         ShaderProgram.pedantic = false;
 
         world = new World();
-        Logic logic = Logic.getInstance(this, world);
+        Logic.init(world);
 
         Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
         Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
         Gdx.gl.glDepthFunc(GL10.GL_LESS);
-
-    }
-
-    @Override
-    public void dispose() {
     }
 
     private boolean glInit = false;
@@ -85,11 +76,8 @@ public class App implements ApplicationListener {
     private World world;
     private RenderGeometrySystem renderGeometrySystem;
     private RenderShadowSystem renderShadowSystem;
+    private MazeMap maze;
     private static Wanderer player;
-
-    public static Wanderer getPlayer() {
-        return player;
-    }
 
     @Override
     public void render() {
@@ -114,36 +102,68 @@ public class App implements ApplicationListener {
     }
 
     private void init() {
-        // Entities creation
-        footprint = Assets.map;
-        if (Assets.map == null) {
-            footprint = MazeBuilder.getMaze(MAZE_BLOCKS_COUNT);
-        }
-        MazeMap maze = new MazeMap(footprint);
-        mazeMesh = new MazePolygon(maze, new Vector3(1f, 1f, 1f)).generate();
+        createMap();
+        createMaze();
+        addSystemsToWorld();
 
+        createPlayer();
+        createZombies(10);
+
+        Maze mazeCreation = new Maze(world, mazeMesh);
+        mazeCreation.createEntity().addToWorld();
+
+    }
+
+    /**
+     * If template is available, creates footprint based on that template,
+     * otherwise generates random map.
+     */
+    private void createMap() {
+        footprint = Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT) : Assets.map;
+    }
+
+    /**
+     * Build maze polygon from footprint.
+     */
+    private void createMaze() {
+        maze = new MazeMap(footprint);
+        mazeMesh = new MazePolygon(maze, new Vector3(1f, 1f, 1f)).generate();
+    }
+
+    /**
+     * Register systems to the world and initialize.
+     */
+    private void addSystemsToWorld() {
         world.setSystem(new MovementSystem());
         world.setSystem(new MonsterSystem(mazeMesh));
         world.setSystem(new CollisionSystem());
         renderShadowSystem = world.setSystem(new RenderShadowSystem(camera), true);
         renderGeometrySystem = world.setSystem(new RenderGeometrySystem(camera), true);
         world.initialize();
+    }
 
+    /**
+     * Place player in the game
+     */
+    private void createPlayer() {
         Point.Int p = maze.getRandomBlock();
-
         player = new Wanderer(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 5f);
         player.setCamera(camera);
         player.createEntity().addToWorld();
+    }
 
-        for (int i = 0; i < 500; i++) {
-            p = maze.getRandomBlock();
+    /**
+     * Scatter zombies all over the map.
+     * 
+     * @param count
+     *            number of zombies
+     */
+    private void createZombies(int count) {
+        for (int i = 0; i < count; i++) {
+            Int p = maze.getRandomBlock();
             Zombie zombie = new Zombie(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 5f);
             zombie.createEntity().addToWorld();
         }
-
-        Maze mazeCreation = new Maze(world, mazeMesh);
-        mazeCreation.createEntity().addToWorld();
-
     }
 
     @Override
@@ -163,13 +183,7 @@ public class App implements ApplicationListener {
         return camera;
     }
 
-    @Override
-    public void pause() {
-    }
-
-    @Override
-    public void resume() {
-    }
+    // Toggle switches
 
     public static void toggleWireframe() {
         wireframe = !wireframe;
@@ -187,15 +201,34 @@ public class App implements ApplicationListener {
         return fps;
     }
 
-    public static Camera getDefaultCam() {
-        return camera;
+    // Global getters
+
+    public static MazePoly getMaze() {
+        return mazeMesh;
+    }
+
+    public static Wanderer getPlayer() {
+        return player;
     }
 
     public static boolean[][] getFootprint() {
         return footprint;
     }
 
-    public static void toggleCamera() {
-        rot += 1;
+    public static Camera getDefaultCam() {
+        return camera;
     }
+
+    @Override
+    public void pause() {
+    }
+
+    @Override
+    public void resume() {
+    }
+
+    @Override
+    public void dispose() {
+    }
+
 }

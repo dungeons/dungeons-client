@@ -1,6 +1,7 @@
 package com.kingx.dungeons.geom;
 
 import com.badlogic.gdx.graphics.Mesh;
+import com.badlogic.gdx.graphics.VertexAttribute;
 
 public class MazePoly {
     private final Mesh mesh;
@@ -10,20 +11,25 @@ public class MazePoly {
     public MazePoly(Mesh mesh, float[] verts, short[] indices) {
         this.mesh = mesh;
         this.indices = indices;
-        this.convertedVerts = convert(verts);
+        this.convertedVerts = filterPositionAttributes(verts);
 
         this.mesh.setVertices(verts);
         this.mesh.setIndices(indices);
     }
 
-    private float[] convert(float[] v) {
-        int l = v.length / 8;
-        int l2 = v.length / 8 * 3;
-        float[] arr = new float[l2];
-        for (int i = 0; i < l; i++) {
-            arr[i * 3 + 0] = v[i * 8 + 0];
-            arr[i * 3 + 1] = v[i * 8 + 1];
-            arr[i * 3 + 2] = v[i * 8 + 2];
+    private static final int BYTES_PER_FLOAT = 4;
+
+    private float[] filterPositionAttributes(float[] v) {
+        int currentVertexSize = mesh.getVertexSize() / BYTES_PER_FLOAT;
+        int filteredVertexSize = VertexAttribute.Position().numComponents;
+
+        int vertsCount = v.length / currentVertexSize;
+        int size = vertsCount * filteredVertexSize;
+        float[] arr = new float[size];
+        for (int i = 0; i < vertsCount; i++) {
+            for (int j = 0; j < filteredVertexSize; j++) {
+                arr[i * filteredVertexSize + j] = v[i * currentVertexSize + j];
+            }
         }
         return arr;
     }

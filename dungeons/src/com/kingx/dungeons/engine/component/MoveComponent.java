@@ -14,4 +14,9 @@ public class MoveComponent extends Component {
         this.vector = new Vector2(x, y);
     }
 
+    @Override
+    public String toString() {
+        return "MoveComponent [vector=" + vector + "]";
+    }
+
 }

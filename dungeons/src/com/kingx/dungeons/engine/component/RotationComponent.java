@@ -14,4 +14,9 @@ public class RotationComponent extends Component {
         this.vector = new Vector3(x, y, z);
     }
 
+    @Override
+    public String toString() {
+        return "RotationComponent [vector=" + vector + "]";
+    }
+
 }

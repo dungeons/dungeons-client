@@ -9,4 +9,9 @@ public class SpeedComponent extends Component {
         this.speed = speed;
     }
 
+    @Override
+    public String toString() {
+        return "SpeedComponent [speed=" + speed + "]";
+    }
+
 }

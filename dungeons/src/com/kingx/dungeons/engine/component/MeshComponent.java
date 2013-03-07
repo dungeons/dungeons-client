@@ -10,4 +10,9 @@ public class MeshComponent extends Component {
         this.mesh = mesh;
     }
 
+    @Override
+    public String toString() {
+        return "MeshComponent [mesh=" + mesh + "]";
+    }
+
 }

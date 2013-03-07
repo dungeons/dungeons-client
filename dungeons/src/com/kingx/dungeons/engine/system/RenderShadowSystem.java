@@ -72,7 +72,6 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         if (begin) {
             PositionComponent pc = pm.getSafe(e);
             ShadowComponent sc = sm.getSafe(e);
-            MeshComponent mc = mm.getSafe(e);
 
             Camera[] lights = sc.lights;
             for (Camera light : lights) {

@@ -9,4 +9,9 @@ public class SizeComponent extends Component {
         this.size = size;
     }
 
+    @Override
+    public String toString() {
+        return "SizeComponent [size=" + size + "]";
+    }
+
 }
