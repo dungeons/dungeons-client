@@ -8,8 +8,13 @@ public class GlobalInput implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        if (keycode == Keys.NUM_1) {
-            App.toggleCamera();
+        switch (keycode) {
+            case Keys.NUM_1:
+                App.toggleCamera();
+                break;
+            case Keys.Q:
+                App.toggleFps();
+                break;
         }
         return false;
     }

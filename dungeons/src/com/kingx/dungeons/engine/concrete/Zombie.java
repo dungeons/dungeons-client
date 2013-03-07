@@ -10,6 +10,7 @@ import com.kingx.dungeons.engine.component.MeshComponent;
 import com.kingx.dungeons.engine.component.MonsterComponent;
 import com.kingx.dungeons.engine.component.MoveComponent;
 import com.kingx.dungeons.engine.component.PositionComponent;
+import com.kingx.dungeons.engine.component.RotationComponent;
 import com.kingx.dungeons.engine.component.ShaderComponent;
 import com.kingx.dungeons.engine.component.SizeComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
@@ -52,11 +53,10 @@ public class Zombie extends ConcreteEntity {
     @Override
     public Entity createEntity() {
         Entity e = getEntity();
-        MoveComponent moveComponent = new MoveComponent(0, 0);
-        PositionComponent pc = new PositionComponent(x, y, size / 2f);
-        e.addComponent(pc);
+        e.addComponent(new PositionComponent(x, y, size / 2f));
+        e.addComponent(new RotationComponent(1, 0, 0));
         e.addComponent(new SpeedComponent(speed));
-        e.addComponent(moveComponent);
+        e.addComponent(new MoveComponent(0, 0));
         e.addComponent(new SizeComponent(size));
         e.addComponent(new ShaderComponent(shader, Colors.ZOMBIE_NORMAL.color));
         e.addComponent(new MeshComponent(mesh));

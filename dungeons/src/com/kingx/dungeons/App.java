@@ -41,6 +41,7 @@ public class App implements ApplicationListener {
     private static boolean[][] footprint;
     public static App reference;
     private static boolean wireframe;
+    private static boolean fps;
     public static MazePoly mazeMesh;
     public static int rot;
 
@@ -176,6 +177,14 @@ public class App implements ApplicationListener {
 
     public static boolean isWireframe() {
         return wireframe;
+    }
+
+    public static void toggleFps() {
+        fps = !fps;
+    }
+
+    public static boolean isFps() {
+        return fps;
     }
 
     public static Camera getDefaultCam() {
