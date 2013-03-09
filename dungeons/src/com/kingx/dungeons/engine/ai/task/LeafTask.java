@@ -1,41 +1,25 @@
 package com.kingx.dungeons.engine.ai.task;
 
-import com.kingx.dungeons.engine.ai.TaskController;
+import com.kingx.dungeons.engine.ai.controller.TaskController;
 
 /**
  * Leaf task (or node) in the behavior tree.
  * 
- * Specifies a TaskControler, by composition, to take care of all the control logic, without burdening the Task class with complications.
+ * Specifies a TaskControler, by composition, to take care of all the control
+ * logic, without burdening the Task class with complications.
  * 
  */
-public abstract class LeafTask implements Task {
-    /**
-     * Task controler to keep track of the Task state.
-     */
-    protected TaskController control;
+public abstract class LeafTask extends Task {
 
-    /**
-     * Creates a new instance of the LeafTask class
-     * 
-     * @param blackboard
-     *            Reference to the AI Blackboard data
-     */
+    private final TaskController taskController;
+
     public LeafTask() {
-        createController();
+        this.taskController = new TaskController(null);
+        taskController.setTask(this);
     }
 
-    /**
-     * Creates the controller for the class
-     */
-    private void createController() {
-        this.control = new TaskController(this);
-    }
-
-    /**
-     * Gets the controller reference.
-     */
     @Override
     public TaskController getControl() {
-        return this.control;
+        return taskController;
     }
 }

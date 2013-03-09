@@ -18,10 +18,10 @@ import com.kingx.dungeons.engine.concrete.Maze;
 import com.kingx.dungeons.engine.concrete.Wanderer;
 import com.kingx.dungeons.engine.concrete.Zombie;
 import com.kingx.dungeons.engine.system.CollisionSystem;
-import com.kingx.dungeons.engine.system.MonsterSystem;
 import com.kingx.dungeons.engine.system.MovementSystem;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
+import com.kingx.dungeons.engine.system.ai.ZombieAI;
 import com.kingx.dungeons.geom.MazeBuilder;
 import com.kingx.dungeons.geom.MazePoly;
 import com.kingx.dungeons.geom.Point;
@@ -135,7 +135,7 @@ public class App implements ApplicationListener {
      */
     private void addSystemsToWorld() {
         world.setSystem(new MovementSystem());
-        world.setSystem(new MonsterSystem(mazeMesh));
+        world.setSystem(new ZombieAI());
         world.setSystem(new CollisionSystem());
         renderShadowSystem = world.setSystem(new RenderShadowSystem(camera), true);
         renderGeometrySystem = world.setSystem(new RenderGeometrySystem(camera), true);

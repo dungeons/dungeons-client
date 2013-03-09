@@ -190,4 +190,19 @@ public class Collision {
 
     }
 
+    /**
+     * Returns xy distance between two points.
+     * 
+     * @param a
+     *            point A
+     * @param b
+     *            point B
+     * @return distance between points
+     */
+    public static float distance(Vector3 a, Vector3 b) {
+        float tx = a.x - b.x;
+        float ty = a.y - b.y;
+        return (float) Math.sqrt(tx * tx + ty * ty);
+    }
+
 }

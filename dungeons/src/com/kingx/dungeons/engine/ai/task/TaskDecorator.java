@@ -1,17 +1,20 @@
 package com.kingx.dungeons.engine.ai.task;
 
-import com.kingx.dungeons.engine.ai.TaskController;
+import com.artemis.Entity;
+import com.kingx.dungeons.engine.ai.controller.TaskController;
 
 /**
- * Base class for the specific decorators. Decorates all the task methods except for the DoAction, for commodity. (Tough any method can be decorated in
- * the base classes with no problem, they are decorated by default so the programmer does not forget)
+ * Base class for the specific decorators. Decorates all the task methods except
+ * for the DoAction, for commodity. (Tough any method can be decorated in the
+ * base classes with no problem, they are decorated by default so the programmer
+ * does not forget)
  * 
  */
-public abstract class TaskDecorator implements Task {
+public abstract class TaskDecorator extends Task {
     /**
      * Reference to the task to decorate
      */
-    private Task task;
+    protected Task task;
 
     /**
      * Creates a new instance of the Decorator class
@@ -33,15 +36,15 @@ public abstract class TaskDecorator implements Task {
      */
     private void InitTask(Task task) {
         this.task = task;
-        this.task.getControl().SetTask(this);
+        this.task.getControl().setTask(this);
     }
 
     /**
      * Decorate the CheckConditions
      */
     @Override
-    public boolean checkConditions() {
-        return this.task.checkConditions();
+    public boolean checkConditions(Entity entity) {
+        return this.task.checkConditions(entity);
     }
 
     /**
@@ -58,15 +61,6 @@ public abstract class TaskDecorator implements Task {
     @Override
     public TaskController getControl() {
         return this.task.getControl();
-    }
-
-    /**
-     * Decorate the start
-     */
-    @Override
-    public void start() {
-        this.task.start();
-
     }
 
     /**
