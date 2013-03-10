@@ -161,7 +161,7 @@ public class App implements ApplicationListener {
     private void createZombies(int count) {
         for (int i = 0; i < count; i++) {
             Int p = maze.getRandomBlock();
-            Zombie zombie = new Zombie(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 5f);
+            Zombie zombie = new Zombie(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 2f);
             zombie.createEntity().addToWorld();
         }
     }

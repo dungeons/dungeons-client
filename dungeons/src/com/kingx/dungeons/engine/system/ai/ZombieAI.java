@@ -25,7 +25,7 @@ public class ZombieAI extends EntityProcessingSystem {
         super(Aspect.getAspectForAll(ZombieAIComponent.class));
 
         Selector selector = new Selector();
-        ((ParentTaskController) selector.getControl()).add(new Attack(App.getMaze().getVerts()));
+        ((ParentTaskController) selector.getControl()).add(new Search(App.getMaze().getVerts()));
         ((ParentTaskController) selector.getControl()).add(new Idle());
         planner = new UpdateFilter(selector, 1);
     }
@@ -36,14 +36,12 @@ public class ZombieAI extends EntityProcessingSystem {
         planner.doAction(e);
     }
 
-    // nodes
-
-    private static class Attack extends LeafTask {
+    private static class Search extends LeafTask {
 
         private ZombieAIComponent data;
         private final float[] verts;
 
-        private Attack(float[] verts) {
+        private Search(float[] verts) {
             this.verts = verts;
         }
 
@@ -63,6 +61,8 @@ public class ZombieAI extends EntityProcessingSystem {
         @Override
         public boolean doAction(Entity entity) {
             data.shader.color = Colors.ZOMBIE_ALARM.color;
+            data.target = data.playerPosition.vector.cpy();
+            data.entityMove.vector.set(data.target.x - data.entityPosition.vector.x, data.target.y - data.entityPosition.vector.y);
             return true;
         }
 
@@ -85,6 +85,7 @@ public class ZombieAI extends EntityProcessingSystem {
         @Override
         public boolean doAction(Entity e) {
             data.shader.color = Colors.ZOMBIE_NORMAL.color;
+            data.entityMove.vector.set(0, 0);
             return true;
         }
     }
