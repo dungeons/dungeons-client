@@ -5,6 +5,7 @@ import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
 import com.artemis.systems.EntityProcessingSystem;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.kingx.dungeons.App;
@@ -62,7 +63,8 @@ public class ZombieAI extends EntityProcessingSystem {
         public boolean doAction(Entity entity) {
             data.shader.color = Colors.ZOMBIE_ALARM.color;
             data.target = data.playerPosition.vector.cpy();
-            data.entityMove.vector.set(data.target.x - data.entityPosition.vector.x, data.target.y - data.entityPosition.vector.y);
+            data.entityMove.vector.set(data.target.x - data.entityPosition.vector.x, data.target.y - data.entityPosition.vector.y).nor();
+            data.entitySpeed.current = data.entitySpeed.turbo;
             return true;
         }
 
@@ -75,6 +77,7 @@ public class ZombieAI extends EntityProcessingSystem {
     private static class Idle extends LeafTask {
 
         private ZombieAIComponent data;
+        private int counter;
 
         @Override
         public boolean checkConditions(Entity entity) {
@@ -84,9 +87,18 @@ public class ZombieAI extends EntityProcessingSystem {
 
         @Override
         public boolean doAction(Entity e) {
+            counter++;
+            if (counter > 40) {
+                counter = 0;
+                data.entityMove.vector = getNewDirection();
+            }
+            data.entitySpeed.current = data.entitySpeed.speed;
             data.shader.color = Colors.ZOMBIE_NORMAL.color;
-            data.entityMove.vector.set(0, 0);
             return true;
+        }
+
+        private Vector2 getNewDirection() {
+            return new Vector2(App.rand.nextFloat() - 0.5f, App.rand.nextFloat() - 0.5f).nor();
         }
     }
 }

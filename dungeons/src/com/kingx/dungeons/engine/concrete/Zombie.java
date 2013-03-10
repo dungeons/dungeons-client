@@ -52,17 +52,18 @@ public class Zombie extends ConcreteEntity {
         Entity e = getEntity();
         PositionComponent zombiePosition = new PositionComponent(x, y, size / 2f);
         PositionComponent playerPosition = App.getPlayer().getEntity().getComponent(PositionComponent.class);
+        SpeedComponent zombieSpeed = new SpeedComponent(speed);
         MoveComponent zombieMove = new MoveComponent(0, 0);
         ShaderComponent shader = new ShaderComponent(Shader.getShader("normal"), Colors.ZOMBIE_NORMAL.color);
         e.addComponent(zombiePosition);
         e.addComponent(new RotationComponent(1, 0, 0));
-        e.addComponent(new SpeedComponent(speed));
+        e.addComponent(zombieSpeed);
         e.addComponent(zombieMove);
         e.addComponent(new SizeComponent(size));
         e.addComponent(shader);
         e.addComponent(new MeshComponent(mesh));
         e.addComponent(new GeometryRenderTag());
-        e.addComponent(new ZombieAIComponent(zombiePosition, playerPosition, zombieMove, shader, Colors.ZOMBIE_ALARM.color, 2f));
+        e.addComponent(new ZombieAIComponent(zombiePosition, playerPosition, zombieSpeed, zombieMove, shader, Colors.ZOMBIE_ALARM.color, 4f));
         return e;
     }
 }

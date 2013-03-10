@@ -71,8 +71,8 @@ public class App implements ApplicationListener {
         Gdx.gl.glDepthFunc(GL10.GL_LESS);
     }
 
-    private boolean glInit = false;
-    private SpriteBatch sb;
+    private boolean initialized = false;
+    private SpriteBatch onScreenRender;
     private World world;
     private RenderGeometrySystem renderGeometrySystem;
     private RenderShadowSystem renderShadowSystem;
@@ -83,10 +83,8 @@ public class App implements ApplicationListener {
     public void render() {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
                 | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
-        if (!glInit) {
+        if (!initialized) {
             init();
-            glInit = true;
-            sb = new SpriteBatch();
         }
         camera.update();
 
@@ -94,9 +92,9 @@ public class App implements ApplicationListener {
         renderShadowSystem.process();
 
         if (DEBUG && renderShadowSystem.getDepthMap() != null) {
-            sb.begin();
-            sb.draw(renderShadowSystem.getDepthMap(), 0, 0, 100, 100, 1, 0, 0, 1);
-            sb.end();
+            onScreenRender.begin();
+            onScreenRender.draw(renderShadowSystem.getDepthMap(), 0, 0, 100, 100, 1, 0, 0, 1);
+            onScreenRender.end();
         }
 
     }
@@ -111,6 +109,10 @@ public class App implements ApplicationListener {
 
         Maze mazeCreation = new Maze(world, mazeMesh);
         mazeCreation.createEntity().addToWorld();
+
+        onScreenRender = new SpriteBatch();
+
+        initialized = true;
 
     }
 
@@ -161,7 +163,7 @@ public class App implements ApplicationListener {
     private void createZombies(int count) {
         for (int i = 0; i < count; i++) {
             Int p = maze.getRandomBlock();
-            Zombie zombie = new Zombie(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 2f);
+            Zombie zombie = new Zombie(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 1f);
             zombie.createEntity().addToWorld();
         }
     }
