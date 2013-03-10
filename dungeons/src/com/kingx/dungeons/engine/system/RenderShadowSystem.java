@@ -83,7 +83,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
 
             depthMap.bind();
             Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
-            Assets.getTexture("wallzero").getTexture().bind();
+            Assets.getTexture("wall",0).getTexture().bind();
             Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 
             shadowProjectShader.begin();

@@ -132,13 +132,13 @@ public final class MazePolygon {
     private TextureRegion getTexture(int i) {
         switch (i) {
             case 0:
-                return Assets.getTexture("wallzero");
+                return Assets.getTexture("wall",0);
             case 1:
-                return Assets.getTexture("wallone");
+                return Assets.getTexture("wall",1);
             case 2:
-                return Assets.getTexture("walltwo");
+                return Assets.getTexture("wall",2);
             case 3:
-                return Assets.getTexture("wallthree");
+                return Assets.getTexture("wall",3);
         }
         return null;
     }

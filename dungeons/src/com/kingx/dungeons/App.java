@@ -105,7 +105,7 @@ public class App implements ApplicationListener {
         addSystemsToWorld();
 
         createPlayer();
-        createZombies(10);
+        createZombies(1000);
 
         Maze mazeCreation = new Maze(world, mazeMesh);
         mazeCreation.createEntity().addToWorld();
