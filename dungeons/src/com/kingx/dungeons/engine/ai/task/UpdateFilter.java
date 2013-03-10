@@ -1,7 +1,7 @@
 package com.kingx.dungeons.engine.ai.task;
 
 import com.artemis.Entity;
-import com.kingx.dungeons.engine.ai.Ticker;
+import com.kingx.dungeons.utils.Ticker;
 
 /**
  * Decorator that adds a update speed limit to the task it is applied to

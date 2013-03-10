@@ -1,4 +1,4 @@
-package com.kingx.dungeons.engine.ai;
+package com.kingx.dungeons.utils;
 
 /**
  * Time step class, for regulating update speed.
