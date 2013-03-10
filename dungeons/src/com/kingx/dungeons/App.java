@@ -24,10 +24,10 @@ import com.kingx.dungeons.engine.system.RenderShadowSystem;
 import com.kingx.dungeons.engine.system.ai.ZombieAI;
 import com.kingx.dungeons.geom.MazeBuilder;
 import com.kingx.dungeons.geom.MazePoly;
+import com.kingx.dungeons.geom.MazePolygon;
 import com.kingx.dungeons.geom.Point;
 import com.kingx.dungeons.geom.Point.Int;
 import com.kingx.dungeons.graphics.MazeMap;
-import com.kingx.dungeons.graphics.MazePolygon;
 
 public class App implements ApplicationListener {
 

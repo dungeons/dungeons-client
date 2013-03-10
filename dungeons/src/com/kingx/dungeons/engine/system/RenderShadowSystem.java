@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.engine.component.MeshComponent;
 import com.kingx.dungeons.engine.component.PositionComponent;
 import com.kingx.dungeons.engine.component.ShadowComponent;
@@ -81,6 +82,10 @@ public class RenderShadowSystem extends EntityProcessingSystem {
             generateShadowMap(lights);
 
             depthMap.bind();
+            Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
+            Assets.getTexture("wallzero").getTexture().bind();
+            Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+
             shadowProjectShader.begin();
             shadowProjectShader.setUniformMatrix("ProjectionMatrix", camera.projection);
             shadowProjectShader.setUniformMatrix("ViewMatrix", camera.view);
@@ -94,6 +99,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
             poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
             shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT.color);
             shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW.color);
+            shadowProjectShader.setUniformi("u_texture", 1);
             App.getMaze().getMesh().render(shadowProjectShader, GL20.GL_TRIANGLES);
             shadowProjectShader.end();
         }

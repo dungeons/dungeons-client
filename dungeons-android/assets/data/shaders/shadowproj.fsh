@@ -11,6 +11,7 @@ const float LinearDepthConstant = 1.0 / (Far - Near);
 uniform vec4 u_source_color;
 uniform vec4 u_ground_color;
 uniform vec3 v_lightSpacePosition;
+uniform sampler2D u_texture;
 uniform sampler2D DepthMap;
 uniform float u_mapOffset;
 
@@ -19,6 +20,7 @@ uniform float u_mapOffset;
 varying vec4 vWorldVertex;
 varying vec4 vPosition[4];
 varying vec4 vColor;
+varying vec2 v_texCoord;
 
 
 // Unpack an RGBA pixel to floating point value.
@@ -95,9 +97,9 @@ worldPostitoin.z = 0.0;
 		float b = round(interpolate(u_source_color.b ,u_ground_color.b, distance, 1.0)*del) / del;
   
 	    if(vWorldVertex.z  >= .99 || shadow){
-	  		gl_FragColor = u_ground_color;
+	  		gl_FragColor = u_ground_color* texture2D(u_texture,v_texCoord);
         }else{
-	 		gl_FragColor = vec4(r,g,b,1.0);
+	 		gl_FragColor = vec4(r,g,b,1.0)* texture2D(u_texture,v_texCoord);
         }
         
 }
