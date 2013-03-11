@@ -88,8 +88,8 @@ public class App implements ApplicationListener {
         }
         camera.update();
 
-        renderGeometrySystem.process();
         renderShadowSystem.process();
+        renderGeometrySystem.process();
 
         if (DEBUG && renderShadowSystem.getDepthMap() != null) {
             onScreenRender.begin();
@@ -105,7 +105,7 @@ public class App implements ApplicationListener {
         addSystemsToWorld();
 
         createPlayer();
-        createZombies(1000);
+        createZombies(10);
 
         Maze mazeCreation = new Maze(world, mazeMesh);
         mazeCreation.createEntity().addToWorld();
@@ -163,7 +163,7 @@ public class App implements ApplicationListener {
     private void createZombies(int count) {
         for (int i = 0; i < count; i++) {
             Int p = maze.getRandomBlock();
-            Zombie zombie = new Zombie(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 1f);
+            Zombie zombie = new Zombie(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 1f, 1f);
             zombie.createEntity().addToWorld();
         }
     }

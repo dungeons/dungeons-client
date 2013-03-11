@@ -5,10 +5,12 @@ import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
 import com.artemis.systems.EntityProcessingSystem;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.engine.ai.controller.ParentTaskController;
 import com.kingx.dungeons.engine.ai.task.LeafTask;
 import com.kingx.dungeons.engine.ai.task.Selector;
@@ -65,6 +67,8 @@ public class ZombieAI extends EntityProcessingSystem {
             data.target = data.playerPosition.vector.cpy();
             data.entityMove.vector.set(data.target.x - data.entityPosition.vector.x, data.target.y - data.entityPosition.vector.y).nor();
             data.entitySpeed.current = data.entitySpeed.turbo;
+            //    data.shader.texture = getRightTexture(data.entityMove.vector);
+            System.out.println();
             return true;
         }
 
@@ -100,5 +104,10 @@ public class ZombieAI extends EntityProcessingSystem {
         private Vector2 getNewDirection() {
             return new Vector2(App.rand.nextFloat() - 0.5f, App.rand.nextFloat() - 0.5f).nor();
         }
+    }
+
+    public static TextureRegion getRightTexture(Vector2 vector) {
+        int ang = (int) Math.toDegrees(Math.atan2(vector.y, vector.x));
+        return Assets.getTexture("zombie", (ang / 360 * 8));
     }
 }

@@ -6,11 +6,14 @@ import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
 import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL10;
-import com.kingx.dungeons.engine.component.MeshComponent;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.kingx.dungeons.engine.component.PositionComponent;
 import com.kingx.dungeons.engine.component.ShaderComponent;
+import com.kingx.dungeons.engine.component.SizeComponent;
 import com.kingx.dungeons.engine.tags.GeometryRenderTag;
+import com.kingx.dungeons.graphics.Shader;
 
 public class RenderGeometrySystem extends EntityProcessingSystem {
     @Mapper
@@ -18,29 +21,47 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
     @Mapper
     ComponentMapper<ShaderComponent> sm;
     @Mapper
-    ComponentMapper<MeshComponent> mm;
+    ComponentMapper<SizeComponent> ss;
 
     private final Camera camera;
+    private ShaderProgram shader;
+    private Texture texture;
+    private final SpriteBatch sb = new SpriteBatch();
 
     public RenderGeometrySystem(Camera camera) {
-        super(Aspect.getAspectForAll(PositionComponent.class, ShaderComponent.class, MeshComponent.class, GeometryRenderTag.class));
+        super(Aspect.getAspectForAll(PositionComponent.class, ShaderComponent.class, GeometryRenderTag.class));
         this.camera = camera;
+        sb.setShader(Shader.getShader("sprite"));
+    }
+
+    /**
+     * Called before processing of entities begins.
+     */
+    @Override
+    protected void begin() {
+        sb.begin();
+    }
+
+    /**
+     * Called after the processing of entities ends.
+     */
+    @Override
+    protected void end() {
+        sb.end();
     }
 
     @Override
     protected void process(Entity e) {
-        PositionComponent pc = pm.getSafe(e);
+        sb.setProjectionMatrix(camera.combined);
         ShaderComponent sc = sm.getSafe(e);
-        MeshComponent mc = mm.getSafe(e);
+        SizeComponent ccs = ss.getSafe(e);
+        if (sc.texture != null) {
+            PositionComponent pc = pm.getSafe(e);
 
-        camera.combined.translate(pc.vector.x, pc.vector.y, pc.vector.z);
-        sc.shader.begin();
-        sc.shader.setUniformMatrix("u_MVPMatrix", camera.combined);
-        sc.shader.setUniformf("u_color", sc.color);
-        mc.mesh.render(sc.shader, GL10.GL_TRIANGLES);
-        sc.shader.end();
-
-        camera.combined.translate(-pc.vector.x, -pc.vector.y, -pc.vector.z);
+            //camera.combined.translate(pc.vector.x, pc.vector.y, pc.vector.z + 5);
+            float halfSize = ccs.size / 2f;
+            sb.draw(sc.texture, pc.vector.x - halfSize, pc.vector.y - halfSize, ccs.size, ccs.size);
+            //camera.combined.translate(-pc.vector.x, -pc.vector.y, -pc.vector.z - 5);
+        }
     }
-
 }

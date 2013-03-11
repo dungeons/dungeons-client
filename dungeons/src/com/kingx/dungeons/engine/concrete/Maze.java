@@ -23,7 +23,7 @@ public class Maze extends ConcreteEntity {
         Entity e = this.getEntity();
         e.addComponent(new PositionComponent(0, 0, 0));
         e.addComponent(new MeshComponent(maze.getMesh()));
-        e.addComponent(new ShaderComponent(Shader.getShader("normal"), Colors.BASE.color));
+        e.addComponent(new ShaderComponent(Shader.getShader("normal"), Colors.BASE.color, null));
         return e;
     }
 }

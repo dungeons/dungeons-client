@@ -11,13 +11,12 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
-import com.kingx.dungeons.engine.component.MeshComponent;
 import com.kingx.dungeons.engine.component.PositionComponent;
 import com.kingx.dungeons.engine.component.ShadowComponent;
+import com.kingx.dungeons.geom.Polygon;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.QuadTextureFrameBuffer;
 import com.kingx.dungeons.graphics.Shader;
@@ -25,8 +24,6 @@ import com.kingx.dungeons.graphics.Shader;
 public class RenderShadowSystem extends EntityProcessingSystem {
     @Mapper
     ComponentMapper<PositionComponent> pm;
-    @Mapper
-    ComponentMapper<MeshComponent> mm;
     @Mapper
     ComponentMapper<ShadowComponent> sm;
 
@@ -42,14 +39,10 @@ public class RenderShadowSystem extends EntityProcessingSystem {
     private static final int TEXTURE_SIZE = 1024;
 
     public RenderShadowSystem(Camera camera) {
-        super(Aspect.getAspectForAll(PositionComponent.class, MeshComponent.class, ShadowComponent.class));
+        super(Aspect.getAspectForAll(PositionComponent.class, ShadowComponent.class));
         this.camera = camera;
 
-        float[] outVerts = new float[] { -BOUNDS, -BOUNDS, 0, BOUNDS, -BOUNDS, 0, BOUNDS, BOUNDS, 0, -BOUNDS, BOUNDS, 0 };
-        short[] outIndices = new short[] { 1, 2, 0, 3 };
-        poly = new Mesh(true, outVerts.length, outIndices.length, VertexAttribute.Position());
-        poly.setVertices(outVerts);
-        poly.setIndices(outIndices);
+        poly = Polygon.createPlain(BOUNDS);
 
         shadowGeneratorShader = Shader.getShader("shadowgen");
         shadowProjectShader = Shader.getShader("shadowproj");
@@ -83,7 +76,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
 
             depthMap.bind();
             Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
-            Assets.getTexture("wall",0).getTexture().bind();
+            Assets.getTexture("wall", 0).getTexture().bind();
             Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 
             shadowProjectShader.begin();

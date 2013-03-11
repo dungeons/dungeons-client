@@ -3,10 +3,8 @@ package com.kingx.dungeons.engine.concrete;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Mesh;
-import com.badlogic.gdx.graphics.VertexAttribute;
 import com.kingx.dungeons.App;
-import com.kingx.dungeons.engine.component.MeshComponent;
+import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.engine.component.MoveComponent;
 import com.kingx.dungeons.engine.component.PositionComponent;
 import com.kingx.dungeons.engine.component.RotationComponent;
@@ -24,7 +22,6 @@ public class Zombie extends ConcreteEntity {
     private final float y;
     private final float size;
     private final float speed;
-    private final Mesh mesh;
     private Camera camera;
 
     public Zombie(World world, float x, float y, float size, float speed) {
@@ -33,10 +30,6 @@ public class Zombie extends ConcreteEntity {
         this.y = y;
         this.size = size;
         this.speed = speed;
-
-        mesh = new Mesh(true, 4, 6, VertexAttribute.Position());
-        mesh.setVertices(new float[] { -size / 2, -size / 2, 0, size / 2, -size / 2, 0, size / 2, size / 2, 0, -size / 2, size / 2, 0 });
-        mesh.setIndices(new short[] { 0, 1, 2, 2, 3, 0 });
     }
 
     public Camera getCamera() {
@@ -54,14 +47,13 @@ public class Zombie extends ConcreteEntity {
         PositionComponent playerPosition = App.getPlayer().getEntity().getComponent(PositionComponent.class);
         SpeedComponent zombieSpeed = new SpeedComponent(speed);
         MoveComponent zombieMove = new MoveComponent(0, 0);
-        ShaderComponent shader = new ShaderComponent(Shader.getShader("normal"), Colors.ZOMBIE_NORMAL.color);
+        ShaderComponent shader = new ShaderComponent(Shader.getShader("normal"), Colors.ZOMBIE_NORMAL.color, Assets.getTexture("zombie", 0));
         e.addComponent(zombiePosition);
         e.addComponent(new RotationComponent(1, 0, 0));
         e.addComponent(zombieSpeed);
         e.addComponent(zombieMove);
         e.addComponent(new SizeComponent(size));
         e.addComponent(shader);
-        e.addComponent(new MeshComponent(mesh));
         e.addComponent(new GeometryRenderTag());
         e.addComponent(new ZombieAIComponent(zombiePosition, playerPosition, zombieSpeed, zombieMove, shader, Colors.ZOMBIE_ALARM.color, 4f));
         return e;
