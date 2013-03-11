@@ -57,11 +57,7 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
         if (sc.texture != null) {
             shader.setUniformf("u_tint", sc.color);
             PositionComponent pc = pm.getSafe(e);
-
-            //camera.combined.translate(pc.vector.x, pc.vector.y, pc.vector.z + 5);
-            float halfSize = ccs.size / 2f;
-            sb.draw(sc.texture, pc.vector.x - halfSize, pc.vector.y - halfSize, ccs.size, ccs.size);
-            //camera.combined.translate(-pc.vector.x, -pc.vector.y, -pc.vector.z - 5);
+            sb.draw(sc.texture, pc.vector.x - ccs.size / 2f, pc.vector.y - ccs.size / 2f, ccs.size, ccs.size);
         }
     }
 }

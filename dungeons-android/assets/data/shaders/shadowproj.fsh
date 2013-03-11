@@ -92,6 +92,7 @@ worldPostitoin.z = 0.0;
 		distance = clamp(distance,0,radius);
 		distance/=radius;
 		
+		
 		float del = 85.0;
 		float r = round(interpolate(u_source_color.r ,u_ground_color.r, distance, 1.0)*del) / del;
 		float g = round(interpolate(u_source_color.g ,u_ground_color.g, distance, 1.0)*del) / del;

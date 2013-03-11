@@ -86,13 +86,13 @@ public class RenderShadowSystem extends EntityProcessingSystem {
                 shadowProjectShader.setUniformMatrix("LightSourceProjectionViewMatrix[" + i + "]", lights[i].combined);
             }
             shadowProjectShader.setUniformf("v_lightSpacePosition", lights[0].position);
-            shadowProjectShader.setUniformf("u_source_color", Colors.GROUND.color);
-            shadowProjectShader.setUniformf("u_ground_color", Colors.SHADOW.color);
+            shadowProjectShader.setUniformf("u_source_color", Colors.GROUND);
+            shadowProjectShader.setUniformf("u_ground_color", Colors.SHADOW);
             shadowProjectShader.setUniformi("DepthMap", 0);
             shadowProjectShader.setUniformf("u_useTextures", 0);
             poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
-            shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT.color);
-            shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW.color);
+            shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
+            shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
             shadowProjectShader.setUniformi("u_texture", 1);
             shadowProjectShader.setUniformf("u_useTextures", 1);
             App.getMaze().getMesh().render(shadowProjectShader, GL20.GL_TRIANGLES);

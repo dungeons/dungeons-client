@@ -17,7 +17,6 @@ import com.kingx.dungeons.engine.ai.task.Selector;
 import com.kingx.dungeons.engine.ai.task.UpdateFilter;
 import com.kingx.dungeons.engine.component.ai.ZombieAIComponent;
 import com.kingx.dungeons.geom.Collision;
-import com.kingx.dungeons.graphics.Colors;
 
 public class ZombieAI extends EntityProcessingSystem {
     @Mapper
@@ -63,7 +62,7 @@ public class ZombieAI extends EntityProcessingSystem {
 
         @Override
         public boolean doAction(Entity entity) {
-            data.shader.color = Colors.ZOMBIE_ALARM.color;
+            data.shader.color = data.alertColor;
             data.target = data.playerPosition.vector.cpy();
             data.entityMove.vector.set(data.target.x - data.entityPosition.vector.x, data.target.y - data.entityPosition.vector.y).nor();
             data.entitySpeed.current = data.entitySpeed.turbo;
@@ -98,7 +97,7 @@ public class ZombieAI extends EntityProcessingSystem {
                 data.shader.texture = getRightTexture(data.entityMove.vector);
             }
             data.entitySpeed.current = data.entitySpeed.speed;
-            data.shader.color = Colors.GROUND.color;
+            data.shader.color = data.normalColor;
             return true;
         }
 

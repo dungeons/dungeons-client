@@ -1,22 +1,14 @@
 package com.kingx.dungeons;
 
-import com.artemis.World;
+public abstract class Logic implements Runnable {
 
-public final class Logic implements Runnable {
+    private volatile boolean init = true;
+    private final boolean quit = false;
 
-    // Singleton
-    private static volatile Logic instance = null;
-
-    private final World world;
-
-    private Logic(World world) {
-        this.world = world;
-    }
-
-    public static void init(World world) {
-        if (instance == null) {
-            instance = new Logic(world);
-            new Thread(instance).start();
+    public void init() {
+        if (init) {
+            new Thread(this).start();
+            init = false;
         }
     }
 
@@ -26,8 +18,6 @@ public final class Logic implements Runnable {
     private final float step = .0166f;
     private final float maxStep = .25f;
     private float accumulator = 0.0f;
-
-    private final boolean quit = false;
 
     @Override
     public void run() {
@@ -58,8 +48,5 @@ public final class Logic implements Runnable {
         }
     }
 
-    private void update(float delta) {
-        world.setDelta(delta);
-        world.process();
-    }
+    protected abstract void update(float delta);
 }

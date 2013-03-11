@@ -1,6 +1,5 @@
 package com.kingx.dungeons.engine.concrete;
 
-import com.artemis.Entity;
 import com.artemis.World;
 import com.kingx.dungeons.engine.component.MeshComponent;
 import com.kingx.dungeons.engine.component.PositionComponent;
@@ -11,19 +10,10 @@ import com.kingx.dungeons.graphics.Shader;
 
 public class Maze extends ConcreteEntity {
 
-    private final MazePoly maze;
-
     public Maze(World world, MazePoly maze) {
         super(world);
-        this.maze = maze;
-    }
-
-    @Override
-    public Entity createEntity() {
-        Entity e = this.getEntity();
-        e.addComponent(new PositionComponent(0, 0, 0));
-        e.addComponent(new MeshComponent(maze.getMesh()));
-        e.addComponent(new ShaderComponent(Shader.getShader("normal"), Colors.BASE.color, null));
-        return e;
+        bag.add(new PositionComponent(0, 0, 0));
+        bag.add(new MeshComponent(maze.getMesh()));
+        bag.add(new ShaderComponent(Shader.getShader("normal"), Colors.BASE, null));
     }
 }

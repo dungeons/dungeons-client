@@ -1,7 +1,9 @@
 package com.kingx.dungeons.graphics;
 
+import com.badlogic.gdx.math.Vector3;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.geom.Point;
+import com.kingx.dungeons.geom.Point.Int;
 
 public class MazeMap {
 
@@ -98,6 +100,11 @@ public class MazeMap {
             out += "\n";
         }
         System.out.println(out);
+    }
+
+    public Vector3 getRandomPosition() {
+        Int p = getRandomBlock();
+        return new Vector3(SIZE * (p.x + 0.5f), SIZE * (p.y + 0.5f), 0);
     }
 
 }

@@ -23,10 +23,8 @@ import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
 import com.kingx.dungeons.engine.system.ai.ZombieAI;
 import com.kingx.dungeons.geom.MazeBuilder;
+import com.kingx.dungeons.geom.MazeFactory;
 import com.kingx.dungeons.geom.MazePoly;
-import com.kingx.dungeons.geom.MazePolygon;
-import com.kingx.dungeons.geom.Point;
-import com.kingx.dungeons.geom.Point.Int;
 import com.kingx.dungeons.graphics.MazeMap;
 
 public class App implements ApplicationListener {
@@ -62,16 +60,23 @@ public class App implements ApplicationListener {
     public void create() {
         reference = this;
         ShaderProgram.pedantic = false;
-
         world = new World();
-        Logic.init(world);
+
+        new Logic() {
+
+            @Override
+            protected void update(float delta) {
+                world.setDelta(delta);
+                world.process();
+            }
+        }.init();
 
         Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
         Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
         Gdx.gl.glDepthFunc(GL10.GL_LESS);
     }
 
-    private boolean initialized = false;
+    private boolean init = true;
     private SpriteBatch onScreenRender;
     private World world;
     private RenderGeometrySystem renderGeometrySystem;
@@ -83,8 +88,9 @@ public class App implements ApplicationListener {
     public void render() {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
                 | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
-        if (!initialized) {
+        if (init) {
             init();
+            init = false;
         }
         camera.update();
 
@@ -111,9 +117,6 @@ public class App implements ApplicationListener {
         mazeCreation.createEntity().addToWorld();
 
         onScreenRender = new SpriteBatch();
-
-        initialized = true;
-
     }
 
     /**
@@ -129,7 +132,7 @@ public class App implements ApplicationListener {
      */
     private void createMaze() {
         maze = new MazeMap(footprint);
-        mazeMesh = new MazePolygon(maze, new Vector3(1f, 1f, 1f)).generate();
+        mazeMesh = new MazeFactory(maze, new Vector3(1f, 1f, 1f)).generate();
     }
 
     /**
@@ -148,9 +151,8 @@ public class App implements ApplicationListener {
      * Place player in the game
      */
     private void createPlayer() {
-        Point.Int p = maze.getRandomBlock();
-        player = new Wanderer(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 0.2f, 5f);
-        player.setCamera(camera);
+        Vector3 p = maze.getRandomPosition();
+        player = new Wanderer(world, p, 0.2f, 5f, camera);
         player.createEntity().addToWorld();
     }
 
@@ -162,8 +164,8 @@ public class App implements ApplicationListener {
      */
     private void createZombies(int count) {
         for (int i = 0; i < count; i++) {
-            Int p = maze.getRandomBlock();
-            Zombie zombie = new Zombie(world, 1f * (p.x + 0.5f), 1f * (p.y + 0.5f), 1f, 1f);
+            Vector3 p = maze.getRandomPosition();
+            Zombie zombie = new Zombie(world, p, 1f, 1f);
             zombie.createEntity().addToWorld();
         }
     }

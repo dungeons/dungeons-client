@@ -34,7 +34,7 @@ public class Shader {
             if (vertex != null && fragment != null) {
                 program = new ShaderProgram(vertex, fragment);
                 if (!program.isCompiled()) {
-                    throw new GdxRuntimeException("Couldn't compile flat shader: " + program.getLog());
+                    throw new GdxRuntimeException("Couldn't compile shader: " + program.getLog());
                 }
             }
         }
@@ -70,8 +70,6 @@ public class Shader {
             } else {
                 ss = map.get(name);
             }
-
-            System.out.println("Parsing: " + f);
 
             switch (ShaderType.valueOf(ext)) {
                 case vsh:

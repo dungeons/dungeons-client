@@ -11,18 +11,10 @@ import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.graphics.MazeMap;
 
-public final class MazePolygon {
+public final class MazeFactory {
 
     private final Vector3 WALL_SIZE;
     private final int VERTS_PER_QUAD = 4;
-
-    private static final Boolean[] allowed = { true,// Front
-            true,// Right
-            true,// Back
-            true,// Left
-            true,// Top
-            true // Bottom
-    };
 
     private static final float[][] positionOffset = { { 0, 0, 0 }, // 0/7
             { 1, 0, 0 }, // 1/7
@@ -53,7 +45,7 @@ public final class MazePolygon {
     private final ArrayList<Short> indices = new ArrayList<Short>();
     private int vertsOffset = 0;
 
-    public MazePolygon(MazeMap maze, Vector3 wallSize) {
+    public MazeFactory(MazeMap maze, Vector3 wallSize) {
         WALL_SIZE = wallSize;
 
         for (int i = 0; i < maze.getFootprint().length; i++) {
@@ -84,14 +76,12 @@ public final class MazePolygon {
 
     private void makeWall(float x, float y, float z) {
         for (int i = 0; i < quads.length; i++) {
-            if (allowed[i]) {
-                makeQuad(x, y, z, i);
-            }
+            makeQuad(x, y, z, i);
         }
     }
 
     private void makeQuad(float x, float y, float z, int face) {
-        TextureRegion texture = getTexture(App.rand.nextInt(4));
+        TextureRegion texture = getTexture(App.rand.nextInt(2));
         for (int i = 0; i < quads[face].length; i++) {
             Vector2 cords = getTextureCoordinates(i, texture);
             verts.add(positionOffset[quads[face][i]][0] * WALL_SIZE.x + x); // x position
@@ -132,13 +122,9 @@ public final class MazePolygon {
     private TextureRegion getTexture(int i) {
         switch (i) {
             case 0:
-                return Assets.getTexture("wall",0);
+                return Assets.getTexture("wall", 0);
             case 1:
-                return Assets.getTexture("wall",1);
-            case 2:
-                return Assets.getTexture("wall",2);
-            case 3:
-                return Assets.getTexture("wall",3);
+                return Assets.getTexture("wall", 1);
         }
         return null;
     }
