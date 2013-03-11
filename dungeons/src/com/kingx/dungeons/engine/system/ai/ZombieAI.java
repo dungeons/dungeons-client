@@ -67,7 +67,7 @@ public class ZombieAI extends EntityProcessingSystem {
             data.target = data.playerPosition.vector.cpy();
             data.entityMove.vector.set(data.target.x - data.entityPosition.vector.x, data.target.y - data.entityPosition.vector.y).nor();
             data.entitySpeed.current = data.entitySpeed.turbo;
-            //    data.shader.texture = getRightTexture(data.entityMove.vector);
+            data.shader.texture = getRightTexture(data.entityMove.vector);
             System.out.println();
             return true;
         }
@@ -95,9 +95,10 @@ public class ZombieAI extends EntityProcessingSystem {
             if (counter > 40) {
                 counter = 0;
                 data.entityMove.vector = getNewDirection();
+                data.shader.texture = getRightTexture(data.entityMove.vector);
             }
             data.entitySpeed.current = data.entitySpeed.speed;
-            data.shader.color = Colors.ZOMBIE_NORMAL.color;
+            data.shader.color = Colors.GROUND.color;
             return true;
         }
 
@@ -107,7 +108,13 @@ public class ZombieAI extends EntityProcessingSystem {
     }
 
     public static TextureRegion getRightTexture(Vector2 vector) {
-        int ang = (int) Math.toDegrees(Math.atan2(vector.y, vector.x));
-        return Assets.getTexture("zombie", (ang / 360 * 8));
+        int ang = (int) Math.toDegrees(Math.atan2(vector.y, vector.x)) + 90 + 22;
+        if (ang < 0) {
+            ang += 360;
+        } else if (ang > 360) {
+            ang -= 360;
+        }
+        ang = (int) (ang / 360f * 8);
+        return Assets.getTexture("zombie", ang);
     }
 }

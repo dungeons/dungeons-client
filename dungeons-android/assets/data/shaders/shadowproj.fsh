@@ -14,6 +14,7 @@ uniform vec3 v_lightSpacePosition;
 uniform sampler2D u_texture;
 uniform sampler2D DepthMap;
 uniform float u_mapOffset;
+uniform bool u_useTextures;
 
 
 // Varying variables.
@@ -95,11 +96,13 @@ worldPostitoin.z = 0.0;
 		float r = round(interpolate(u_source_color.r ,u_ground_color.r, distance, 1.0)*del) / del;
 		float g = round(interpolate(u_source_color.g ,u_ground_color.g, distance, 1.0)*del) / del;
 		float b = round(interpolate(u_source_color.b ,u_ground_color.b, distance, 1.0)*del) / del;
-  
+     
+        float tex = u_useTextures ? texture2D(u_texture,v_texCoord) : 1.0;
+        
 	    if(vWorldVertex.z  >= .99 || shadow){
-	  		gl_FragColor = u_ground_color* texture2D(u_texture,v_texCoord);
+	  		gl_FragColor = u_ground_color * tex;
         }else{
-	 		gl_FragColor = vec4(r,g,b,1.0)* texture2D(u_texture,v_texCoord);
+	 		gl_FragColor = vec4(r,g,b,1.0) * tex;
         }
         
 }

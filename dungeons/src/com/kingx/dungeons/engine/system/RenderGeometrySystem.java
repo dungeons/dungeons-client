@@ -6,7 +6,6 @@ import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
 import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.kingx.dungeons.engine.component.PositionComponent;
@@ -24,14 +23,14 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
     ComponentMapper<SizeComponent> ss;
 
     private final Camera camera;
-    private ShaderProgram shader;
-    private Texture texture;
+    private final ShaderProgram shader;
     private final SpriteBatch sb = new SpriteBatch();
 
     public RenderGeometrySystem(Camera camera) {
         super(Aspect.getAspectForAll(PositionComponent.class, ShaderComponent.class, GeometryRenderTag.class));
         this.camera = camera;
-        sb.setShader(Shader.getShader("sprite"));
+        this.shader = Shader.getShader("sprite");
+        sb.setShader(shader);
     }
 
     /**
@@ -56,6 +55,7 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
         ShaderComponent sc = sm.getSafe(e);
         SizeComponent ccs = ss.getSafe(e);
         if (sc.texture != null) {
+            shader.setUniformf("u_tint", sc.color);
             PositionComponent pc = pm.getSafe(e);
 
             //camera.combined.translate(pc.vector.x, pc.vector.y, pc.vector.z + 5);
