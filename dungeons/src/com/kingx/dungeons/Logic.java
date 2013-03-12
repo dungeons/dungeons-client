@@ -1,5 +1,7 @@
 package com.kingx.dungeons;
 
+import com.kingx.dungeons.server.Command;
+
 public abstract class Logic implements Runnable {
 
     private volatile boolean init = true;
@@ -49,4 +51,14 @@ public abstract class Logic implements Runnable {
     }
 
     protected abstract void update(float delta);
+
+    public void executeServerCommand(Command c) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public void executeClientCommand(Command c) {
+        // TODO Auto-generated method stub
+
+    }
 }
