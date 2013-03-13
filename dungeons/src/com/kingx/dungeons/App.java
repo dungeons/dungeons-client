@@ -26,6 +26,8 @@ import com.kingx.dungeons.geom.MazeBuilder;
 import com.kingx.dungeons.geom.MazeFactory;
 import com.kingx.dungeons.geom.MazePoly;
 import com.kingx.dungeons.graphics.MazeMap;
+import com.kingx.dungeons.server.OfflineServer;
+import com.kingx.dungeons.server.OnlineServer;
 import com.kingx.dungeons.server.Server;
 
 public class App implements ApplicationListener {
@@ -65,14 +67,18 @@ public class App implements ApplicationListener {
         ShaderProgram.pedantic = false;
         world = new World();
 
-        new Logic() {
+        Logic logic = new Logic() {
 
             @Override
             protected void update(float delta) {
                 world.setDelta(delta);
                 world.process();
             }
-        }.init();
+        };
+
+        logic.init();
+
+        server = SERVER ? new OnlineServer(logic) : new OfflineServer(logic);
 
         Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
         Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
@@ -124,7 +130,8 @@ public class App implements ApplicationListener {
     }
 
     /**
-     * If template is available, creates footprint based on that template, otherwise generates random map.
+     * If template is available, creates footprint based on that template,
+     * otherwise generates random map.
      */
     private void createMap() {
         footprint = Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT) : Assets.map;
