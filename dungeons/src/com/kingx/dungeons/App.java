@@ -26,12 +26,14 @@ import com.kingx.dungeons.geom.MazeBuilder;
 import com.kingx.dungeons.geom.MazeFactory;
 import com.kingx.dungeons.geom.MazePoly;
 import com.kingx.dungeons.graphics.MazeMap;
+import com.kingx.dungeons.server.Server;
 
 public class App implements ApplicationListener {
 
     // Global switches
     public static boolean DEBUG;
     public static boolean NOSLEEP;
+    public static boolean SERVER;
 
     public static final Random rand = new Random();
     private static Camera camera;
@@ -52,8 +54,9 @@ public class App implements ApplicationListener {
         if (args != null) {
             params.addAll(Arrays.asList(args));
         }
-        DEBUG = params.contains("debug") || params.contains("-debug") || params.contains("--debug");
-        NOSLEEP = params.contains("nosleep") || params.contains("-nosleep") || params.contains("--nosleep");
+        DEBUG = params.contains("-d") || params.contains("-debug") || params.contains("--debug");
+        NOSLEEP = params.contains("-ns") || params.contains("-nosleep") || params.contains("--nosleep");
+        SERVER = params.contains("-s") || params.contains("-server") || params.contains("--server");
     }
 
     @Override
@@ -83,6 +86,7 @@ public class App implements ApplicationListener {
     private RenderShadowSystem renderShadowSystem;
     private MazeMap maze;
     private static Wanderer player;
+    private static Server server;
 
     @Override
     public void render() {
@@ -120,8 +124,7 @@ public class App implements ApplicationListener {
     }
 
     /**
-     * If template is available, creates footprint based on that template,
-     * otherwise generates random map.
+     * If template is available, creates footprint based on that template, otherwise generates random map.
      */
     private void createMap() {
         footprint = Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT) : Assets.map;
@@ -221,6 +224,10 @@ public class App implements ApplicationListener {
 
     public static Camera getDefaultCam() {
         return camera;
+    }
+
+    public static Server getServer() {
+        return server;
     }
 
     @Override

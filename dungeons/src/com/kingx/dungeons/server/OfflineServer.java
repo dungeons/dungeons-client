@@ -9,11 +9,6 @@ public class OfflineServer extends AbstractServer {
     }
 
     @Override
-    public void send(Command c) {
-        logic.executeClientCommand(c);
-    }
-
-    @Override
     public Command recieve() {
         return null;
     }
