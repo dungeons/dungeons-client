@@ -1,20 +1,27 @@
 package com.kingx.dungeons.server;
 
-public class ServerCommand extends Command {
+public class ServerCommand {
 
-    private static final int ID = 2;
-    private static final int ACTION = 2;
-    private static final int VALUE = 4;
-
-    public ServerCommand() {
-        super(ID + ACTION + VALUE);
-    }
+    private final short id;
+    private final short action;
+    private final int value;
 
     public ServerCommand(short id, short action, int value) {
-        super(ID + ACTION + VALUE);
-        this.buffer.putShort(id);
-        this.buffer.putShort(action);
-        this.buffer.putInt(value);
+        this.id = id;
+        this.action = action;
+        this.value = value;
+    }
+
+    public short getId() {
+        return id;
+    }
+
+    public short getAction() {
+        return action;
+    }
+
+    public int getValue() {
+        return value;
     }
 
 }

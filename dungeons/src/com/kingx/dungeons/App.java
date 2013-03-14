@@ -69,7 +69,7 @@ public class App implements ApplicationListener {
         ShaderProgram.pedantic = false;
         world = new World();
 
-        client = new Client();
+        client = new Client(world);
         server = SERVER ? new OnlineServer(client) : new OfflineServer(client);
 
         Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);

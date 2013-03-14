@@ -1,10 +1,12 @@
 package com.kingx.dungeons.server;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
 import com.artemis.World;
 
-public class OfflineServer extends AbstractServer {
+public class OfflineServer extends OnlineServer {
 
     private final World world;
 
@@ -14,16 +16,14 @@ public class OfflineServer extends AbstractServer {
     }
 
     @Override
-    public void update(float delta) {
-        world.setDelta(delta);
-        world.process();
-
-        this.recieve(null);
+    protected Socket connect() throws UnknownHostException, IOException {
+        return new Socket();
     }
 
     @Override
-    public void process(ArrayList<Command> buffer) {
-        // TODO Auto-generated method stub
+    public void process(ClientCommand c) {
+        //TODO logic
+        client.recieve(new ServerCommand((short) 1, (short) 1, 20));
     }
 
 }
