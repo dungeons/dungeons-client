@@ -16,6 +16,7 @@ public class Client {
         if (e == null) {
             e = createEntity(c.getId());
         }
+        e.get
     }
 
     private Entity createEntity(short id) {
