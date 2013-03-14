@@ -1,16 +1,29 @@
 package com.kingx.dungeons.server;
 
-import com.kingx.dungeons.Logic;
+import java.util.ArrayList;
+
+import com.artemis.World;
 
 public class OfflineServer extends AbstractServer {
 
-    public OfflineServer(Logic logic) {
-        super(logic);
+    private final World world;
+
+    public OfflineServer(Client client) {
+        super(client);
+        world = new World();
     }
 
     @Override
-    public Command recieve() {
-        return null;
+    public void update(float delta) {
+        world.setDelta(delta);
+        world.process();
+
+        this.recieve(null);
+    }
+
+    @Override
+    public void process(ArrayList<Command> buffer) {
+        // TODO Auto-generated method stub
     }
 
 }

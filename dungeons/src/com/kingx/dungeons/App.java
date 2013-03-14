@@ -26,6 +26,7 @@ import com.kingx.dungeons.geom.MazeBuilder;
 import com.kingx.dungeons.geom.MazeFactory;
 import com.kingx.dungeons.geom.MazePoly;
 import com.kingx.dungeons.graphics.MazeMap;
+import com.kingx.dungeons.server.Client;
 import com.kingx.dungeons.server.OfflineServer;
 import com.kingx.dungeons.server.OnlineServer;
 import com.kingx.dungeons.server.Server;
@@ -50,6 +51,7 @@ public class App implements ApplicationListener {
     public static final int MAZE_BLOCKS_COUNT = 25;
     public static final float MAZE_WALL_SIZE = 1f;
     private final HashSet<String> params;
+    private Client client;
 
     public App(String[] args) {
         params = new HashSet<String>();
@@ -67,18 +69,8 @@ public class App implements ApplicationListener {
         ShaderProgram.pedantic = false;
         world = new World();
 
-        Logic logic = new Logic() {
-
-            @Override
-            protected void update(float delta) {
-                world.setDelta(delta);
-                world.process();
-            }
-        };
-
-        logic.init();
-
-        server = SERVER ? new OnlineServer(logic) : new OfflineServer(logic);
+        client = new Client();
+        server = SERVER ? new OnlineServer(client) : new OfflineServer(client);
 
         Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
         Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);

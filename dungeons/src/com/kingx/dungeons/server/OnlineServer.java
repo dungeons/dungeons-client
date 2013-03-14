@@ -4,23 +4,23 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 
 import javax.swing.SwingUtilities;
-
-import com.kingx.dungeons.Logic;
 
 public class OnlineServer extends AbstractServer {
 
     private OutputStream out;
     private InputStream in;
 
-    public OnlineServer(Logic logic) {
-        super(logic);
-        Socket kkSocket;
+    public OnlineServer(Client client) {
+        super(client);
+
+        Socket socket;
         try {
-            kkSocket = new Socket("77.240.185.52", 5000);
-            in = kkSocket.getInputStream();
-            out = kkSocket.getOutputStream();
+            socket = new Socket("77.240.185.52", 5000);
+            in = socket.getInputStream();
+            out = socket.getOutputStream();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,17 +43,14 @@ public class OnlineServer extends AbstractServer {
     }
 
     @Override
-    public void send(Command c) {
-        try {
-            out.write(c.buffer.array());
-        } catch (Exception e) {
-            e.printStackTrace();
+    public void process(ArrayList<Command> buffer) {
+        for (Command c : buffer) {
+            try {
+                out.write(c.buffer.array());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-    }
-
-    @Override
-    public Command recieve() {
-        return null;
     }
 
 }

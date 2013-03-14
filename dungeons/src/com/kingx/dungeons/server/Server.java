@@ -2,7 +2,10 @@ package com.kingx.dungeons.server;
 
 public interface Server {
 
-    void send(Command c);
+    void send(ClientCommand c);
 
-    Command recieve();
+    void recieve(ServerCommand c);
+
+    void update(float step);
+
 }
