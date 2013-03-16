@@ -8,6 +8,8 @@ import java.net.UnknownHostException;
 
 import javax.swing.SwingUtilities;
 
+import com.kingx.dungeons.engine.system.Decoder;
+
 public class OnlineServer extends AbstractServer {
 
     private static final String IP = "77.240.185.52";
@@ -15,7 +17,7 @@ public class OnlineServer extends AbstractServer {
     private DataOutputStream out;
     private DataInputStream in;
 
-    public OnlineServer(Client client) {
+    public OnlineServer(Decoder client) {
         super(client);
 
         Socket socket;

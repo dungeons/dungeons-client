@@ -2,22 +2,28 @@ package com.kingx.dungeons.server;
 
 public class ServerCommand {
 
-    private final short id;
-    private final short action;
+    private final int id;
+    private final short component;
+    private final short componentProperty;
     private final int value;
 
-    public ServerCommand(short id, short action, int value) {
+    private ServerCommand(int id, short component, short componentProperty, int value) {
         this.id = id;
-        this.action = action;
+        this.component = component;
+        this.componentProperty = componentProperty;
         this.value = value;
     }
 
-    public short getId() {
+    public int getId() {
         return id;
     }
 
-    public short getAction() {
-        return action;
+    public short getComponent() {
+        return component;
+    }
+
+    public short getComponentProperty() {
+        return componentProperty;
     }
 
     public int getValue() {

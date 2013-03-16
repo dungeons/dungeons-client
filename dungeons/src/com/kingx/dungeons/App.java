@@ -17,16 +17,13 @@ import com.badlogic.gdx.math.Vector3;
 import com.kingx.dungeons.engine.concrete.Maze;
 import com.kingx.dungeons.engine.concrete.Wanderer;
 import com.kingx.dungeons.engine.concrete.Zombie;
-import com.kingx.dungeons.engine.system.CollisionSystem;
-import com.kingx.dungeons.engine.system.MovementSystem;
+import com.kingx.dungeons.engine.system.Decoder;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
-import com.kingx.dungeons.engine.system.ai.ZombieAI;
 import com.kingx.dungeons.geom.MazeBuilder;
 import com.kingx.dungeons.geom.MazeFactory;
 import com.kingx.dungeons.geom.MazePoly;
 import com.kingx.dungeons.graphics.MazeMap;
-import com.kingx.dungeons.server.Client;
 import com.kingx.dungeons.server.OfflineServer;
 import com.kingx.dungeons.server.OnlineServer;
 import com.kingx.dungeons.server.Server;
@@ -51,7 +48,7 @@ public class App implements ApplicationListener {
     public static final int MAZE_BLOCKS_COUNT = 25;
     public static final float MAZE_WALL_SIZE = 1f;
     private final HashSet<String> params;
-    private Client client;
+    private Decoder decoder;
 
     public App(String[] args) {
         params = new HashSet<String>();
@@ -69,8 +66,8 @@ public class App implements ApplicationListener {
         ShaderProgram.pedantic = false;
         world = new World();
 
-        client = new Client(world);
-        server = SERVER ? new OnlineServer(client) : new OfflineServer(client);
+        decoder = new Decoder(world);
+        server = SERVER ? new OnlineServer(decoder) : new OfflineServer(decoder);
 
         Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
         Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
@@ -80,6 +77,7 @@ public class App implements ApplicationListener {
     private boolean init = true;
     private SpriteBatch onScreenRender;
     private World world;
+    private Decoder decoderSystem;
     private RenderGeometrySystem renderGeometrySystem;
     private RenderShadowSystem renderShadowSystem;
     private MazeMap maze;
@@ -96,6 +94,7 @@ public class App implements ApplicationListener {
         }
         camera.update();
 
+        decoderSystem.process();
         renderShadowSystem.process();
         renderGeometrySystem.process();
 
@@ -141,9 +140,7 @@ public class App implements ApplicationListener {
      * Register systems to the world and initialize.
      */
     private void addSystemsToWorld() {
-        world.setSystem(new MovementSystem());
-        world.setSystem(new ZombieAI());
-        world.setSystem(new CollisionSystem());
+        decoderSystem = world.setSystem(decoder, true);
         renderShadowSystem = world.setSystem(new RenderShadowSystem(camera), true);
         renderGeometrySystem = world.setSystem(new RenderGeometrySystem(camera), true);
         world.initialize();

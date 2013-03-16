@@ -1,10 +1,9 @@
-package com.kingx.dungeons.engine.component;
+package com.kingx.dungeons.engine.component.dynamic;
 
-import com.artemis.Component;
 import com.badlogic.gdx.math.Vector2;
 
-public class MoveComponent extends Component {
-    public Vector2 vector;
+public class MoveComponent extends AbstractComponent {
+    private final Vector2 vector;
 
     public MoveComponent(Vector2 vector) {
         this.vector = vector;
@@ -17,6 +16,16 @@ public class MoveComponent extends Component {
     @Override
     public String toString() {
         return "MoveComponent [vector=" + vector + "]";
+    }
+
+    @Override
+    public void setComponent(int id, int value) {
+        // TODO Auto-generated method stub
+
+    }
+
+    public Vector2 getVector() {
+        return vector;
     }
 
 }

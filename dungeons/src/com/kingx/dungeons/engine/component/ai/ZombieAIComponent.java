@@ -3,10 +3,10 @@ package com.kingx.dungeons.engine.component.ai;
 import com.artemis.Component;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector3;
-import com.kingx.dungeons.engine.component.MoveComponent;
-import com.kingx.dungeons.engine.component.PositionComponent;
 import com.kingx.dungeons.engine.component.ShaderComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
+import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
+import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 
 public class ZombieAIComponent extends Component {
 

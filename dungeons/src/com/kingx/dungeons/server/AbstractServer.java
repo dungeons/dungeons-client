@@ -2,11 +2,13 @@ package com.kingx.dungeons.server;
 
 import java.util.ArrayList;
 
+import com.kingx.dungeons.engine.system.Decoder;
+
 public abstract class AbstractServer implements Server {
-    protected Client client;
+    protected Decoder client;
     private final ArrayList<ClientCommand> buffer = new ArrayList<ClientCommand>();
 
-    public AbstractServer(Client client) {
+    public AbstractServer(Decoder client) {
         this.client = client;
     }
 

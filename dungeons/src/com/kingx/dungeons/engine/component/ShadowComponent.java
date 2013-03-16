@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.PerspectiveCamera;
 
 public class ShadowComponent extends Component {
 
-    public Camera[] lights;
+    private final Camera[] lights;
 
     public ShadowComponent() {
 

@@ -8,9 +8,9 @@ import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.kingx.dungeons.engine.component.PositionComponent;
 import com.kingx.dungeons.engine.component.ShaderComponent;
-import com.kingx.dungeons.engine.component.SizeComponent;
+import com.kingx.dungeons.engine.dynamic.PositionComponent;
+import com.kingx.dungeons.engine.dynamic.SizeComponent;
 import com.kingx.dungeons.engine.tags.GeometryRenderTag;
 import com.kingx.dungeons.graphics.Shader;
 

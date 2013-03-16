@@ -5,10 +5,14 @@ import com.badlogic.gdx.graphics.Mesh;
 
 public class MeshComponent extends Component {
 
-    public Mesh mesh;
+    private final Mesh mesh;
 
     public MeshComponent(Mesh mesh) {
         this.mesh = mesh;
+    }
+
+    public Mesh getMesh() {
+        return mesh;
     }
 
 }

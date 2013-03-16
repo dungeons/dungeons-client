@@ -5,14 +5,21 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import com.artemis.World;
+import com.kingx.dungeons.engine.system.CollisionSystem;
+import com.kingx.dungeons.engine.system.Decoder;
+import com.kingx.dungeons.engine.system.MovementSystem;
+import com.kingx.dungeons.engine.system.ai.ZombieAI;
 
 public class OfflineServer extends OnlineServer {
 
     private final World world;
 
-    public OfflineServer(Client client) {
+    public OfflineServer(Decoder client) {
         super(client);
         world = new World();
+        world.setSystem(new MovementSystem());
+        world.setSystem(new ZombieAI());
+        world.setSystem(new CollisionSystem());
     }
 
     @Override

@@ -6,8 +6,8 @@ import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
 import com.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.App;
-import com.kingx.dungeons.engine.component.PositionComponent;
-import com.kingx.dungeons.engine.component.SizeComponent;
+import com.kingx.dungeons.engine.dynamic.PositionComponent;
+import com.kingx.dungeons.engine.dynamic.SizeComponent;
 import com.kingx.dungeons.geom.Point;
 import com.kingx.dungeons.geom.Point.Int;
 

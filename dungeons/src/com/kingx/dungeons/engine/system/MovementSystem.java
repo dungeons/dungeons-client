@@ -7,10 +7,10 @@ import com.artemis.annotations.Mapper;
 import com.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.FollowCameraComponent;
-import com.kingx.dungeons.engine.component.MoveComponent;
-import com.kingx.dungeons.engine.component.PositionComponent;
-import com.kingx.dungeons.engine.component.RotationComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
+import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
+import com.kingx.dungeons.engine.component.dynamic.RotationComponent;
+import com.kingx.dungeons.engine.dynamic.PositionComponent;
 
 public class MovementSystem extends EntityProcessingSystem {
     @Mapper
@@ -35,7 +35,7 @@ public class MovementSystem extends EntityProcessingSystem {
         SpeedComponent speed = speedMapper.get(e);
         MoveComponent moveVector = inputMapper.get(e);
 
-        position.vector.x += moveVector.vector.x * speed.current * world.delta;
+        position.vector.x += moveVector..x * speed.current * world.delta;
         position.vector.y += moveVector.vector.y * speed.current * world.delta;
 
         if (cameraMapper.has(e)) {
