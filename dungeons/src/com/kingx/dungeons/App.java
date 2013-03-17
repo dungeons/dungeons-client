@@ -38,15 +38,15 @@ public class App implements ApplicationListener {
     public static final Random rand = new Random();
     private static Camera camera;
 
-    private static boolean[][] footprint;
-    public static App reference;
+    private static MazeMap mazeMap;
+    public static MazePoly mazeMesh;
+
     private static boolean wireframe;
     private static boolean fps;
-    public static MazePoly mazeMesh;
-    public static int rot;
 
     public static final int MAZE_BLOCKS_COUNT = 25;
     public static final float MAZE_WALL_SIZE = 1f;
+
     private final HashSet<String> params;
     private Clock clock;
 
@@ -62,7 +62,6 @@ public class App implements ApplicationListener {
 
     @Override
     public void create() {
-        reference = this;
         ShaderProgram.pedantic = false;
         world = new World();
 
@@ -79,7 +78,6 @@ public class App implements ApplicationListener {
     private World world;
     private RenderShadowSystem renderShadowSystem;
     private RenderGeometrySystem renderGeometrySystem;
-    private MazeMap maze;
     private static Wanderer player;
     private static AbstractServer server;
 
@@ -105,15 +103,11 @@ public class App implements ApplicationListener {
     }
 
     private void init() {
-        createMap();
-        createMaze();
         addSystemsToWorld();
 
+        createMaze();
         createPlayer();
         createZombies(10);
-
-        Maze mazeCreation = new Maze(world, mazeMesh);
-        mazeCreation.createEntity().addToWorld();
 
         onScreenRender = new SpriteBatch();
         server = SERVER ? new OnlineServer(world) : new OfflineServer(world);
@@ -123,19 +117,24 @@ public class App implements ApplicationListener {
     }
 
     /**
-     * If template is available, creates footprint based on that template,
-     * otherwise generates random map.
+     * Generates maze footprint and polygon. Creates maze instance and places it
+     * in the game world.
      */
-    private void createMap() {
-        footprint = Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT) : Assets.map;
+    private void createMaze() {
+        mazeMap = new MazeMap(createMap());
+        mazeMesh = new MazeFactory(mazeMap, new Vector3(1f, 1f, 1f)).generate();
+        Maze mazeCreation = new Maze(world, mazeMesh);
+        mazeCreation.createEntity().addToWorld();
     }
 
     /**
-     * Build maze polygon from footprint.
+     * If template is available, creates footprint based on that template,
+     * otherwise generates random map.
+     * 
+     * @return generated map
      */
-    private void createMaze() {
-        maze = new MazeMap(footprint);
-        mazeMesh = new MazeFactory(maze, new Vector3(1f, 1f, 1f)).generate();
+    private boolean[][] createMap() {
+        return Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT) : Assets.map;
     }
 
     /**
@@ -150,7 +149,7 @@ public class App implements ApplicationListener {
      * Place player in the game
      */
     private void createPlayer() {
-        Vector3 p = maze.getRandomPosition();
+        Vector3 p = mazeMap.getRandomPosition();
         player = new Wanderer(world, p, 0.2f, 5f, camera);
         player.createEntity().addToWorld();
     }
@@ -163,7 +162,7 @@ public class App implements ApplicationListener {
      */
     private void createZombies(int count) {
         for (int i = 0; i < count; i++) {
-            Vector3 p = maze.getRandomPosition();
+            Vector3 p = mazeMap.getRandomPosition();
             Zombie zombie = new Zombie(world, p, 1f, 1f);
             zombie.createEntity().addToWorld();
         }
@@ -214,8 +213,8 @@ public class App implements ApplicationListener {
         return player;
     }
 
-    public static boolean[][] getFootprint() {
-        return footprint;
+    public static MazeMap getMap() {
+        return mazeMap;
     }
 
     public static Camera getDefaultCam() {
@@ -225,6 +224,8 @@ public class App implements ApplicationListener {
     public static AbstractServer getServer() {
         return server;
     }
+
+    // Application cycle events
 
     @Override
     public void pause() {

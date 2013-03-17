@@ -77,15 +77,15 @@ public class CollisionSystem extends EntityProcessingSystem {
      * @return {@code true} if point is walkable, {@code false} otherwise
      */
     private boolean isWalkable(Int point) {
-        if (point.x < 0 || point.x >= App.getFootprint().length) {
+        boolean[][] footprint = App.getMap().getFootprint();
+        if (point.x < 0 || point.x >= footprint.length) {
             return false;
         }
 
-        if (point.y < 0 || point.y >= App.getFootprint()[0].length) {
+        if (point.y < 0 || point.y >= footprint[0].length) {
             return false;
         }
 
-        return App.getFootprint()[point.x][point.y];
+        return footprint[point.x][point.y];
     }
-
 }

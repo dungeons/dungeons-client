@@ -90,6 +90,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
             shadowProjectShader.setUniformf("u_ground_color", Colors.SHADOW);
             shadowProjectShader.setUniformi("DepthMap", 0);
             shadowProjectShader.setUniformf("u_useTextures", 0);
+            shadowProjectShader.setUniformf("u_bounds", 0f, 0f, App.getMap().getWidth(), App.getMap().getHeight());
             poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
             shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
             shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);

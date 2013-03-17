@@ -15,6 +15,7 @@ uniform sampler2D u_texture;
 uniform sampler2D DepthMap;
 uniform float u_mapOffset;
 uniform bool u_useTextures;
+uniform vec4 u_bounds;
 
 
 // Varying variables.
@@ -44,7 +45,8 @@ void main ()
 {
 	/// THESE COMMENTS REPRESENT WHAT I THINK THIS CODE DOES. I HAVE NO IDEA WHAT IS CORRECT
     vec4 worldPostitoin = vWorldVertex;
-worldPostitoin.z = 0.0;
+    worldPostitoin.z = 0.0;
+
 	bool shadow = false;
 	vec3 depth;
 		for(int i = 0; i < 4; i++){
@@ -53,7 +55,7 @@ worldPostitoin.z = 0.0;
 			
 			// interpolates across z buffer so value si within the bound
 			// length(worldPostitoin.xy - v_lightSpacePosition.xy) removers the light circle around player but causes wall flickering.
-			depth.z = length(worldPostitoin.xy) * (LinearDepthConstant) ;
+			depth.z = length(worldPostitoin.xy) * (LinearDepthConstant);
 			// make sure that shadow is computed within lights area (90° area)
             // FIXME This is not a sollution, areas are still overlapping
             float bias = 0.0;
@@ -100,6 +102,8 @@ worldPostitoin.z = 0.0;
      
         float tex = u_useTextures ? texture2D(u_texture,v_texCoord) : 1.0;
         
+        shadow = worldPostitoin.x < u_bounds.x || worldPostitoin.x > u_bounds.z ||   worldPostitoin.y < u_bounds.y || worldPostitoin.y > u_bounds.w ? true : shadow;
+	    
 	    if(vWorldVertex.z  >= .99 || shadow){
 	  		gl_FragColor = u_ground_color * tex;
         }else{
