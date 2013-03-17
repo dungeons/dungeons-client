@@ -1,15 +1,15 @@
 package com.kingx.dungeons;
 
-import com.kingx.dungeons.server.Server;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Clock implements Runnable {
 
     private volatile boolean init = true;
     private final boolean quit = false;
-    private Server server;
+    private final List<Updateable> services = new LinkedList<Updateable>();
 
-    public void init(Server server) {
-        this.server = server;
+    public Clock() {
         if (init) {
             new Thread(this).start();
             init = false;
@@ -45,10 +45,21 @@ public class Clock implements Runnable {
                 }
             } else {
                 while (accumulator >= delta) {
-                    server.update(delta);
+                    for (Updateable service : services) {
+                        service.update(delta);
+                    }
                     accumulator -= delta;
                 }
             }
         }
     }
+
+    public void addService(Updateable service) {
+        services.add(service);
+    }
+
+    public void removeService(Updateable service) {
+        services.remove(service);
+    }
+
 }

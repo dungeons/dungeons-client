@@ -4,11 +4,11 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
-import java.net.UnknownHostException;
 
 import javax.swing.SwingUtilities;
 
-import com.kingx.dungeons.engine.system.Decoder;
+import com.artemis.World;
+import com.kingx.dungeons.engine.system.server.Decoder;
 
 public class OnlineServer extends AbstractServer {
 
@@ -16,13 +16,21 @@ public class OnlineServer extends AbstractServer {
     private static final int PORT = 5000;
     private DataOutputStream out;
     private DataInputStream in;
+    private final Decoder decoderSystem;
 
-    public OnlineServer(Decoder client) {
-        super(client);
+    public OnlineServer(World world) {
+        super(world);
 
+        initServer();
+
+        decoderSystem = new Decoder(world);
+        world.setSystem(decoderSystem, true);
+    }
+
+    private void initServer() {
         Socket socket;
         try {
-            socket = connect();
+            socket = new Socket(IP, PORT);
             in = new DataInputStream(socket.getInputStream());
             out = new DataOutputStream(socket.getOutputStream());
         } catch (Exception e) {
@@ -43,11 +51,6 @@ public class OnlineServer extends AbstractServer {
                 }
             }
         });
-
-    }
-
-    protected Socket connect() throws UnknownHostException, IOException {
-        return new Socket(IP, PORT);
     }
 
     @Override
@@ -59,5 +62,14 @@ public class OnlineServer extends AbstractServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void recieve(ServerCommand c) {
+        decoderSystem.recieve(c);
+    }
+
+    @Override
+    public void updateInternal(float delta) {
+        decoderSystem.process();
     }
 }

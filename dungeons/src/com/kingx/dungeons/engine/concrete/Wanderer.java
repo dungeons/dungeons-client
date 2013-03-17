@@ -9,14 +9,16 @@ import com.kingx.dungeons.engine.component.ShaderComponent;
 import com.kingx.dungeons.engine.component.ShadowComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
+import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.RotationComponent;
-import com.kingx.dungeons.engine.dynamic.PositionComponent;
-import com.kingx.dungeons.engine.dynamic.SizeComponent;
+import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
 import com.kingx.dungeons.engine.tags.GeometryRenderTag;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.Shader;
 
 public class Wanderer extends ConcreteEntity {
+
+    final MoveComponent position;
 
     public Wanderer(World world, Vector3 position, float size, float speed, Camera camera) {
         super(world);
@@ -38,6 +40,13 @@ public class Wanderer extends ConcreteEntity {
             bag.add(new FollowCameraComponent(camera, 10f));
         }
 
+        this.position = moveComponent;
+
         //  InputManager.getInstance().registerInput(InputSet.Player1, moveComponent);
     }
+
+    public MoveComponent getPosition() {
+        return position;
+    }
+
 }

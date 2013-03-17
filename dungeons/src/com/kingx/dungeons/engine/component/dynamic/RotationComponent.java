@@ -3,7 +3,7 @@ package com.kingx.dungeons.engine.component.dynamic;
 import com.badlogic.gdx.math.Vector3;
 
 public class RotationComponent extends AbstractComponent {
-    private final Vector3 vector;
+    private Vector3 vector;
 
     public RotationComponent(Vector3 vector) {
         this.vector = vector;
@@ -29,6 +29,22 @@ public class RotationComponent extends AbstractComponent {
                 break;
         }
 
+    }
+
+    public float getX() {
+        return vector.x;
+    }
+
+    public float getY() {
+        return vector.y;
+    }
+
+    public Vector3 getVector() {
+        return vector;
+    }
+
+    public void setVector(Vector3 vector) {
+        this.vector = vector;
     }
 
 }

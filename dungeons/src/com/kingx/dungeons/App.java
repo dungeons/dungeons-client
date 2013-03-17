@@ -17,16 +17,16 @@ import com.badlogic.gdx.math.Vector3;
 import com.kingx.dungeons.engine.concrete.Maze;
 import com.kingx.dungeons.engine.concrete.Wanderer;
 import com.kingx.dungeons.engine.concrete.Zombie;
-import com.kingx.dungeons.engine.system.Decoder;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
 import com.kingx.dungeons.geom.MazeBuilder;
 import com.kingx.dungeons.geom.MazeFactory;
 import com.kingx.dungeons.geom.MazePoly;
 import com.kingx.dungeons.graphics.MazeMap;
+import com.kingx.dungeons.input.Input;
+import com.kingx.dungeons.server.AbstractServer;
 import com.kingx.dungeons.server.OfflineServer;
 import com.kingx.dungeons.server.OnlineServer;
-import com.kingx.dungeons.server.Server;
 
 public class App implements ApplicationListener {
 
@@ -48,7 +48,7 @@ public class App implements ApplicationListener {
     public static final int MAZE_BLOCKS_COUNT = 25;
     public static final float MAZE_WALL_SIZE = 1f;
     private final HashSet<String> params;
-    private Decoder decoder;
+    private Clock clock;
 
     public App(String[] args) {
         params = new HashSet<String>();
@@ -66,35 +66,33 @@ public class App implements ApplicationListener {
         ShaderProgram.pedantic = false;
         world = new World();
 
-        decoder = new Decoder(world);
-        server = SERVER ? new OnlineServer(decoder) : new OfflineServer(decoder);
-
         Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
         Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
         Gdx.gl.glDepthFunc(GL10.GL_LESS);
+
+        clock = new Clock();
+        Gdx.input.setInputProcessor(new Input());
     }
 
-    private boolean init = true;
+    public static boolean INITIALIZED = false;
     private SpriteBatch onScreenRender;
     private World world;
-    private Decoder decoderSystem;
-    private RenderGeometrySystem renderGeometrySystem;
     private RenderShadowSystem renderShadowSystem;
+    private RenderGeometrySystem renderGeometrySystem;
     private MazeMap maze;
     private static Wanderer player;
-    private static Server server;
+    private static AbstractServer server;
 
     @Override
     public void render() {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT
                 | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
-        if (init) {
+        if (!INITIALIZED) {
             init();
-            init = false;
+            INITIALIZED = true;
         }
         camera.update();
 
-        decoderSystem.process();
         renderShadowSystem.process();
         renderGeometrySystem.process();
 
@@ -118,6 +116,10 @@ public class App implements ApplicationListener {
         mazeCreation.createEntity().addToWorld();
 
         onScreenRender = new SpriteBatch();
+        server = SERVER ? new OnlineServer(world) : new OfflineServer(world);
+        world.initialize();
+
+        clock.addService(server);
     }
 
     /**
@@ -140,10 +142,8 @@ public class App implements ApplicationListener {
      * Register systems to the world and initialize.
      */
     private void addSystemsToWorld() {
-        decoderSystem = world.setSystem(decoder, true);
         renderShadowSystem = world.setSystem(new RenderShadowSystem(camera), true);
         renderGeometrySystem = world.setSystem(new RenderGeometrySystem(camera), true);
-        world.initialize();
     }
 
     /**
@@ -222,7 +222,7 @@ public class App implements ApplicationListener {
         return camera;
     }
 
-    public static Server getServer() {
+    public static AbstractServer getServer() {
         return server;
     }
 

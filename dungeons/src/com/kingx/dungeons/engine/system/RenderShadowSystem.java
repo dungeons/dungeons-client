@@ -15,7 +15,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.engine.component.ShadowComponent;
-import com.kingx.dungeons.engine.dynamic.PositionComponent;
+import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.geom.Polygon;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.QuadTextureFrameBuffer;
@@ -67,10 +67,10 @@ public class RenderShadowSystem extends EntityProcessingSystem {
             PositionComponent pc = pm.getSafe(e);
             ShadowComponent sc = sm.getSafe(e);
 
-            Camera[] lights = sc.lights;
+            Camera[] lights = sc.getLights();
             for (Camera light : lights) {
-                light.position.x = pc.vector.x;
-                light.position.y = pc.vector.y;
+                light.position.x = pc.getX();
+                light.position.y = pc.getY();
             }
             generateShadowMap(lights);
 

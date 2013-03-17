@@ -2,34 +2,32 @@ package com.kingx.dungeons.server;
 
 import java.util.ArrayList;
 
-import com.kingx.dungeons.engine.system.Decoder;
+import com.artemis.World;
+import com.kingx.dungeons.Updateable;
 
-public abstract class AbstractServer implements Server {
-    protected Decoder client;
+public abstract class AbstractServer implements Updateable {
+    protected World world;
     private final ArrayList<ClientCommand> buffer = new ArrayList<ClientCommand>();
 
-    public AbstractServer(Decoder client) {
-        this.client = client;
+    public AbstractServer(World world) {
+        this.world = world;
     }
 
-    @Override
     public void send(ClientCommand c) {
         buffer.add(c);
     }
 
     @Override
-    public void recieve(ServerCommand c) {
-        client.recieve(c);
-    }
-
-    @Override
-    public void update(float step) {
+    public void update(float delta) {
         for (ClientCommand c : buffer) {
             process(c);
         }
         buffer.clear();
+        updateInternal(delta);
     }
 
     public abstract void process(ClientCommand c);
+
+    public abstract void updateInternal(float delta);
 
 }

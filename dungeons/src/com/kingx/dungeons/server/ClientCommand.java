@@ -24,4 +24,9 @@ public class ClientCommand {
         return value;
     }
 
+    @Override
+    public String toString() {
+        return "ClientCommand [action=" + action + ", timestamp=" + timestamp + ", value=" + value + "]";
+    }
+
 }

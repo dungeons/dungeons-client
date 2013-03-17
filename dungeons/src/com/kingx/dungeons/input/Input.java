@@ -17,7 +17,8 @@ public class Input extends InputAdapter {
     }
 
     private boolean action(int keycode, int dir) {
-        if (App.getServer() != null) {
+
+        if (App.INITIALIZED) {
             App.getServer().send(new ClientCommand((short) keycode, System.currentTimeMillis(), dir));
         }
         return false;

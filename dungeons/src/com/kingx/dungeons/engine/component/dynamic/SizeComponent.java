@@ -1,6 +1,5 @@
 package com.kingx.dungeons.engine.component.dynamic;
 
-
 public class SizeComponent extends AbstractComponent {
     private float size;
 
@@ -16,6 +15,10 @@ public class SizeComponent extends AbstractComponent {
     @Override
     public void setComponent(int id, int value) {
         size = value / AbstractComponent.INT_TO_FLOAT;
+    }
+
+    public float getSize() {
+        return size;
     }
 
 }

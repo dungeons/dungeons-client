@@ -3,7 +3,7 @@ package com.kingx.dungeons.engine.component.dynamic;
 import com.badlogic.gdx.math.Vector3;
 
 public class PositionComponent extends AbstractComponent {
-    private final Vector3 vector;
+    public Vector3 vector;
 
     public PositionComponent(float x, float y, float z) {
         this.vector = new Vector3(x, y, z);
@@ -32,6 +32,30 @@ public class PositionComponent extends AbstractComponent {
                 break;
         }
 
+    }
+
+    public float getX() {
+        return vector.x;
+    }
+
+    public float getY() {
+        return vector.y;
+    }
+
+    public float getZ() {
+        return vector.z;
+    }
+
+    public void setX(float x) {
+        vector.x = x;
+    }
+
+    public void setY(float y) {
+        vector.y = y;
+    }
+
+    public void setZ(float z) {
+        vector.z = z;
     }
 
 }

@@ -9,8 +9,8 @@ import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
+import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.RotationComponent;
-import com.kingx.dungeons.engine.dynamic.PositionComponent;
 
 public class MovementSystem extends EntityProcessingSystem {
     @Mapper
@@ -30,26 +30,27 @@ public class MovementSystem extends EntityProcessingSystem {
 
     @Override
     protected void process(Entity e) {
+        postionMapper.has(e);
         PositionComponent position = postionMapper.get(e);
         RotationComponent rotation = rotationMapper.get(e);
         SpeedComponent speed = speedMapper.get(e);
         MoveComponent moveVector = inputMapper.get(e);
 
-        position.vector.x += moveVector..x * speed.current * world.delta;
-        position.vector.y += moveVector.vector.y * speed.current * world.delta;
+        position.vector.x += moveVector.getX() * speed.getCurrent() * world.delta;
+        position.vector.y += moveVector.getY() * speed.getCurrent() * world.delta;
 
         if (cameraMapper.has(e)) {
             FollowCameraComponent cameraComponent = cameraMapper.get(e);
-            cameraComponent.camera.position.x = position.vector.x;
+            cameraComponent.getCamera().position.x = position.getX();
             if (App.isFps()) {
-                cameraComponent.camera.position.y = position.vector.y;
-                cameraComponent.camera.position.z = 1f;
-                cameraComponent.camera.direction.set(rotation.vector);
-                cameraComponent.camera.up.set(0, 0, 1);
+                cameraComponent.getCamera().position.y = position.getY();
+                cameraComponent.getCamera().position.z = 1f;
+                cameraComponent.getCamera().direction.set(rotation.getVector());
+                cameraComponent.getCamera().up.set(0, 0, 1);
             } else {
-                cameraComponent.camera.position.y = position.vector.y - 2f;
-                cameraComponent.camera.lookAt(position.vector.x, position.vector.y, position.vector.z);
-                cameraComponent.camera.position.z = cameraComponent.height;
+                cameraComponent.getCamera().position.y = position.getY() - 2f;
+                cameraComponent.getCamera().lookAt(position.getX(), position.getY(), position.getZ());
+                cameraComponent.getCamera().position.z = cameraComponent.getHeight();
             }
         }
     }

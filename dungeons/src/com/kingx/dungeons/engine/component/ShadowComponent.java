@@ -23,4 +23,8 @@ public class ShadowComponent extends Component {
         }
     }
 
+    public Camera[] getLights() {
+        return lights;
+    }
+
 }

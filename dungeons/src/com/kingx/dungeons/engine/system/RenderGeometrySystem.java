@@ -9,8 +9,8 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.kingx.dungeons.engine.component.ShaderComponent;
-import com.kingx.dungeons.engine.dynamic.PositionComponent;
-import com.kingx.dungeons.engine.dynamic.SizeComponent;
+import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
+import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
 import com.kingx.dungeons.engine.tags.GeometryRenderTag;
 import com.kingx.dungeons.graphics.Shader;
 
@@ -54,10 +54,10 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
         sb.setProjectionMatrix(camera.combined);
         ShaderComponent sc = sm.getSafe(e);
         SizeComponent ccs = ss.getSafe(e);
-        if (sc.texture != null) {
-            shader.setUniformf("u_tint", sc.color);
+        if (sc.getTexture() != null) {
+            shader.setUniformf("u_tint", sc.getColor());
             PositionComponent pc = pm.getSafe(e);
-            sb.draw(sc.texture, pc.vector.x - ccs.size / 2f, pc.vector.y - ccs.size / 2f, ccs.size, ccs.size);
+            sb.draw(sc.getTexture(), pc.getX() - ccs.getSize() / 2f, pc.getY() - ccs.getSize() / 2f, ccs.getSize(), ccs.getSize());
         }
     }
 }

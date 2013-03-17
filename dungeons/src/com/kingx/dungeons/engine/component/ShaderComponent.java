@@ -6,9 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 
 public class ShaderComponent extends Component {
-    private final ShaderProgram shader;
-    private final Color color;
-    private final TextureRegion texture;
+    private ShaderProgram shader;
+    private Color color;
+    private TextureRegion texture;
 
     public ShaderComponent(ShaderProgram shader, Color color, TextureRegion texture) {
         this.shader = shader;
@@ -20,12 +20,24 @@ public class ShaderComponent extends Component {
         return shader;
     }
 
+    public void setShader(ShaderProgram shader) {
+        this.shader = shader;
+    }
+
     public Color getColor() {
         return color;
     }
 
+    public void setColor(Color color) {
+        this.color = color;
+    }
+
     public TextureRegion getTexture() {
         return texture;
+    }
+
+    public void setTexture(TextureRegion texture) {
+        this.texture = texture;
     }
 
 }

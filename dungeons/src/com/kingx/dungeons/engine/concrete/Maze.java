@@ -3,7 +3,7 @@ package com.kingx.dungeons.engine.concrete;
 import com.artemis.World;
 import com.kingx.dungeons.engine.component.MeshComponent;
 import com.kingx.dungeons.engine.component.ShaderComponent;
-import com.kingx.dungeons.engine.dynamic.PositionComponent;
+import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.geom.MazePoly;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.Shader;

@@ -12,4 +12,12 @@ public class FollowCameraComponent extends Component {
         this.height = height;
     }
 
+    public Camera getCamera() {
+        return camera;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
 }

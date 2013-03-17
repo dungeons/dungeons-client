@@ -1,36 +1,50 @@
 package com.kingx.dungeons.server;
 
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-
 import com.artemis.World;
+import com.badlogic.gdx.Input.Keys;
+import com.kingx.dungeons.App;
+import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.system.CollisionSystem;
-import com.kingx.dungeons.engine.system.Decoder;
 import com.kingx.dungeons.engine.system.MovementSystem;
 import com.kingx.dungeons.engine.system.ai.ZombieAI;
 
-public class OfflineServer extends OnlineServer {
+public class OfflineServer extends AbstractServer {
 
-    private final World world;
-
-    public OfflineServer(Decoder client) {
-        super(client);
-        world = new World();
+    public OfflineServer(World world) {
+        super(world);
         world.setSystem(new MovementSystem());
         world.setSystem(new ZombieAI());
         world.setSystem(new CollisionSystem());
     }
 
     @Override
-    protected Socket connect() throws UnknownHostException, IOException {
-        return new Socket();
+    public void process(ClientCommand c) {
+        processInput(c);
     }
 
     @Override
-    public void process(ClientCommand c) {
-        //TODO logic
-        client.recieve(new ServerCommand((short) 1, (short) 1, 20));
+    public void updateInternal(float delta) {
+        world.setDelta(delta);
+        world.process();
     }
 
+    private void processInput(ClientCommand c) {
+        MoveComponent position = App.getPlayer().getPosition();
+
+        System.out.println(c);
+        switch (c.getAction()) {
+            case Keys.W:
+                position.vector.y += c.getValue() == 0 ? -1 : 1;
+                break;
+            case Keys.S:
+                position.vector.y += c.getValue() == 0 ? 1 : -1;
+                break;
+            case Keys.A:
+                position.vector.x += c.getValue() == 0 ? 1 : -1;
+                break;
+            case Keys.D:
+                position.vector.x += c.getValue() == 0 ? -1 : 1;
+                break;
+        }
+    }
 }

@@ -1,4 +1,4 @@
-package com.kingx.dungeons.engine.system;
+package com.kingx.dungeons.engine.system.server;
 
 import java.util.ArrayList;
 
@@ -41,6 +41,7 @@ public final class Decoder extends EntitySystem {
     // FIXME operations with this array should be atomic. List can't be accessed during loop
     @Override
     protected void processEntities(ImmutableBag<Entity> entities) {
+
         for (ServerCommand c : buffer) {
             Entity e = world.getEntity(c.getId());
             if (e == null) {

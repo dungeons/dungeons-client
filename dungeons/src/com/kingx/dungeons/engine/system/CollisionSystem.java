@@ -6,8 +6,8 @@ import com.artemis.Entity;
 import com.artemis.annotations.Mapper;
 import com.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.App;
-import com.kingx.dungeons.engine.dynamic.PositionComponent;
-import com.kingx.dungeons.engine.dynamic.SizeComponent;
+import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
+import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
 import com.kingx.dungeons.geom.Point;
 import com.kingx.dungeons.geom.Point.Int;
 
@@ -29,7 +29,8 @@ public class CollisionSystem extends EntityProcessingSystem {
     }
 
     /**
-     * Checks for collision on given position. If object is entity is colliding, it is pushed to the other side
+     * Checks for collision on given position. If object is entity is colliding,
+     * it is pushed to the other side
      * 
      * @param position
      *            current position of entity
@@ -38,9 +39,9 @@ public class CollisionSystem extends EntityProcessingSystem {
      */
     protected void resolveMove(PositionComponent position, SizeComponent size) {
 
-        float halfSize = size.size / 2f;
-        float x = position.vector.x;
-        float y = position.vector.y;
+        float halfSize = size.getSize() / 2f;
+        float x = position.getX();
+        float y = position.getY();
 
         float leftBound = x - halfSize;
         float rightBound = x + halfSize;
@@ -64,8 +65,8 @@ public class CollisionSystem extends EntityProcessingSystem {
             y = upPoint.y - halfSize;
         }
 
-        position.vector.x = x;
-        position.vector.y = y;
+        position.setX(x);
+        position.setY(y);
     }
 
     /**

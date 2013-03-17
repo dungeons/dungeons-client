@@ -62,12 +62,11 @@ public class ZombieAI extends EntityProcessingSystem {
 
         @Override
         public boolean doAction(Entity entity) {
-            data.shader.color = data.alertColor;
             data.target = data.playerPosition.vector.cpy();
-            data.entityMove.vector.set(data.target.x - data.entityPosition.vector.x, data.target.y - data.entityPosition.vector.y).nor();
-            data.entitySpeed.current = data.entitySpeed.turbo;
-            data.shader.texture = getRightTexture(data.entityMove.vector);
-            System.out.println();
+            data.entityMove.vector.set(data.target.x - data.entityPosition.getX(), data.target.y - data.entityPosition.getY()).nor();
+            data.entitySpeed.setCurrent(data.entitySpeed.turbo);
+            data.shader.setTexture(getRightTexture(data.entityMove.vector));
+            data.shader.setColor(data.alertColor);
             return true;
         }
 
@@ -94,10 +93,10 @@ public class ZombieAI extends EntityProcessingSystem {
             if (counter > 40) {
                 counter = 0;
                 data.entityMove.vector = getNewDirection();
-                data.shader.texture = getRightTexture(data.entityMove.vector);
+                data.shader.setTexture(getRightTexture(data.entityMove.vector));
             }
-            data.entitySpeed.current = data.entitySpeed.speed;
-            data.shader.color = data.normalColor;
+            data.entitySpeed.setCurrent(data.entitySpeed.normal);
+            data.shader.setColor(data.normalColor);
             return true;
         }
 
