@@ -55,6 +55,8 @@ public final class MazeFactory {
                 float y = j * WALL_SIZE.y;
                 if (!maze.getFootprint()[i][j]) {
                     makeWall(x, y, 0);
+                } else {
+                    makeFloor(x, y, 0);
                 }
             }
         }
@@ -76,12 +78,19 @@ public final class MazeFactory {
 
     private void makeWall(float x, float y, float z) {
         for (int i = 0; i < quads.length; i++) {
-            makeQuad(x, y, z, i);
+            TextureRegion texture = getWallTexture(App.rand.nextInt(4));
+            makeQuad(x, y, z, i, texture);
         }
     }
 
-    private void makeQuad(float x, float y, float z, int face) {
-        TextureRegion texture = getTexture(App.rand.nextInt(2));
+    private void makeFloor(float x, float y, float z) {
+        for (int i = 0; i < 6; i++) {
+            TextureRegion texture = getFloorTexture(App.rand.nextInt(4));
+            makeQuad(x, y, z, 5, texture);
+        }
+    }
+
+    private void makeQuad(float x, float y, float z, int face, TextureRegion texture) {
         for (int i = 0; i < quads[face].length; i++) {
             Vector2 cords = getTextureCoordinates(i, texture);
             verts.add(positionOffset[quads[face][i]][0] * WALL_SIZE.x + x); // x position
@@ -119,14 +128,12 @@ public final class MazeFactory {
         return null;
     }
 
-    private TextureRegion getTexture(int i) {
-        switch (i) {
-            case 0:
-                return Assets.getTexture("wall", 0);
-            case 1:
-                return Assets.getTexture("wall", 1);
-        }
-        return null;
+    private TextureRegion getWallTexture(int i) {
+        return Assets.getTexture("wall", i);
+    }
+
+    private TextureRegion getFloorTexture(int i) {
+        return Assets.getTexture("floor", i);
     }
 
 }
