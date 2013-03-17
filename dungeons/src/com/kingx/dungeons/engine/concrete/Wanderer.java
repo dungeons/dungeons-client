@@ -1,8 +1,8 @@
 package com.kingx.dungeons.engine.concrete;
 
-import com.artemis.World;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
+import com.kingx.artemis.World;
 import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.ShaderComponent;

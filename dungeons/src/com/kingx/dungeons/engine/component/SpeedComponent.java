@@ -1,6 +1,6 @@
 package com.kingx.dungeons.engine.component;
 
-import com.artemis.Component;
+import com.kingx.artemis.Component;
 
 public class SpeedComponent extends Component {
     private float current;

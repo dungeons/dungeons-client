@@ -1,12 +1,12 @@
 package com.kingx.dungeons.server;
 
-import com.artemis.World;
 import com.badlogic.gdx.Input.Keys;
+import com.kingx.artemis.World;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
-import com.kingx.dungeons.engine.system.CollisionSystem;
-import com.kingx.dungeons.engine.system.MovementSystem;
-import com.kingx.dungeons.engine.system.ai.ZombieAI;
+import com.kingx.dungeons.engine.system.client.CollisionSystem;
+import com.kingx.dungeons.engine.system.client.MovementSystem;
+import com.kingx.dungeons.engine.system.client.ZombieAI;
 
 public class OfflineServer extends AbstractServer {
 

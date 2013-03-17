@@ -2,13 +2,13 @@ package com.kingx.dungeons.engine.system.server;
 
 import java.util.ArrayList;
 
-import com.artemis.Aspect;
-import com.artemis.ComponentMapper;
-import com.artemis.Entity;
-import com.artemis.EntitySystem;
-import com.artemis.World;
-import com.artemis.annotations.Mapper;
-import com.artemis.utils.ImmutableBag;
+import com.kingx.artemis.Aspect;
+import com.kingx.artemis.ComponentMapper;
+import com.kingx.artemis.Entity;
+import com.kingx.artemis.EntitySystem;
+import com.kingx.artemis.World;
+import com.kingx.artemis.annotations.Mapper;
+import com.kingx.artemis.utils.ImmutableBag;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.RotationComponent;

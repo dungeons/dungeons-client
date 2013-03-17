@@ -1,6 +1,6 @@
 package com.kingx.dungeons.engine.concrete;
 
-import com.artemis.World;
+import com.kingx.artemis.World;
 import com.kingx.dungeons.engine.component.MeshComponent;
 import com.kingx.dungeons.engine.component.ShaderComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;

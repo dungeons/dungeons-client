@@ -1,6 +1,6 @@
 package com.kingx.dungeons.engine.component.dynamic;
 
-import com.artemis.Component;
+import com.kingx.artemis.Component;
 
 public abstract class AbstractComponent extends Component {
 

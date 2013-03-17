@@ -7,7 +7,7 @@ import java.net.Socket;
 
 import javax.swing.SwingUtilities;
 
-import com.artemis.World;
+import com.kingx.artemis.World;
 import com.kingx.dungeons.engine.system.server.Decoder;
 
 public class OnlineServer extends AbstractServer {

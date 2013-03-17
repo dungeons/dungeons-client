@@ -1,9 +1,9 @@
 package com.kingx.dungeons.engine.component;
 
-import com.artemis.Component;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.kingx.artemis.Component;
 
 public class ShaderComponent extends Component {
     private ShaderProgram shader;

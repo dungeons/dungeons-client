@@ -1,12 +1,12 @@
 package com.kingx.dungeons.engine.concrete;
 
-import com.artemis.World;
 import com.badlogic.gdx.math.Vector3;
+import com.kingx.artemis.World;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.engine.component.ShaderComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
-import com.kingx.dungeons.engine.component.ai.ZombieAIComponent;
+import com.kingx.dungeons.engine.component.ZombieAIComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.RotationComponent;

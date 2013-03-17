@@ -2,7 +2,7 @@ package com.kingx.dungeons.server;
 
 import java.util.ArrayList;
 
-import com.artemis.World;
+import com.kingx.artemis.World;
 import com.kingx.dungeons.Updateable;
 
 public abstract class AbstractServer implements Updateable {

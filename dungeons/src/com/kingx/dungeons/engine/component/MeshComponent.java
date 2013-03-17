@@ -1,7 +1,7 @@
 package com.kingx.dungeons.engine.component;
 
-import com.artemis.Component;
 import com.badlogic.gdx.graphics.Mesh;
+import com.kingx.artemis.Component;
 
 public class MeshComponent extends Component {
 

@@ -1,13 +1,13 @@
 package com.kingx.dungeons.engine.system;
 
-import com.artemis.Aspect;
-import com.artemis.ComponentMapper;
-import com.artemis.Entity;
-import com.artemis.annotations.Mapper;
-import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.kingx.artemis.Aspect;
+import com.kingx.artemis.ComponentMapper;
+import com.kingx.artemis.Entity;
+import com.kingx.artemis.annotations.Mapper;
+import com.kingx.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.engine.component.ShaderComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;

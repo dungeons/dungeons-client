@@ -1,7 +1,7 @@
 package com.kingx.dungeons.engine.component;
 
-import com.artemis.Component;
 import com.badlogic.gdx.graphics.Camera;
+import com.kingx.artemis.Component;
 
 public class FollowCameraComponent extends Component {
     private final Camera camera;

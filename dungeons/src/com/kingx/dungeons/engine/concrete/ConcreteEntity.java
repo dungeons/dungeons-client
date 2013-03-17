@@ -3,9 +3,9 @@ package com.kingx.dungeons.engine.concrete;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.artemis.Component;
-import com.artemis.Entity;
-import com.artemis.World;
+import com.kingx.artemis.Component;
+import com.kingx.artemis.Entity;
+import com.kingx.artemis.World;
 
 public abstract class ConcreteEntity {
     private final World world;

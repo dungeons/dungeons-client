@@ -1,10 +1,5 @@
 package com.kingx.dungeons.engine.system;
 
-import com.artemis.Aspect;
-import com.artemis.ComponentMapper;
-import com.artemis.Entity;
-import com.artemis.annotations.Mapper;
-import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,6 +7,11 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.kingx.artemis.Aspect;
+import com.kingx.artemis.ComponentMapper;
+import com.kingx.artemis.Entity;
+import com.kingx.artemis.annotations.Mapper;
+import com.kingx.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.engine.component.ShadowComponent;

@@ -1,6 +1,6 @@
 package com.kingx.dungeons.engine.ai.task;
 
-import com.artemis.Entity;
+import com.kingx.artemis.Entity;
 
 /**
  * This ParentTask executes each of it's children in turn until he has finished
