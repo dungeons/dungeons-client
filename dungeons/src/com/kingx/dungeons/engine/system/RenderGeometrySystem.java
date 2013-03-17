@@ -11,7 +11,6 @@ import com.kingx.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.engine.component.ShaderComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
-import com.kingx.dungeons.engine.tags.GeometryRenderTag;
 import com.kingx.dungeons.graphics.Shader;
 
 public class RenderGeometrySystem extends EntityProcessingSystem {
@@ -27,7 +26,7 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
     private final SpriteBatch sb = new SpriteBatch();
 
     public RenderGeometrySystem(Camera camera) {
-        super(Aspect.getAspectForAll(PositionComponent.class, ShaderComponent.class, GeometryRenderTag.class));
+        super(Aspect.getAspectForAll(PositionComponent.class, ShaderComponent.class));
         this.camera = camera;
         this.shader = Shader.getShader("sprite");
         sb.setShader(shader);

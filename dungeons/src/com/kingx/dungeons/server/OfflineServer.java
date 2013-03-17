@@ -1,5 +1,7 @@
 package com.kingx.dungeons.server;
 
+import java.util.Map;
+
 import com.badlogic.gdx.Input.Keys;
 import com.kingx.artemis.World;
 import com.kingx.dungeons.App;
@@ -30,9 +32,8 @@ public class OfflineServer extends AbstractServer {
 
     private void processInput(ClientCommand c) {
         MoveComponent position = App.getPlayer().getPosition();
-
-        System.out.println(c);
-        switch (c.getAction()) {
+        int mapped = getKey(c.getAction(), position.mapping);
+        switch (mapped) {
             case Keys.W:
                 position.vector.y += c.getValue() == 0 ? -1 : 1;
                 break;
@@ -46,5 +47,10 @@ public class OfflineServer extends AbstractServer {
                 position.vector.x += c.getValue() == 0 ? -1 : 1;
                 break;
         }
+    }
+
+    private int getKey(int keycode, Map<Integer, Integer> mapping) {
+        Integer mapped = mapping.get(keycode);
+        return mapped == null ? keycode : mapped;
     }
 }

@@ -145,6 +145,18 @@ public class Collision {
 
     }
 
+    /**
+     * Checks if {@code c} is in a square delimited by {@code a} and {@code b}
+     * 
+     * @param a
+     *            point a
+     * @param b
+     *            point b
+     * @param c
+     *            point c
+     * @return {@code true} if point {@code c} is between {@code a} and
+     *         {@code b}, {@code false} otherwise
+     */
     private static boolean inBetween(Vector3 a, Vector3 b, Vector3 c) {
         float minx = Math.min(a.x, b.x);
         float miny = Math.min(a.y, b.y);

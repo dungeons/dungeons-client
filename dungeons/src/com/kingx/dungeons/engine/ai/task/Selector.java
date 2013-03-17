@@ -3,14 +3,10 @@ package com.kingx.dungeons.engine.ai.task;
 import com.kingx.artemis.Entity;
 
 /**
- * This parent task selects one of it's children to update.
+ * Selector is logical <tt>OR</tt> over child task.
  * 
- * To select a child, it starts from the beginning of it's children vector and
- * goes one by one until it finds one that passes the CheckCondition test. It
- * then updates that child until it finished. If the child finishes with
- * failure, it continues down the list looking another candidate to update, and
- * if it doesn't find it, it finishes with failure. If the child finishes with
- * success, the Selector considers it's task done and bails with success.
+ * Loops through all children one by one and selects first that returns
+ * {@code true} on conditions. Selector fails if all children fail.
  * 
  */
 public class Selector extends ParentTask {

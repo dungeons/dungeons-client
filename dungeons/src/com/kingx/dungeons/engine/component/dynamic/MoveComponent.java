@@ -1,9 +1,13 @@
 package com.kingx.dungeons.engine.component.dynamic;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.badlogic.gdx.math.Vector2;
 
 public class MoveComponent extends AbstractComponent {
     public Vector2 vector;
+    public Map<Integer, Integer> mapping = new HashMap<Integer, Integer>();
 
     public MoveComponent(Vector2 vector) {
         this.vector = vector;
@@ -20,7 +24,14 @@ public class MoveComponent extends AbstractComponent {
 
     @Override
     public void setComponent(int id, int value) {
-        // TODO Auto-generated method stub
+        switch (id) {
+            case 0:
+                this.vector.x = value / AbstractComponent.INT_TO_FLOAT;
+                break;
+            case 1:
+                this.vector.y = value / AbstractComponent.INT_TO_FLOAT;
+                break;
+        }
 
     }
 

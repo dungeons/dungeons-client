@@ -11,11 +11,7 @@ public class UpdateFilter extends TaskDecorator {
     /**
      * Ticker to keep track of ticks
      */
-    private final Ticker ticker;
-    /**
-     * Number of ticks between updates.
-     */
-    private int updateTicks;
+    private Ticker ticker;
 
     /**
      * Creates a new instance of the RegulatorDecorator class
@@ -27,7 +23,6 @@ public class UpdateFilter extends TaskDecorator {
      */
     public UpdateFilter(Task task, int updateTicks) {
         super(task);
-        this.updateTicks = updateTicks;
         this.ticker = new Ticker(updateTicks, false);
     }
 
@@ -61,7 +56,7 @@ public class UpdateFilter extends TaskDecorator {
      *            number of ticks
      */
     public void setUpdateTicks(int updateTicks) {
-        this.updateTicks = updateTicks;
+        this.ticker = new Ticker(updateTicks, false);
     }
 
 }

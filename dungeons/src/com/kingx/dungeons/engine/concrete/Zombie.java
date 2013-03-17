@@ -11,7 +11,6 @@ import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.RotationComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
-import com.kingx.dungeons.engine.tags.GeometryRenderTag;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.Shader;
 
@@ -32,7 +31,6 @@ public class Zombie extends ConcreteEntity {
         bag.add(zombieMove);
         bag.add(new SizeComponent(size));
         bag.add(shader);
-        bag.add(new GeometryRenderTag());
         bag.add(new ZombieAIComponent(zombiePosition, playerPosition, zombieSpeed, zombieMove, shader, Colors.ZOMBIE_NORMAL, Colors.ZOMBIE_ALARM, 4f));
     }
 }

@@ -12,7 +12,6 @@ import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.RotationComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
-import com.kingx.dungeons.engine.tags.GeometryRenderTag;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.Shader;
 
@@ -34,7 +33,6 @@ public class Wanderer extends ConcreteEntity {
         bag.add(new SizeComponent(size));
         bag.add(shader);
         bag.add(new ShadowComponent());
-        bag.add(new GeometryRenderTag());
 
         if (camera != null) {
             bag.add(new FollowCameraComponent(camera, 10f));

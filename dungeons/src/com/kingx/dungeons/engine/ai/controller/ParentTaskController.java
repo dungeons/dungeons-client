@@ -49,9 +49,13 @@ public class ParentTaskController extends TaskController {
     @Override
     public void reset() {
         super.reset();
-        //  this.curTask = subtasks.;
     }
 
+    /**
+     * Returns all subtasks in this node.
+     * 
+     * @return subtasks in current node
+     */
     public List<Task> getSubtasks() {
         return subtasks;
     }
