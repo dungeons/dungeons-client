@@ -22,3 +22,7 @@ dungeons-desktop/assets
 Icon?
 ehthumbs.db
 Thumbs.db
+
+# App generated files #
+#######################
+dungeons-android/assets/data/textures
