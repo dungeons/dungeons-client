@@ -11,8 +11,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 public class Shader {
 
     private enum ShaderType {
-        vsh,
-        fsh;
+        vsh, fsh;
     }
 
     private static class ShaderStructure {

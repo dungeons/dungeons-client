@@ -8,18 +8,21 @@ import java.net.Socket;
 import javax.swing.SwingUtilities;
 
 import com.kingx.artemis.World;
+import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.system.server.Decoder;
 
 public class OnlineServer extends AbstractServer {
 
-    private static final String IP = "77.240.185.52";
-    private static final int PORT = 5000;
+    private final String IP;
+    private final int PORT;
     private DataOutputStream out;
     private DataInputStream in;
     private final Decoder decoderSystem;
 
     public OnlineServer(World world) {
         super(world);
+        IP = App.SERVER.getArgument(0);
+        PORT = Integer.valueOf(App.SERVER.getArgument(1));
 
         initServer();
 

@@ -1,7 +1,6 @@
 package com.kingx.dungeons;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Random;
 
 import com.badlogic.gdx.ApplicationListener;
@@ -30,10 +29,10 @@ import com.kingx.dungeons.server.OnlineServer;
 
 public class App implements ApplicationListener {
 
-    // Global switches
-    public static boolean DEBUG;
-    public static boolean NOSLEEP;
-    public static boolean SERVER;
+    // Global parameters
+    public static Param DEBUG;
+    public static Param NOSLEEP;
+    public static Param SERVER;
 
     public static final Random rand = new Random();
     private static Camera camera;
@@ -47,17 +46,24 @@ public class App implements ApplicationListener {
     public static final int MAZE_BLOCKS_COUNT = 25;
     public static final float MAZE_WALL_SIZE = 1f;
 
-    private final HashSet<String> params;
+    private final Map<String, Param> params;
     private Clock clock;
 
     public App(String[] args) {
-        params = new HashSet<String>();
-        if (args != null) {
-            params.addAll(Arrays.asList(args));
+        params = Param.getParams(args);
+        DEBUG = getParam("-d", "-debug");
+        NOSLEEP = getParam("-ns", "-nosleep");
+        SERVER = getParam("-s", "-server");
+    }
+
+    private Param getParam(String... args) {
+        for (String arg : args) {
+            Param param = params.get(arg);
+            if (param != null) {
+                return param;
+            }
         }
-        DEBUG = params.contains("-d") || params.contains("-debug") || params.contains("--debug");
-        NOSLEEP = params.contains("-ns") || params.contains("-nosleep") || params.contains("--nosleep");
-        SERVER = params.contains("-s") || params.contains("-server") || params.contains("--server");
+        return null;
     }
 
     @Override
@@ -94,7 +100,7 @@ public class App implements ApplicationListener {
         renderShadowSystem.process();
         renderGeometrySystem.process();
 
-        if (DEBUG && renderShadowSystem.getDepthMap() != null) {
+        if (DEBUG != null && renderShadowSystem.getDepthMap() != null) {
             onScreenRender.begin();
             onScreenRender.draw(renderShadowSystem.getDepthMap(), 0, 0, 100, 100, 1, 0, 0, 1);
             onScreenRender.end();
@@ -110,15 +116,14 @@ public class App implements ApplicationListener {
         createZombies(10);
 
         onScreenRender = new SpriteBatch();
-        server = SERVER ? new OnlineServer(world) : new OfflineServer(world);
+        server = SERVER != null ? new OnlineServer(world) : new OfflineServer(world);
         world.initialize();
 
         clock.addService(server);
     }
 
     /**
-     * Generates maze footprint and polygon. Creates maze instance and places it
-     * in the game world.
+     * Generates maze footprint and polygon. Creates maze instance and places it in the game world.
      */
     private void createMaze() {
         mazeMap = new MazeMap(createMap());
@@ -128,8 +133,7 @@ public class App implements ApplicationListener {
     }
 
     /**
-     * If template is available, creates footprint based on that template,
-     * otherwise generates random map.
+     * If template is available, creates footprint based on that template, otherwise generates random map.
      * 
      * @return generated map
      */
