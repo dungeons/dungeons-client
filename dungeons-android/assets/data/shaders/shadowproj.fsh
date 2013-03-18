@@ -100,14 +100,10 @@ void main ()
 		float g = round(interpolate(u_source_color.g ,u_ground_color.g, distance, 1.0)*del) / del;
 		float b = round(interpolate(u_source_color.b ,u_ground_color.b, distance, 1.0)*del) / del;
      
-        float tex = u_useTextures ? texture2D(u_texture,v_texCoord) : 1.0;
-        
-        shadow = worldPostitoin.x < u_bounds.x || worldPostitoin.x > u_bounds.z ||   worldPostitoin.y < u_bounds.y || worldPostitoin.y > u_bounds.w ? true : shadow;
-	    
 	    if(vWorldVertex.z  >= .99 || shadow){
-	  		gl_FragColor = u_ground_color * tex;
+	  		gl_FragColor = u_ground_color * texture2D(u_texture,v_texCoord);
         }else{
-	 		gl_FragColor = vec4(r,g,b,1.0) * tex;
+	 		gl_FragColor = vec4(r,g,b,1.0) * texture2D(u_texture,v_texCoord);
         }
         
 }

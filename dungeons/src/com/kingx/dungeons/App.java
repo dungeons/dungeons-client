@@ -43,7 +43,7 @@ public class App implements ApplicationListener {
     private static boolean wireframe;
     private static boolean fps;
 
-    public static final int MAZE_BLOCKS_COUNT = 25;
+    public static final int MAZE_BLOCKS_COUNT = 20;
     public static final float MAZE_WALL_SIZE = 1f;
 
     private final Map<String, Param> params;
@@ -123,7 +123,8 @@ public class App implements ApplicationListener {
     }
 
     /**
-     * Generates maze footprint and polygon. Creates maze instance and places it in the game world.
+     * Generates maze footprint and polygon. Creates maze instance and places it
+     * in the game world.
      */
     private void createMaze() {
         mazeMap = new MazeMap(createMap());
@@ -133,7 +134,8 @@ public class App implements ApplicationListener {
     }
 
     /**
-     * If template is available, creates footprint based on that template, otherwise generates random map.
+     * If template is available, creates footprint based on that template,
+     * otherwise generates random map.
      * 
      * @return generated map
      */

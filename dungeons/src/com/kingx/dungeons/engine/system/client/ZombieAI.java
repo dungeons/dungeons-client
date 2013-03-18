@@ -113,6 +113,6 @@ public class ZombieAI extends EntityProcessingSystem {
             ang -= 360;
         }
         ang = (int) (ang / 360f * 8);
-        return Assets.getTexture("zombie", ang);
+        return Assets.getTexture("skeleton", ang);
     }
 }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector3;
 import com.kingx.artemis.Aspect;
 import com.kingx.artemis.ComponentMapper;
 import com.kingx.artemis.Entity;
@@ -16,7 +17,7 @@ import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.engine.component.ShadowComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
-import com.kingx.dungeons.geom.Polygon;
+import com.kingx.dungeons.geom.GroundFactory;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.QuadTextureFrameBuffer;
 import com.kingx.dungeons.graphics.Shader;
@@ -42,7 +43,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         super(Aspect.getAspectForAll(PositionComponent.class, ShadowComponent.class));
         this.camera = camera;
 
-        poly = Polygon.createPlain(BOUNDS);
+        poly = new GroundFactory(App.MAZE_BLOCKS_COUNT, new Vector3(1f, 1f, 1f)).generate();
 
         shadowGeneratorShader = Shader.getShader("shadowgen");
         shadowProjectShader = Shader.getShader("shadowproj");
@@ -86,16 +87,16 @@ public class RenderShadowSystem extends EntityProcessingSystem {
                 shadowProjectShader.setUniformMatrix("LightSourceProjectionViewMatrix[" + i + "]", lights[i].combined);
             }
             shadowProjectShader.setUniformf("v_lightSpacePosition", lights[0].position);
-            shadowProjectShader.setUniformf("u_source_color", Colors.GROUND);
-            shadowProjectShader.setUniformf("u_ground_color", Colors.SHADOW);
             shadowProjectShader.setUniformi("DepthMap", 0);
-            shadowProjectShader.setUniformf("u_useTextures", 0);
-            shadowProjectShader.setUniformf("u_bounds", 0f, 0f, App.getMap().getWidth(), App.getMap().getHeight());
-            poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
+
             shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
             shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
             shadowProjectShader.setUniformi("u_texture", 1);
             shadowProjectShader.setUniformf("u_useTextures", 1);
+            shadowProjectShader.setUniformf("u_bounds", 0f, 0f, App.getMap().getWidth(), App.getMap().getHeight());
+            poly.render(shadowProjectShader, GL20.GL_TRIANGLES);
+            shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
+            shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
             App.getMaze().getMesh().render(shadowProjectShader, GL20.GL_TRIANGLES);
             shadowProjectShader.end();
         }

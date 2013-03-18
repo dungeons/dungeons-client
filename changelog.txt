@@ -23,3 +23,7 @@ v 0.0.1d6
 
 v 0.0.1d7
 - Abstract layer included for swiching between online and offline mode
+
+v 0.0.1d8
+- Textures and color redesigned
+- Floor geometry reworked

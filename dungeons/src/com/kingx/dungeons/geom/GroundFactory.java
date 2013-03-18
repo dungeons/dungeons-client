@@ -9,9 +9,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
-import com.kingx.dungeons.graphics.MazeMap;
 
-public final class MazeFactory {
+public final class GroundFactory {
 
     private final Vector3 WALL_SIZE;
     private final int VERTS_PER_QUAD = 4;
@@ -45,22 +44,20 @@ public final class MazeFactory {
     private final ArrayList<Short> indices = new ArrayList<Short>();
     private int vertsOffset = 0;
 
-    public MazeFactory(MazeMap maze, Vector3 wallSize) {
+    public GroundFactory(int size, Vector3 wallSize) {
         WALL_SIZE = wallSize;
 
-        for (int i = 0; i < maze.getFootprint().length; i++) {
-            for (int j = 0; j < maze.getFootprint().length; j++) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
 
                 float x = i * WALL_SIZE.x;
                 float y = j * WALL_SIZE.y;
-                if (!maze.getFootprint()[i][j]) {
-                    makeWall(x, y, 0);
-                }
+                makeWall(x, y, -0.1f);
             }
         }
     }
 
-    public MazePoly generate() {
+    public Mesh generate() {
         float[] outVerts = new float[verts.size()];
         short[] outIndices = new short[indices.size()];
         for (int i = 0; i < verts.size(); i++) {
@@ -71,14 +68,14 @@ public final class MazeFactory {
         }
         Mesh mesh = new Mesh(true, outVerts.length, outIndices.length, VertexAttribute.Position(), VertexAttribute.TexCoords(0), VertexAttribute.Normal());
 
-        return new MazePoly(mesh, outVerts, outIndices);
+        mesh.setVertices(outVerts);
+        mesh.setIndices(outIndices);
+        return mesh;
     }
 
     private void makeWall(float x, float y, float z) {
-        for (int i = 0; i < quads.length; i++) {
-            TextureRegion texture = getWallTexture(App.rand.nextInt(4));
-            makeQuad(x, y, z, i, texture);
-        }
+        TextureRegion texture = getWallTexture(App.rand.nextInt(4));
+        makeQuad(x, y, z, 5, texture);
     }
 
     private void makeQuad(float x, float y, float z, int face, TextureRegion texture) {
@@ -120,7 +117,7 @@ public final class MazeFactory {
     }
 
     private TextureRegion getWallTexture(int i) {
-        return Assets.getTexture("wall", i);
+        return Assets.getTexture("floor", i);
     }
 
 }
