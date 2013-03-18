@@ -1,10 +1,5 @@
 package com.kingx.dungeons.engine.system;
 
-import com.artemis.Aspect;
-import com.artemis.ComponentMapper;
-import com.artemis.Entity;
-import com.artemis.annotations.Mapper;
-import com.artemis.systems.EntityProcessingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,10 +7,15 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.kingx.artemis.Aspect;
+import com.kingx.artemis.ComponentMapper;
+import com.kingx.artemis.Entity;
+import com.kingx.artemis.annotations.Mapper;
+import com.kingx.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
-import com.kingx.dungeons.engine.component.PositionComponent;
 import com.kingx.dungeons.engine.component.ShadowComponent;
+import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.geom.Polygon;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.QuadTextureFrameBuffer;
@@ -67,10 +67,10 @@ public class RenderShadowSystem extends EntityProcessingSystem {
             PositionComponent pc = pm.getSafe(e);
             ShadowComponent sc = sm.getSafe(e);
 
-            Camera[] lights = sc.lights;
+            Camera[] lights = sc.getLights();
             for (Camera light : lights) {
-                light.position.x = pc.vector.x;
-                light.position.y = pc.vector.y;
+                light.position.x = pc.getX();
+                light.position.y = pc.getY();
             }
             generateShadowMap(lights);
 
@@ -90,6 +90,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
             shadowProjectShader.setUniformf("u_ground_color", Colors.SHADOW);
             shadowProjectShader.setUniformi("DepthMap", 0);
             shadowProjectShader.setUniformf("u_useTextures", 0);
+            shadowProjectShader.setUniformf("u_bounds", 0f, 0f, App.getMap().getWidth(), App.getMap().getHeight());
             poly.render(shadowProjectShader, GL20.GL_TRIANGLE_STRIP);
             shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
             shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);

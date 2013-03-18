@@ -1,7 +1,14 @@
 package com.kingx.dungeons.geom;
 
+/** Non-intializable base class */
 public abstract class Point {
 
+    /**
+     * Point with integer precision.
+     * 
+     * @author xkings
+     * 
+     */
     public static final class Int {
         public int x;
         public int y;
@@ -59,6 +66,12 @@ public abstract class Point {
         }
     }
 
+    /**
+     * Point with float precision.
+     * 
+     * @author xkings
+     * 
+     */
     public static final class Float {
         public float x;
         public float y;
@@ -82,7 +95,6 @@ public abstract class Point {
         }
 
         public boolean equals(int i, int j) {
-            // TODO Auto-generated method stub
             return x == i && y == j;
         }
 

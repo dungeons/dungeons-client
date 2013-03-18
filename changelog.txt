@@ -11,3 +11,12 @@ v 0.0.1d2
 v 0.0.1d3
 - Update mechanism from Entity class was moved to new AI class, that is responsible for controlling entities
 - Shadowmaps added for casting shadow within the labyrinth
+
+v 0.0.1d4
+- Entity system added
+
+v 0.0.1d5
+- Behavior trees added
+
+v 0.0.1d6
+- Textures added and AI refined.

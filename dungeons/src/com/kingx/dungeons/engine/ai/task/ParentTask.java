@@ -1,6 +1,6 @@
 package com.kingx.dungeons.engine.ai.task;
 
-import com.artemis.Entity;
+import com.kingx.artemis.Entity;
 import com.kingx.dungeons.engine.ai.controller.ParentTaskController;
 import com.kingx.dungeons.engine.ai.controller.TaskController;
 

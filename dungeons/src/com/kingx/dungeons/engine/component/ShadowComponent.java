@@ -1,12 +1,12 @@
 package com.kingx.dungeons.engine.component;
 
-import com.artemis.Component;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.kingx.artemis.Component;
 
 public class ShadowComponent extends Component {
 
-    public Camera[] lights;
+    private final Camera[] lights;
 
     public ShadowComponent() {
 
@@ -21,6 +21,10 @@ public class ShadowComponent extends Component {
             lights[i].direction.z = 0.01f;
             lights[i].position.z = 0.1f;
         }
+    }
+
+    public Camera[] getLights() {
+        return lights;
     }
 
 }

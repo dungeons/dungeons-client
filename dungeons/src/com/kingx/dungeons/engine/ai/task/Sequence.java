@@ -1,15 +1,12 @@
 package com.kingx.dungeons.engine.ai.task;
 
-import com.artemis.Entity;
+import com.kingx.artemis.Entity;
 
 /**
- * This ParentTask executes each of it's children in turn until he has finished
- * all of them.
+ * Sequence is logical <tt>AND</tt> over child task.
  * 
- * It always starts by the first child, updating each one. If any child finishes
- * with failure, the Sequence fails, and we finish with failure. When a child
- * finishes with success, we select the next child as the update victim. If we
- * have finished updating the last child, the Sequence returns with success.
+ * Loops through all children one by one and fails if one children returns
+ * {@code false} on conditions. Selector succeeds if all children succeed.
  * 
  */
 public class Sequence extends ParentTask {
