@@ -20,3 +20,6 @@ v 0.0.1d5
 
 v 0.0.1d6
 - Textures added and AI refined.
+
+v 0.0.1d7
+- Abstract layer included for swiching between online and offline mode
