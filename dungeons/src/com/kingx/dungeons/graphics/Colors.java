@@ -14,4 +14,9 @@ public class Colors {
     public static final Color ZOMBIE_NORMAL = new Color(0.21f, 0.15f, .1f, 1f);
     public static final Color ZOMBIE_ALARM = new Color(0.7f, 0.2f, 0.2f, 1f);
     public static final Color AVATAR = new Color(1, 1, 1, 1f);
+
+    public static final Color DEBUG_ZOMBIE_IDLE = new Color(1, 1, 1, 1f);
+    public static final Color DEBUG_ZOMBIE_SEARCH = new Color(0, 0, 1f, 1f);
+    public static final Color DEBUG_ZOMBIE_SEE = new Color(0, 1, 0, 1f);
+    public static final Color DEBUG_ZOMBIE_ATTACK = new Color(1, 0, 0, 1f);
 }

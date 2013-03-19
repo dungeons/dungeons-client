@@ -15,6 +15,7 @@ import com.kingx.dungeons.engine.ai.task.UpdateFilter;
 import com.kingx.dungeons.engine.component.HealthComponent;
 import com.kingx.dungeons.engine.component.ZombieAIComponent;
 import com.kingx.dungeons.geom.Collision;
+import com.kingx.dungeons.graphics.Colors;
 
 public class ZombieAI extends EntityProcessingSystem {
     @Mapper
@@ -60,6 +61,10 @@ public class ZombieAI extends EntityProcessingSystem {
             data.texture.setTint(data.alertColor);
             data.entityMove.vector.set(0, 0, 0);
             App.getPlayer().getEntity().getComponent(HealthComponent.class).decrees(1);
+
+            if (App.DEBUG != null) {
+                data.texture.setTint(Colors.DEBUG_ZOMBIE_ATTACK);
+            }
             return true;
         }
     }
@@ -81,11 +86,21 @@ public class ZombieAI extends EntityProcessingSystem {
             data.seeTarget = canSee(ray, verts, data);
             if (data.seeTarget) {
                 updatePosition(data);
+                data.texture.setTint(data.normalColor);
+
+                if (App.DEBUG != null) {
+                    data.texture.setTint(Colors.DEBUG_ZOMBIE_SEE);
+                }
                 return true;
             } else {
                 if (data.targetPosition != null) {
                     float distance = getLastDirection(data).len();
                     if (distance > 0.1f) {
+
+                        if (App.DEBUG != null) {
+                            data.texture.setTint(data.normalColor);
+                            data.texture.setTint(Colors.DEBUG_ZOMBIE_SEARCH);
+                        }
                         return true;
                     }
                     data.targetPosition = null;
@@ -100,7 +115,7 @@ public class ZombieAI extends EntityProcessingSystem {
 
             data.entityMove.vector.set(getLastDirection(data)).nor();
             data.entitySpeed.setCurrent(data.entitySpeed.turbo);
-            data.texture.setTint(data.normalColor);
+
             return true;
         }
 
@@ -130,6 +145,10 @@ public class ZombieAI extends EntityProcessingSystem {
             }
             data.entitySpeed.setCurrent(data.entitySpeed.normal);
             data.texture.setTint(data.normalColor);
+
+            if (App.DEBUG != null) {
+                data.texture.setTint(Colors.DEBUG_ZOMBIE_IDLE);
+            }
             return true;
         }
 
