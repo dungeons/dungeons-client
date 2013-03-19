@@ -15,7 +15,7 @@ uniform sampler2D u_texture;
 uniform sampler2D DepthMap;
 uniform float u_mapOffset;
 uniform bool u_useTextures;
-uniform vec4 u_bounds;
+uniform float u_sight;
 
 
 // Varying variables.
@@ -88,11 +88,10 @@ void main ()
 				}
 			}
 		}
-		float radius = 5;
 		float distance = length(worldPostitoin.xyz - v_lightSpacePosition.xyz);
-        shadow = distance > radius ? true : shadow;
-		distance = clamp(distance,0,radius);
-		distance/=radius;
+        shadow = distance > u_sight ? true : shadow;
+		distance = clamp(distance,0,u_sight);
+		distance/=u_sight;
 		
 		
 		float del = 85.0;

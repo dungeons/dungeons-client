@@ -82,8 +82,7 @@ public class ZombieAI extends EntityProcessingSystem {
         public boolean checkConditions(Entity entity) {
             this.data = dataMapper.get(entity);
 
-            Ray ray = getRay(data.playerPosition.vector, data.entityPosition.vector);
-            data.seeTarget = canSee(ray, verts, data);
+            data.seeTarget = Collision.canSee(data.playerPosition.vector, data.entityPosition.vector, data.sight.getRadius());
             if (data.seeTarget) {
                 updatePosition(data);
                 data.texture.setTint(data.normalColor);
@@ -117,10 +116,6 @@ public class ZombieAI extends EntityProcessingSystem {
             data.entitySpeed.setCurrent(data.entitySpeed.turbo);
 
             return true;
-        }
-
-        private Ray getRay(Vector3 a, Vector3 b) {
-            return new Ray(a, b.cpy().sub(a));
         }
 
     }
@@ -159,7 +154,7 @@ public class ZombieAI extends EntityProcessingSystem {
     }
 
     public static boolean canSee(Ray ray, float[] verts, ZombieAIComponent data) {
-        if (Collision.distance(data.playerPosition.vector, data.entityPosition.vector) <= data.alertRadius) {
+        if (Collision.distance(data.playerPosition.vector, data.entityPosition.vector) <= data.sight.getRadius()) {
             if (!Collision.intersectRayTrianglesBetweenPoints(ray, verts, data.playerPosition.vector, data.entityPosition.vector)) {
                 return true;
             }

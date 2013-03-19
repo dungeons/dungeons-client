@@ -4,6 +4,7 @@ import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
+import com.kingx.dungeons.App;
 
 /**
  * This class contains method coppied and modified from {@link Intersector}
@@ -203,7 +204,7 @@ public class Collision {
     }
 
     /**
-     * Returns xy distance between two points.
+     * Returns <tt>xy</tt> distance between two points.
      * 
      * @param a
      *            point A
@@ -215,6 +216,27 @@ public class Collision {
         float tx = a.x - b.x;
         float ty = a.y - b.y;
         return (float) Math.sqrt(tx * tx + ty * ty);
+    }
+
+    /**
+     * Can {@code a} see {@code b} ?
+     * 
+     * @param a
+     * @param b
+     * @return
+     */
+    public static boolean canSee(Vector3 a, Vector3 b, float radius) {
+        Ray ray = getRay(a, b);
+        if (distance(a, b) <= radius) {
+            if (!intersectRayTrianglesBetweenPoints(ray, App.getMaze().getVerts(), a, b)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static Ray getRay(Vector3 a, Vector3 b) {
+        return new Ray(a, b.cpy().sub(a));
     }
 
 }

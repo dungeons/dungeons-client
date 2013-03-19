@@ -7,6 +7,7 @@ import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.HealthComponent;
 import com.kingx.dungeons.engine.component.ShaderComponent;
 import com.kingx.dungeons.engine.component.ShadowComponent;
+import com.kingx.dungeons.engine.component.SightComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
 import com.kingx.dungeons.engine.component.TextureComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
@@ -28,6 +29,7 @@ public class Wanderer extends ConcreteEntity {
         ShaderComponent shader = new ShaderComponent(Shader.getShader("normal"));
         TextureComponent textures = new TextureComponent("fish", "bloodyfish", Colors.AVATAR);
         HealthComponent health = new HealthComponent(100);
+        SightComponent sight = new SightComponent(5f);
 
         bag.add(positionComponent);
         bag.add(new RotationComponent(0, 1, 0));
@@ -37,6 +39,7 @@ public class Wanderer extends ConcreteEntity {
         bag.add(shader);
         bag.add(textures);
         bag.add(health);
+        bag.add(sight);
         bag.add(new ShadowComponent());
 
         if (camera != null) {

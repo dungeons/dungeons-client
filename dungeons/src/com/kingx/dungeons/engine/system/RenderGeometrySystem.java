@@ -10,29 +10,36 @@ import com.kingx.artemis.ComponentMapper;
 import com.kingx.artemis.Entity;
 import com.kingx.artemis.annotations.Mapper;
 import com.kingx.artemis.systems.EntityProcessingSystem;
+import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.engine.component.HealthComponent;
+import com.kingx.dungeons.engine.component.SightComponent;
 import com.kingx.dungeons.engine.component.TextureComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
+import com.kingx.dungeons.geom.Collision;
 import com.kingx.dungeons.graphics.Shader;
 
 public class RenderGeometrySystem extends EntityProcessingSystem {
     @Mapper
-    ComponentMapper<PositionComponent> pm;
+    ComponentMapper<PositionComponent> positionMapper;
     @Mapper
-    ComponentMapper<TextureComponent> tm;
+    ComponentMapper<TextureComponent> textureMapper;
     @Mapper
-    ComponentMapper<SizeComponent> ss;
+    ComponentMapper<SizeComponent> sizeMapper;
     @Mapper
     ComponentMapper<MoveComponent> moveMapper;
     @Mapper
     ComponentMapper<HealthComponent> healthMapper;
+    @Mapper
+    ComponentMapper<SightComponent> sightMapper;
 
     private final Camera camera;
     private final ShaderProgram shader;
     private final SpriteBatch sb = new SpriteBatch();
+    private PositionComponent playerPosition;
+    private SightComponent playerSight;
 
     public RenderGeometrySystem(Camera camera) {
         super(Aspect.getAspectForAll(PositionComponent.class, TextureComponent.class));
@@ -47,6 +54,8 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
     @Override
     protected void begin() {
         sb.begin();
+        playerPosition = positionMapper.getSafe(App.getPlayer().getEntity());
+        playerSight = sightMapper.getSafe(App.getPlayer().getEntity());
     }
 
     /**
@@ -59,9 +68,14 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
 
     @Override
     protected void process(Entity e) {
+        SizeComponent ccs = sizeMapper.getSafe(e);
+        TextureComponent tc = textureMapper.getSafe(e);
+        PositionComponent pc = positionMapper.getSafe(e);
+        if (!Collision.canSee(pc.vector, playerPosition.vector, playerSight.getRadius())) {
+            return;
+        }
+
         sb.setProjectionMatrix(camera.combined);
-        SizeComponent ccs = ss.getSafe(e);
-        TextureComponent tc = tm.getSafe(e);
 
         TextureRegion currentTexture = null;
 
@@ -80,7 +94,6 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
 
         if (currentTexture != null) {
             shader.setUniformf("u_tint", tc.getTint());
-            PositionComponent pc = pm.getSafe(e);
             sb.draw(currentTexture, pc.getX() - ccs.getSize() / 2f, pc.getY() - ccs.getSize() / 2f, ccs.getSize(), ccs.getSize());
         }
     }

@@ -16,6 +16,7 @@ import com.kingx.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.engine.component.ShadowComponent;
+import com.kingx.dungeons.engine.component.SightComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.geom.GroundFactory;
 import com.kingx.dungeons.graphics.Colors;
@@ -93,7 +94,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
             shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
             shadowProjectShader.setUniformi("u_texture", 1);
             shadowProjectShader.setUniformf("u_useTextures", 1);
-            shadowProjectShader.setUniformf("u_bounds", 0f, 0f, App.getMap().getWidth(), App.getMap().getHeight());
+            shadowProjectShader.setUniformf("u_sight", App.getPlayer().getEntity().getComponent(SightComponent.class).getRadius());
             poly.render(shadowProjectShader, GL20.GL_TRIANGLES);
             shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
             shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);

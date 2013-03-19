@@ -17,13 +17,13 @@ public class ZombieAIComponent extends Component {
 
     public Color normalColor;
     public Color alertColor;
-    public float alertRadius;
+    public SightComponent sight;
 
     public boolean seeTarget = false;
     public Vector3 targetPosition = null;
 
     public ZombieAIComponent(PositionComponent entityPosition, PositionComponent playerPosition, SpeedComponent entitySpeed, MoveComponent entityMove,
-            ShaderComponent shader, TextureComponent texture, Color normalColor, Color alertColor, float alertRadius) {
+            ShaderComponent shader, TextureComponent texture, Color normalColor, Color alertColor, SightComponent sight) {
         this.entityPosition = entityPosition;
         this.playerPosition = playerPosition;
         this.entitySpeed = entitySpeed;
@@ -32,7 +32,7 @@ public class ZombieAIComponent extends Component {
         this.texture = texture;
         this.normalColor = normalColor;
         this.alertColor = alertColor;
-        this.alertRadius = alertRadius;
+        this.sight = sight;
     }
 
 }

@@ -5,6 +5,7 @@ import com.kingx.artemis.World;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.HealthComponent;
 import com.kingx.dungeons.engine.component.ShaderComponent;
+import com.kingx.dungeons.engine.component.SightComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
 import com.kingx.dungeons.engine.component.TextureComponent;
 import com.kingx.dungeons.engine.component.ZombieAIComponent;
@@ -27,6 +28,7 @@ public class Zombie extends ConcreteEntity {
         ShaderComponent shader = new ShaderComponent(Shader.getShader("normal"));
         TextureComponent textures = new TextureComponent("skeleton", "skeleton", Colors.ZOMBIE_NORMAL);
         HealthComponent health = new HealthComponent(100);
+        SightComponent sight = new SightComponent(4f);
 
         bag.add(zombiePosition);
         bag.add(new RotationComponent(1, 0, 0));
@@ -37,6 +39,6 @@ public class Zombie extends ConcreteEntity {
         bag.add(textures);
         bag.add(health);
         bag.add(new ZombieAIComponent(zombiePosition, playerPosition, zombieSpeed, zombieMove, shader, textures, Colors.ZOMBIE_NORMAL,
-                Colors.ZOMBIE_ALARM, 4f));
+                Colors.ZOMBIE_ALARM, sight));
     }
 }
