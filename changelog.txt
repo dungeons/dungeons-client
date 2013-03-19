@@ -27,3 +27,5 @@ v 0.0.1d7
 v 0.0.1d8
 - Textures and color redesigned
 - Floor geometry reworked
+- Updated texture handling
+- health system added.
