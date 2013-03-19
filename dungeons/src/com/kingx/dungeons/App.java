@@ -113,7 +113,7 @@ public class App implements ApplicationListener {
 
         createMaze();
         createPlayer();
-        createZombies(10);
+        createZombies(5);
 
         onScreenRender = new SpriteBatch();
         server = SERVER != null ? new OnlineServer(world) : new OfflineServer(world);
@@ -156,7 +156,7 @@ public class App implements ApplicationListener {
      */
     private void createPlayer() {
         Vector3 p = mazeMap.getRandomPosition();
-        player = new Wanderer(world, p, 0.2f, 5f, camera);
+        player = new Wanderer(world, p, 1f, 5f, camera);
         player.createEntity().addToWorld();
     }
 

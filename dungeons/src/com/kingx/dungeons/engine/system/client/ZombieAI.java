@@ -1,6 +1,5 @@
 package com.kingx.dungeons.engine.system.client;
 
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
@@ -10,7 +9,6 @@ import com.kingx.artemis.Entity;
 import com.kingx.artemis.annotations.Mapper;
 import com.kingx.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.App;
-import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.engine.ai.controller.ParentTaskController;
 import com.kingx.dungeons.engine.ai.task.LeafTask;
 import com.kingx.dungeons.engine.ai.task.Selector;
@@ -65,7 +63,6 @@ public class ZombieAI extends EntityProcessingSystem {
             data.target = data.playerPosition.vector.cpy();
             data.entityMove.vector.set(data.target.x - data.entityPosition.getX(), data.target.y - data.entityPosition.getY()).nor();
             data.entitySpeed.setCurrent(data.entitySpeed.turbo);
-            data.shader.setTexture(getRightTexture(data.entityMove.vector));
             data.shader.setColor(data.alertColor);
             return true;
         }
@@ -93,7 +90,6 @@ public class ZombieAI extends EntityProcessingSystem {
             if (counter > 40) {
                 counter = 0;
                 data.entityMove.vector = getNewDirection();
-                data.shader.setTexture(getRightTexture(data.entityMove.vector));
             }
             data.entitySpeed.setCurrent(data.entitySpeed.normal);
             data.shader.setColor(data.normalColor);
@@ -103,16 +99,5 @@ public class ZombieAI extends EntityProcessingSystem {
         private Vector2 getNewDirection() {
             return new Vector2(App.rand.nextFloat() - 0.5f, App.rand.nextFloat() - 0.5f).nor();
         }
-    }
-
-    public static TextureRegion getRightTexture(Vector2 vector) {
-        int ang = (int) Math.toDegrees(Math.atan2(vector.y, vector.x)) + 90 + 22;
-        if (ang < 0) {
-            ang += 360;
-        } else if (ang > 360) {
-            ang -= 360;
-        }
-        ang = (int) (ang / 360f * 8);
-        return Assets.getTexture("skeleton", ang);
     }
 }

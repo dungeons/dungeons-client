@@ -3,7 +3,6 @@ package com.kingx.dungeons.engine.concrete;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.kingx.artemis.World;
-import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.ShaderComponent;
 import com.kingx.dungeons.engine.component.ShadowComponent;
@@ -24,7 +23,7 @@ public class Wanderer extends ConcreteEntity {
 
         PositionComponent positionComponent = new PositionComponent(position);
         MoveComponent moveComponent = new MoveComponent(0, 0);
-        ShaderComponent shader = new ShaderComponent(Shader.getShader("normal"), Colors.AVATAR, Assets.getTexture("zombie", 0));
+        ShaderComponent shader = new ShaderComponent(Shader.getShader("normal"), Colors.AVATAR, "fish");
 
         bag.add(positionComponent);
         bag.add(new RotationComponent(0, 1, 0));

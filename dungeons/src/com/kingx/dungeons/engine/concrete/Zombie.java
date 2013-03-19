@@ -3,7 +3,6 @@ package com.kingx.dungeons.engine.concrete;
 import com.badlogic.gdx.math.Vector3;
 import com.kingx.artemis.World;
 import com.kingx.dungeons.App;
-import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.engine.component.ShaderComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
 import com.kingx.dungeons.engine.component.ZombieAIComponent;
@@ -23,7 +22,7 @@ public class Zombie extends ConcreteEntity {
         PositionComponent playerPosition = App.getPlayer().getEntity().getComponent(PositionComponent.class);
         SpeedComponent zombieSpeed = new SpeedComponent(speed);
         MoveComponent zombieMove = new MoveComponent(0, 0);
-        ShaderComponent shader = new ShaderComponent(Shader.getShader("normal"), Colors.ZOMBIE_NORMAL, Assets.getTexture("zombie", 0));
+        ShaderComponent shader = new ShaderComponent(Shader.getShader("normal"), Colors.ZOMBIE_NORMAL, "skeleton");
 
         bag.add(zombiePosition);
         bag.add(new RotationComponent(1, 0, 0));
