@@ -44,15 +44,14 @@ public class ZombieAI extends EntityProcessingSystem {
         @Override
         public boolean checkConditions(Entity entity) {
             this.data = dataMapper.get(entity);
-            if (data.target == null) {
+
+            if (!data.seeTarget) {
                 return false;
             }
 
-            this.data = dataMapper.get(entity);
-            updateTarget(data);
-            updateTargetDistance(data);
-            float length = data.targetDist.len();
+            Vector3 direction = getDirection(data);
 
+            float length = direction.len();
             return length < 1f;
         }
 
@@ -79,9 +78,18 @@ public class ZombieAI extends EntityProcessingSystem {
             this.data = dataMapper.get(entity);
 
             Ray ray = getRay(data.playerPosition.vector, data.entityPosition.vector);
-
-            if (Collision.distance(data.playerPosition.vector, data.entityPosition.vector) <= data.alertRadius) {
-                return !Collision.intersectRayTrianglesBetweenPoints(ray, verts, data.playerPosition.vector, data.entityPosition.vector);
+            data.seeTarget = canSee(ray, verts, data);
+            if (data.seeTarget) {
+                updatePosition(data);
+                return true;
+            } else {
+                if (data.targetPosition != null) {
+                    float distance = getLastDirection(data).len();
+                    if (distance > 0.1f) {
+                        return true;
+                    }
+                    data.targetPosition = null;
+                }
             }
 
             return false;
@@ -90,10 +98,7 @@ public class ZombieAI extends EntityProcessingSystem {
         @Override
         public boolean doAction(Entity entity) {
 
-            updateTarget(data);
-            updateTargetDistance(data);
-
-            data.entityMove.vector.set(data.targetDist).nor();
+            data.entityMove.vector.set(getLastDirection(data)).nor();
             data.entitySpeed.setCurrent(data.entitySpeed.turbo);
             data.texture.setTint(data.normalColor);
             return true;
@@ -134,12 +139,27 @@ public class ZombieAI extends EntityProcessingSystem {
 
     }
 
-    public static void updateTargetDistance(ZombieAIComponent data) {
-        data.targetDist.set(data.target.cpy().sub(data.entityPosition.vector));
-
+    public static boolean canSee(Ray ray, float[] verts, ZombieAIComponent data) {
+        if (Collision.distance(data.playerPosition.vector, data.entityPosition.vector) <= data.alertRadius) {
+            if (!Collision.intersectRayTrianglesBetweenPoints(ray, verts, data.playerPosition.vector, data.entityPosition.vector)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    public static void updateTarget(ZombieAIComponent data) {
-        data.target = data.playerPosition.vector.cpy();
+    public static Vector3 getDirection(ZombieAIComponent data) {
+        return data.playerPosition.vector.cpy().sub(data.entityPosition.vector);
+    }
+
+    public static Vector3 getLastDirection(ZombieAIComponent data) {
+        return data.targetPosition.cpy().sub(data.entityPosition.vector);
+    }
+
+    public static void updatePosition(ZombieAIComponent data) {
+        if (data.targetPosition == null) {
+            data.targetPosition = new Vector3();
+        }
+        data.targetPosition.set(data.playerPosition.vector);
     }
 }

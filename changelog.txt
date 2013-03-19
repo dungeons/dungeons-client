@@ -29,3 +29,4 @@ v 0.0.1d8
 - Floor geometry reworked
 - Updated texture handling
 - health system added.
+- Zombies now remember last player position.

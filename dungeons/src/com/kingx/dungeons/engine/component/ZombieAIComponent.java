@@ -19,8 +19,8 @@ public class ZombieAIComponent extends Component {
     public Color alertColor;
     public float alertRadius;
 
-    public Vector3 target;
-    public Vector3 targetDist = new Vector3();
+    public boolean seeTarget = false;
+    public Vector3 targetPosition = null;
 
     public ZombieAIComponent(PositionComponent entityPosition, PositionComponent playerPosition, SpeedComponent entitySpeed, MoveComponent entityMove,
             ShaderComponent shader, TextureComponent texture, Color normalColor, Color alertColor, float alertRadius) {
