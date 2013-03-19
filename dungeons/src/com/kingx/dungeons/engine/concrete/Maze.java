@@ -5,7 +5,6 @@ import com.kingx.dungeons.engine.component.MeshComponent;
 import com.kingx.dungeons.engine.component.ShaderComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.geom.MazePoly;
-import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.Shader;
 
 public class Maze extends ConcreteEntity {
@@ -14,6 +13,6 @@ public class Maze extends ConcreteEntity {
         super(world);
         bag.add(new PositionComponent(0, 0, 0));
         bag.add(new MeshComponent(maze.getMesh()));
-        bag.add(new ShaderComponent(Shader.getShader("normal"), Colors.BASE, null));
+        bag.add(new ShaderComponent(Shader.getShader("normal")));
     }
 }

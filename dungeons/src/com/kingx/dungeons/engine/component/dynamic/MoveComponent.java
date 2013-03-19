@@ -3,18 +3,18 @@ package com.kingx.dungeons.engine.component.dynamic;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
 public class MoveComponent extends AbstractComponent {
-    public Vector2 vector;
+    public Vector3 vector;
     public Map<Integer, Integer> mapping = new HashMap<Integer, Integer>();
 
-    public MoveComponent(Vector2 vector) {
+    public MoveComponent(Vector3 vector) {
         this.vector = vector;
     }
 
     public MoveComponent(float x, float y) {
-        this.vector = new Vector2(x, y);
+        this.vector = new Vector3(x, y, 0);
     }
 
     @Override

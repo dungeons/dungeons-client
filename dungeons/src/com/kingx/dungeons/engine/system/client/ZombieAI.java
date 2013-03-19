@@ -1,6 +1,5 @@
 package com.kingx.dungeons.engine.system.client;
 
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.kingx.artemis.Aspect;
@@ -13,6 +12,7 @@ import com.kingx.dungeons.engine.ai.controller.ParentTaskController;
 import com.kingx.dungeons.engine.ai.task.LeafTask;
 import com.kingx.dungeons.engine.ai.task.Selector;
 import com.kingx.dungeons.engine.ai.task.UpdateFilter;
+import com.kingx.dungeons.engine.component.HealthComponent;
 import com.kingx.dungeons.engine.component.ZombieAIComponent;
 import com.kingx.dungeons.geom.Collision;
 
@@ -25,6 +25,7 @@ public class ZombieAI extends EntityProcessingSystem {
         super(Aspect.getAspectForAll(ZombieAIComponent.class));
 
         Selector selector = new Selector();
+        ((ParentTaskController) selector.getControl()).add(new Attack());
         ((ParentTaskController) selector.getControl()).add(new Search(App.getMaze().getVerts()));
         ((ParentTaskController) selector.getControl()).add(new Idle());
         planner = new UpdateFilter(selector, 1);
@@ -34,6 +35,34 @@ public class ZombieAI extends EntityProcessingSystem {
     protected void process(Entity e) {
         planner.start(e);
         planner.doAction(e);
+    }
+
+    private static class Attack extends LeafTask {
+
+        private ZombieAIComponent data;
+
+        @Override
+        public boolean checkConditions(Entity entity) {
+            this.data = dataMapper.get(entity);
+            if (data.target == null) {
+                return false;
+            }
+
+            this.data = dataMapper.get(entity);
+            updateTarget(data);
+            updateTargetDistance(data);
+            float length = data.targetDist.len();
+
+            return length < 1f;
+        }
+
+        @Override
+        public boolean doAction(Entity entity) {
+            data.texture.setTint(data.alertColor);
+            data.entityMove.vector.set(0, 0, 0);
+            App.getPlayer().getEntity().getComponent(HealthComponent.class).decrees(1);
+            return true;
+        }
     }
 
     private static class Search extends LeafTask {
@@ -60,10 +89,13 @@ public class ZombieAI extends EntityProcessingSystem {
 
         @Override
         public boolean doAction(Entity entity) {
-            data.target = data.playerPosition.vector.cpy();
-            data.entityMove.vector.set(data.target.x - data.entityPosition.getX(), data.target.y - data.entityPosition.getY()).nor();
+
+            updateTarget(data);
+            updateTargetDistance(data);
+
+            data.entityMove.vector.set(data.targetDist).nor();
             data.entitySpeed.setCurrent(data.entitySpeed.turbo);
-            data.shader.setColor(data.alertColor);
+            data.texture.setTint(data.normalColor);
             return true;
         }
 
@@ -92,12 +124,22 @@ public class ZombieAI extends EntityProcessingSystem {
                 data.entityMove.vector = getNewDirection();
             }
             data.entitySpeed.setCurrent(data.entitySpeed.normal);
-            data.shader.setColor(data.normalColor);
+            data.texture.setTint(data.normalColor);
             return true;
         }
 
-        private Vector2 getNewDirection() {
-            return new Vector2(App.rand.nextFloat() - 0.5f, App.rand.nextFloat() - 0.5f).nor();
+        private Vector3 getNewDirection() {
+            return new Vector3(App.rand.nextFloat() - 0.5f, App.rand.nextFloat() - 0.5f, 0f).nor();
         }
+
+    }
+
+    public static void updateTargetDistance(ZombieAIComponent data) {
+        data.targetDist.set(data.target.cpy().sub(data.entityPosition.vector));
+
+    }
+
+    public static void updateTarget(ZombieAIComponent data) {
+        data.target = data.playerPosition.vector.cpy();
     }
 }

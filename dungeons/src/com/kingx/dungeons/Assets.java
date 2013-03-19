@@ -29,6 +29,7 @@ public final class Assets {
     }
 
     public static TextureRegion getTexture(String name, int index) {
+        System.out.println(name + " " + index);
         Array<AtlasRegion> result = cachedTextures.get(name);
         if (result == null) {
             result = atlas.findRegions(name);

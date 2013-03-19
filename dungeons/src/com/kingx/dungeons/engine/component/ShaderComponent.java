@@ -1,18 +1,13 @@
 package com.kingx.dungeons.engine.component;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.kingx.artemis.Component;
 
 public class ShaderComponent extends Component {
     private ShaderProgram shader;
-    private Color color;
-    private String texture;
 
-    public ShaderComponent(ShaderProgram shader, Color color, String texture) {
+    public ShaderComponent(ShaderProgram shader) {
         this.shader = shader;
-        this.color = color;
-        this.texture = texture;
     }
 
     public ShaderProgram getShader() {
@@ -21,22 +16,6 @@ public class ShaderComponent extends Component {
 
     public void setShader(ShaderProgram shader) {
         this.shader = shader;
-    }
-
-    public Color getColor() {
-        return color;
-    }
-
-    public void setColor(Color color) {
-        this.color = color;
-    }
-
-    public String getTexture() {
-        return texture;
-    }
-
-    public void setTexture(String texture) {
-        this.texture = texture;
     }
 
 }
