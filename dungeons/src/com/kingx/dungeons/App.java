@@ -50,7 +50,7 @@ public class App implements ApplicationListener {
     private Clock clock;
 
     public App(String[] args) {
-        params = Param.getParams(args);
+        params = args != null ? Param.getParams(args) : Param.getParams(new String[] {});
         DEBUG = getParam("-d", "-debug");
         NOSLEEP = getParam("-ns", "-nosleep");
         SERVER = getParam("-s", "-server");

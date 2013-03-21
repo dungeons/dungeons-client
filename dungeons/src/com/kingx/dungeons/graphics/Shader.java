@@ -6,18 +6,24 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.utils.GdxRuntimeException;
 
 public class Shader {
+    private static Shader instance;
 
     private enum ShaderType {
-        vsh, fsh;
+        vsh,
+        fsh;
     }
 
     private static class ShaderStructure {
+        private final String name;
         private String vertex;
         private String fragment;
         private ShaderProgram program;
+
+        public ShaderStructure(String name) {
+            this.name = name;
+        }
 
         public void setVertex(String vertex) {
             this.vertex = vertex;
@@ -31,9 +37,14 @@ public class Shader {
 
         private void compile() {
             if (vertex != null && fragment != null) {
+                System.out.println("Compiling shader [" + name + "]");
                 program = new ShaderProgram(vertex, fragment);
                 if (!program.isCompiled()) {
-                    throw new GdxRuntimeException("Couldn't compile shader: " + program.getLog());
+                    try {
+                        throw new ShaderException(name, program);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -44,8 +55,9 @@ public class Shader {
 
     }
 
-    private static final HashMap<String, ShaderStructure> map = new HashMap<String, ShaderStructure>();
-    static {
+    private final HashMap<String, ShaderStructure> map = new HashMap<String, ShaderStructure>();
+
+    public Shader() {
         FileHandle dirHandle;
 
         // Eclipse side-effect of linking assets, assets are copied in bin folder
@@ -65,7 +77,7 @@ public class Shader {
 
             ShaderStructure ss;
             if (!map.containsKey(name)) {
-                ss = new ShaderStructure();
+                ss = new ShaderStructure(name);
             } else {
                 ss = map.get(name);
             }
@@ -86,16 +98,19 @@ public class Shader {
         }
     }
 
-    public static ShaderProgram getShader(String name) {
-        return getStructure(name).getShader();
-    }
-
-    private static ShaderStructure getStructure(String name) {
+    private ShaderStructure getStructure(String name) {
         ShaderStructure value = map.get(name);
         if (value == null) {
             throw new IllegalArgumentException("Specified Shader does not exists: " + name);
         }
         return value;
+    }
+
+    public static ShaderProgram getShader(String name) {
+        if (instance == null) {
+            instance = new Shader();
+        }
+        return instance.getStructure(name).getShader();
     }
 
 }

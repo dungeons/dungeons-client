@@ -1,8 +1,11 @@
+#ifdef GL_ES
+  precision mediump float;
+#endif
 // Fragment shader for rendering the depth values to a texture.
 
 // Linear depth calculation.
 // You could optionally upload this as a shader parameter.
-const float Near = 0;
+const float Near = 0.0;
 const float Far = 500.0;
 const float LinearDepthConstant = 1.0 / (Far - Near);
 

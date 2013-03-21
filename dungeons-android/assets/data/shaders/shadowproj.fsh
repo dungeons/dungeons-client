@@ -1,3 +1,6 @@
+#ifdef GL_ES
+  precision mediump float;
+#endif
 // Fragment shader for rendering the scene with shadows.
 
 // Linear depth calculation.
@@ -24,7 +27,10 @@ varying vec4 vPosition[4];
 varying vec4 vColor;
 varying vec2 v_texCoord;
 
-
+float round(float x)
+{
+ return floor(x + 0.5);
+}
 // Unpack an RGBA pixel to floating point value.
 float unpack (vec4 colour)
 {
@@ -49,9 +55,9 @@ void main ()
 
 	bool shadow = false;
 	vec3 depth;
-		for(int i = 0; i < 4; i++){
+		for(float i = 0.0; i < 4.0; i++){
 			// Change position to position seen from this perspective
-			depth = vPosition[i].xyz /  vPosition[i].w;
+			depth = vPosition[int(i)].xyz /  vPosition[int(i)].w;
 			
 			// interpolates across z buffer so value si within the bound
 			// length(worldPostitoin.xy - v_lightSpacePosition.xy) removers the light circle around player but causes wall flickering.
@@ -61,24 +67,19 @@ void main ()
             float bias = 0.0;
 			bool cond = false;
 
-			switch (i) {
-			case 0:
-				cond = depth.x >= 0.0-bias && depth.x <= 1.0+bias && depth.y >= 0.5-bias;
-				break;
-			case 1:
+			if(i == 0.0){
+                cond = depth.x >= 0.0-bias && depth.x <= 1.0+bias && depth.y >= 0.5-bias;
+            } else if (i == 1.0){
 				cond = depth.y >= 0.0-bias && depth.y <= 1.0+bias && depth.x >= 0.5-bias;
-				break;
-			case 2:
+            } else if (i == 2.0){
 				cond = depth.x >= 0.0-bias && depth.x <= 1.0+bias && depth.y <= 0.5+bias;
-				break;
-			case 3:
+            } else if (i == 3.0){
 				cond = depth.y >= 0.0-bias && depth.y <= 1.0+bias && depth.x <= 0.5+bias;
-				break;
 			}
 
 			if(cond){
-				depth.x = (i % 2) * 0.5 + depth.x / 2.0;
-				depth.y = (i / 2) * 0.5 + depth.y / 2.0;
+				depth.x = mod(i, 2.0) * 0.5 + depth.x / 2.0;
+				depth.y = (i / 2.0) * 0.5 + depth.y / 2.0;
 				// gets value stored in depth map and compares it to value seen from this perspective
 				float shadowDepth = unpack(texture2D(DepthMap, depth.xy));
 				
@@ -90,14 +91,14 @@ void main ()
 		}
 		float distance = length(worldPostitoin.xyz - v_lightSpacePosition.xyz);
         shadow = distance > u_sight ? true : shadow;
-		distance = clamp(distance,0,u_sight);
+		distance = clamp(distance,0.0,u_sight);
 		distance/=u_sight;
 		
 		
 		float del = 85.0;
-		float r = round(interpolate(u_source_color.r ,u_ground_color.r, distance, 1.0)*del) / del;
-		float g = round(interpolate(u_source_color.g ,u_ground_color.g, distance, 1.0)*del) / del;
-		float b = round(interpolate(u_source_color.b ,u_ground_color.b, distance, 1.0)*del) / del;
+		float r = round (interpolate(u_source_color.r ,u_ground_color.r, distance, 1.0)*del) / del;
+		float g = round (interpolate(u_source_color.g ,u_ground_color.g, distance, 1.0)*del) / del;
+		float b = round (interpolate(u_source_color.b ,u_ground_color.b, distance, 1.0)*del) / del;
      
 	    if(vWorldVertex.z  >= .99 || shadow){
 	  		gl_FragColor = u_ground_color * texture2D(u_texture,v_texCoord);
