@@ -27,7 +27,7 @@ public class Wanderer extends ConcreteEntity {
         PositionComponent positionComponent = new PositionComponent(position);
         MoveComponent moveComponent = new MoveComponent(0, 0);
         ShaderComponent shader = new ShaderComponent(Shader.getShader("normal"));
-        TextureComponent textures = new TextureComponent("fish", "bloodyfish", Colors.AVATAR);
+        TextureComponent textures = new TextureComponent("wanderer", "wanderer", Colors.AVATAR);
         HealthComponent health = new HealthComponent(100);
         SightComponent sight = new SightComponent(5f);
 
