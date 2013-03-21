@@ -19,17 +19,22 @@ import com.kingx.dungeons.graphics.Shader;
 
 public class Wanderer extends ConcreteEntity {
 
-    final MoveComponent position;
+    private final PositionComponent positionComponent;
+    private final MoveComponent moveComponent;
+    private final ShaderComponent shader;
+    private final TextureComponent textures;
+    private final HealthComponent health;
+    private final SightComponent sight;
 
     public Wanderer(World world, Vector3 position, float size, float speed, Camera camera) {
         super(world);
 
-        PositionComponent positionComponent = new PositionComponent(position);
-        MoveComponent moveComponent = new MoveComponent(0, 0);
-        ShaderComponent shader = new ShaderComponent(Shader.getShader("normal"));
-        TextureComponent textures = new TextureComponent("wanderer", "wanderer", Colors.AVATAR);
-        HealthComponent health = new HealthComponent(100);
-        SightComponent sight = new SightComponent(5f);
+        positionComponent = new PositionComponent(position);
+        moveComponent = new MoveComponent(0, 0);
+        shader = new ShaderComponent(Shader.getShader("normal"));
+        textures = new TextureComponent("wanderer", "wanderer", Colors.AVATAR);
+        health = new HealthComponent(100);
+        sight = new SightComponent(5f);
 
         bag.add(positionComponent);
         bag.add(new RotationComponent(0, 1, 0));
@@ -45,14 +50,30 @@ public class Wanderer extends ConcreteEntity {
         if (camera != null) {
             bag.add(new FollowCameraComponent(camera, 10f));
         }
-
-        this.position = moveComponent;
-
-        //  InputManager.getInstance().registerInput(InputSet.Player1, moveComponent);
     }
 
-    public MoveComponent getPosition() {
-        return position;
+    public PositionComponent getPositionComponent() {
+        return positionComponent;
+    }
+
+    public MoveComponent getMoveComponent() {
+        return moveComponent;
+    }
+
+    public ShaderComponent getShader() {
+        return shader;
+    }
+
+    public TextureComponent getTextures() {
+        return textures;
+    }
+
+    public HealthComponent getHealth() {
+        return health;
+    }
+
+    public SightComponent getSight() {
+        return sight;
     }
 
 }

@@ -17,10 +17,28 @@ public class Input extends InputAdapter {
     }
 
     private boolean action(int keycode, int dir) {
+        send(new ClientCommand((short) keycode, System.currentTimeMillis(), dir));
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        send(new ClientCommand((short) InputConstants.TOUCH_X_DOWN, System.currentTimeMillis(), screenX));
+        send(new ClientCommand((short) InputConstants.TOUCH_Y_DOWN, System.currentTimeMillis(), screenY));
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        send(new ClientCommand((short) InputConstants.TOUCH_X_UP, System.currentTimeMillis(), screenX));
+        send(new ClientCommand((short) InputConstants.TOUCH_Y_UP, System.currentTimeMillis(), screenY));
+        return false;
+    }
+
+    private void send(ClientCommand cc) {
 
         if (App.INITIALIZED) {
-            App.getServer().send(new ClientCommand((short) keycode, System.currentTimeMillis(), dir));
+            App.getServer().send(cc);
         }
-        return false;
     }
 }
