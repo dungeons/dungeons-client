@@ -79,7 +79,7 @@ void main ()
 
 			if(cond){
 				depth.x = mod(i, 2.0) * 0.5 + depth.x / 2.0;
-				depth.y = (i / 2.0) * 0.5 + depth.y / 2.0;
+                depth.y = floor(i / 2.0) * 0.5 + depth.y / 2.0;
 				// gets value stored in depth map and compares it to value seen from this perspective
 				float shadowDepth = unpack(texture2D(DepthMap, depth.xy));
 				
