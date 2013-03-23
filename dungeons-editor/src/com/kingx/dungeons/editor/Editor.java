@@ -25,11 +25,11 @@ public class Editor extends JPanel {
 
     private final Map map;
 
-    public Editor() {
+    public Editor(int width, int height) {
         addDragListeners();
         setOpaque(true);
         setBackground(new Color(240, 240, 240));
-        map = new Map(MazeBuilder.getMaze(20));
+        map = new Map(MazeBuilder.getMaze(width, height));
     }
 
     /**

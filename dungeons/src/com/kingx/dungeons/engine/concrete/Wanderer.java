@@ -10,6 +10,7 @@ import com.kingx.dungeons.engine.component.ShadowComponent;
 import com.kingx.dungeons.engine.component.SightComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
 import com.kingx.dungeons.engine.component.TextureComponent;
+import com.kingx.dungeons.engine.component.dynamic.GravityComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.RotationComponent;
@@ -25,6 +26,7 @@ public class Wanderer extends ConcreteEntity {
     private final TextureComponent textures;
     private final HealthComponent health;
     private final SightComponent sight;
+    private final GravityComponent gravity;
 
     public Wanderer(World world, Vector3 position, float size, float speed, Camera camera) {
         super(world);
@@ -35,6 +37,7 @@ public class Wanderer extends ConcreteEntity {
         textures = new TextureComponent("wanderer", "wanderer", Colors.AVATAR);
         health = new HealthComponent(100);
         sight = new SightComponent(5f);
+        gravity = new GravityComponent(3f, moveComponent);
 
         bag.add(positionComponent);
         bag.add(new RotationComponent(0, 1, 0));
@@ -45,10 +48,11 @@ public class Wanderer extends ConcreteEntity {
         bag.add(textures);
         bag.add(health);
         bag.add(sight);
+        bag.add(gravity);
         bag.add(new ShadowComponent());
 
         if (camera != null) {
-            bag.add(new FollowCameraComponent(camera, 10f));
+            bag.add(new FollowCameraComponent(camera, 15f));
         }
     }
 
@@ -74,6 +78,10 @@ public class Wanderer extends ConcreteEntity {
 
     public SightComponent getSight() {
         return sight;
+    }
+
+    public GravityComponent getGravity() {
+        return gravity;
     }
 
 }

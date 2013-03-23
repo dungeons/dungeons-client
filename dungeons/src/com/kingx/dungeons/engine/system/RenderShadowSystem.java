@@ -43,8 +43,10 @@ public class RenderShadowSystem extends EntityProcessingSystem {
     public RenderShadowSystem(Camera camera) {
         super(Aspect.getAspectForAll(PositionComponent.class, ShadowComponent.class));
         this.camera = camera;
+        int width = App.getMap().getWidth();
+        int height = App.getMap().getHeight();
 
-        poly = new GroundFactory(App.MAZE_BLOCKS_COUNT, new Vector3(1f, 1f, 1f)).generate();
+        poly = new GroundFactory(width, height, new Vector3(1f, 1f, 1f)).generate();
 
         shadowGeneratorShader = Shader.getShader("shadowgen");
         shadowProjectShader = Shader.getShader("shadowproj");

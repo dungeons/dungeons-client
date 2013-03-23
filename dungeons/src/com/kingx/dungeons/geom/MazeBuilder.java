@@ -7,8 +7,8 @@ public class MazeBuilder {
 
     private static MazeBuilder builder = new MazeBuilder();
 
-    public static boolean[][] getMaze(int mazeBlockCount) {
-        return builder.generate(mazeBlockCount);
+    public static boolean[][] getMaze(int width, int height) {
+        return builder.generate(width, height);
     }
 
     private final Random random = new Random();
@@ -19,9 +19,9 @@ public class MazeBuilder {
     private final ArrayList<Point.Int> trail = new ArrayList<Point.Int>();
     private Point.Int current;
 
-    private boolean[][] generate(int size) {
-        maze = new boolean[size][size];
-        current = new Point.Int(random.nextInt(size), random.nextInt(size));
+    private boolean[][] generate(int width, int height) {
+        maze = new boolean[width][height];
+        current = new Point.Int(random.nextInt(width), random.nextInt(height));
         Point.Int temp;
         while (true) {
             while ((temp = getWay()) == null) {

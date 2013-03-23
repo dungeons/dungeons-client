@@ -13,7 +13,7 @@ public class App extends JFrame {
         app.setSize(800, 640);
         app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        Editor editor = new Editor();
+        Editor editor = new Editor(10, 50);
         app.add(editor);
 
         app.validate();

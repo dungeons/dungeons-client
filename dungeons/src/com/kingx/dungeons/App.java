@@ -109,17 +109,17 @@ public class App implements ApplicationListener {
     }
 
     private void init() {
-        addSystemsToWorld();
-
         createMaze();
         createPlayer();
-        createZombies(5);
+        // createZombies(50);
+        addSystemsToWorld();
 
         onScreenRender = new SpriteBatch();
         server = SERVER != null ? new OnlineServer(world) : new OfflineServer(world);
         world.initialize();
 
         clock.addService(server);
+
     }
 
     /**
@@ -140,7 +140,7 @@ public class App implements ApplicationListener {
      * @return generated map
      */
     private boolean[][] createMap() {
-        return Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT) : Assets.map;
+        return Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT, MAZE_BLOCKS_COUNT) : Assets.map;
     }
 
     /**

@@ -22,7 +22,7 @@ public class MazeMap {
      * 
      * @return non-walkable blocks count
      */
-    private int getWalls() {
+    public int getWalls() {
         if (walls == -1) {
             int counter = 0;
             for (int i = 0; i < footprint.length; i++) {

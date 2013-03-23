@@ -44,11 +44,11 @@ public final class GroundFactory {
     private final ArrayList<Short> indices = new ArrayList<Short>();
     private int vertsOffset = 0;
 
-    public GroundFactory(int size, Vector3 wallSize) {
+    public GroundFactory(int width, int height, Vector3 wallSize) {
         WALL_SIZE = wallSize;
 
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
 
                 float x = i * WALL_SIZE.x;
                 float y = j * WALL_SIZE.y;

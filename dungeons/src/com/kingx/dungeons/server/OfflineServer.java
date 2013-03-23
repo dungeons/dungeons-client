@@ -3,12 +3,12 @@ package com.kingx.dungeons.server;
 import java.util.Map;
 
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.math.Vector3;
 import com.kingx.artemis.World;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.engine.component.dynamic.GravityComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
-import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.system.client.CollisionSystem;
+import com.kingx.dungeons.engine.system.client.GravitySystem;
 import com.kingx.dungeons.engine.system.client.MovementSystem;
 import com.kingx.dungeons.engine.system.client.ZombieAI;
 import com.kingx.dungeons.input.InputConstants;
@@ -18,6 +18,7 @@ public class OfflineServer extends AbstractServer {
 
     public OfflineServer(World world) {
         super(world);
+        world.setSystem(new GravitySystem());
         world.setSystem(new MovementSystem());
         world.setSystem(new ZombieAI());
         world.setSystem(new CollisionSystem());
@@ -45,19 +46,19 @@ public class OfflineServer extends AbstractServer {
 
     private void processKey(ClientCommand c) {
         MoveComponent move = App.getPlayer().getMoveComponent();
+        GravityComponent gravity = App.getPlayer().getGravity();
         int mapped = getKey(c.getAction(), move.mapping);
         switch (mapped) {
-            case Keys.W:
-                move.vector.y += c.getValue() == 0 ? -1 : 1;
-                break;
-            case Keys.S:
-                move.vector.y += c.getValue() == 0 ? 1 : -1;
-                break;
             case Keys.A:
                 move.vector.x += c.getValue() == 0 ? 1 : -1;
                 break;
             case Keys.D:
                 move.vector.x += c.getValue() == 0 ? -1 : 1;
+                break;
+            case Keys.SPACE:
+                if (!gravity.isFalling() && c.getValue() == 1) {
+                    move.vector.y = 1.5f;
+                }
                 break;
         }
     }
@@ -88,15 +89,5 @@ public class OfflineServer extends AbstractServer {
                 touch.release();
                 break;
         }
-
-        MoveComponent move = App.getPlayer().getMoveComponent();
-        PositionComponent position = App.getPlayer().getPositionComponent();
-
-        if (touch.isPressed()) {
-            Vector3 toWorldCoord = touch.getPoint().cpy();
-            App.getDefaultCam().unproject(toWorldCoord);
-            move.vector.set(toWorldCoord.sub(position.vector).nor());
-        }
-
     }
 }

@@ -48,7 +48,7 @@ public class MovementSystem extends EntityProcessingSystem {
                 cameraComponent.getCamera().direction.set(rotation.getVector());
                 cameraComponent.getCamera().up.set(0, 0, 1);
             } else {
-                cameraComponent.getCamera().position.y = position.getY() - 2f;
+                cameraComponent.getCamera().position.y = position.getY() + 2f;
                 cameraComponent.getCamera().lookAt(position.getX(), position.getY(), position.getZ());
                 cameraComponent.getCamera().position.z = cameraComponent.getHeight();
             }

@@ -6,6 +6,7 @@ import com.kingx.artemis.Entity;
 import com.kingx.artemis.annotations.Mapper;
 import com.kingx.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.engine.component.dynamic.GravityComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
 import com.kingx.dungeons.geom.Point;
@@ -16,6 +17,8 @@ public class CollisionSystem extends EntityProcessingSystem {
     ComponentMapper<PositionComponent> postionMapper;
     @Mapper
     ComponentMapper<SizeComponent> sizeMapper;
+    @Mapper
+    ComponentMapper<GravityComponent> gravityMapper;
 
     public CollisionSystem() {
         super(Aspect.getAspectForAll(PositionComponent.class, SizeComponent.class));
@@ -36,8 +39,10 @@ public class CollisionSystem extends EntityProcessingSystem {
      *            current position of entity
      * @param size
      *            size of entity
+     * @return {@code true} whether there were collision, {@code false}
+     *         otherwise
      */
-    protected void resolveMove(PositionComponent position, SizeComponent size) {
+    protected boolean resolveMove(PositionComponent position, SizeComponent size) {
 
         float halfSize = size.getSize() / 2f;
         float x = position.getX();
@@ -53,6 +58,7 @@ public class CollisionSystem extends EntityProcessingSystem {
         Int downPoint = new Point.Int((int) (x / App.MAZE_WALL_SIZE), (int) (downBound / App.MAZE_WALL_SIZE));
         Int upPoint = new Point.Int((int) (x / App.MAZE_WALL_SIZE), (int) (upBound / App.MAZE_WALL_SIZE));
 
+        boolean collision = false;
         if (!isWalkable(leftPoint)) {
             x = (leftPoint.x + 1) * App.MAZE_WALL_SIZE + halfSize;
         } else if (!isWalkable(rightPoint)) {
@@ -61,12 +67,16 @@ public class CollisionSystem extends EntityProcessingSystem {
 
         if (!isWalkable(downPoint)) {
             y = (downPoint.y + 1) * App.MAZE_WALL_SIZE + halfSize;
+            collision = true;
         } else if (!isWalkable(upPoint)) {
             y = upPoint.y - halfSize;
+            collision = true;
         }
 
         position.setX(x);
         position.setY(y);
+
+        return collision;
     }
 
     /**

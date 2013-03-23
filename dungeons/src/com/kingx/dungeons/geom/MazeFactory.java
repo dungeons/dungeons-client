@@ -49,7 +49,7 @@ public final class MazeFactory {
         WALL_SIZE = wallSize;
 
         for (int i = 0; i < maze.getFootprint().length; i++) {
-            for (int j = 0; j < maze.getFootprint().length; j++) {
+            for (int j = 0; j < maze.getFootprint()[i].length; j++) {
 
                 float x = i * WALL_SIZE.x;
                 float y = j * WALL_SIZE.y;
