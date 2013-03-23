@@ -35,7 +35,7 @@ public class Clock implements Runnable {
             accumulator += frameTime;
 
             if (accumulator < delta) {
-                if (App.NOSLEEP != null) {
+                if (App.NOSLEEP == null) {
                     try {
                         // Takes a nap for the remaining time.
                         Thread.sleep((long) ((delta - accumulator) * 1000));

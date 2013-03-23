@@ -3,6 +3,7 @@ package com.kingx.dungeons.engine.component;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.kingx.artemis.Component;
+import com.kingx.dungeons.App;
 
 public class ShadowComponent extends Component {
 
@@ -19,7 +20,7 @@ public class ShadowComponent extends Component {
             lights[i].direction.x = Math.round(Math.cos(Math.PI / 2 * (i + offset)));
             lights[i].direction.y = Math.round(Math.sin(Math.PI / 2 * (i + offset)));
             lights[i].direction.z = 0.01f;
-            lights[i].position.z = 0.1f;
+            lights[i].position.z = 0.1f * App.MAZE_WALL_SIZE;
         }
     }
 

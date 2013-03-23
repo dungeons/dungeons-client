@@ -41,7 +41,7 @@ public class App implements ApplicationListener {
 
     private static boolean wireframe;
 
-    public static final float MAZE_WALL_SIZE = 2f;
+    public static final float MAZE_WALL_SIZE = 1f;
 
     private final Map<String, Param> params;
     private Clock clock;
