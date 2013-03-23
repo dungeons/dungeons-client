@@ -4,12 +4,14 @@ import com.badlogic.gdx.graphics.Camera;
 import com.kingx.artemis.Component;
 
 public class FollowCameraComponent extends Component {
-    private final Camera camera;
-    private final float height;
+    public final Camera camera;
+    public float height;
+    public float angle;
 
-    public FollowCameraComponent(Camera camera, float height) {
+    public FollowCameraComponent(Camera camera, float height, float angle) {
         this.camera = camera;
         this.height = height;
+        this.angle = angle;
     }
 
     public Camera getCamera() {
@@ -18,6 +20,10 @@ public class FollowCameraComponent extends Component {
 
     public float getHeight() {
         return height;
+    }
+
+    public float getAngle() {
+        return angle;
     }
 
 }

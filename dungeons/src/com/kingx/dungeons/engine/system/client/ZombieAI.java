@@ -27,7 +27,7 @@ public class ZombieAI extends EntityProcessingSystem {
 
         Selector selector = new Selector();
         ((ParentTaskController) selector.getControl()).add(new Attack());
-        ((ParentTaskController) selector.getControl()).add(new Search(App.getMaze().getVerts()));
+        ((ParentTaskController) selector.getControl()).add(new Search());
         ((ParentTaskController) selector.getControl()).add(new Idle());
         planner = new UpdateFilter(selector, 1);
     }
@@ -72,11 +72,6 @@ public class ZombieAI extends EntityProcessingSystem {
     private static class Search extends LeafTask {
 
         private ZombieAIComponent data;
-        private final float[] verts;
-
-        private Search(float[] verts) {
-            this.verts = verts;
-        }
 
         @Override
         public boolean checkConditions(Entity entity) {

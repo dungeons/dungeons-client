@@ -1,6 +1,5 @@
 package com.kingx.dungeons.engine.concrete;
 
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.math.Vector3;
 import com.kingx.artemis.World;
 import com.kingx.dungeons.engine.component.FollowCameraComponent;
@@ -28,7 +27,7 @@ public class Wanderer extends ConcreteEntity {
     private final SightComponent sight;
     private final GravityComponent gravity;
 
-    public Wanderer(World world, Vector3 position, float size, float speed, Camera camera) {
+    public Wanderer(World world, Vector3 position, float size, float speed, FollowCameraComponent camera) {
         super(world);
 
         positionComponent = new PositionComponent(position);
@@ -52,7 +51,7 @@ public class Wanderer extends ConcreteEntity {
         bag.add(new ShadowComponent());
 
         if (camera != null) {
-            bag.add(new FollowCameraComponent(camera, 15f));
+            bag.add(camera);
         }
     }
 

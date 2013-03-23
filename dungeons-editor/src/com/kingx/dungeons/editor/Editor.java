@@ -25,11 +25,11 @@ public class Editor extends JPanel {
 
     private final Map map;
 
-    public Editor(int width, int height) {
+    public Editor() {
         addDragListeners();
         setOpaque(true);
-        setBackground(new Color(240, 240, 240));
-        map = new Map(MazeBuilder.getMaze(width, height));
+        setBackground(new Color(170, 170, 170));
+        map = new Map(MazeBuilder.getMaze(36, 50));
     }
 
     /**
@@ -83,7 +83,7 @@ public class Editor extends JPanel {
             // Serialize data object to a file
             try {
                 ObjectOutput out = new ObjectOutputStream(new FileOutputStream("map.dng"));
-                out.writeObject(map.getMaze());
+                out.writeObject(map.getStructuredMaze());
                 out.close();
             } catch (IOException e) {
                 e.printStackTrace();

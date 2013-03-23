@@ -7,13 +7,13 @@ import com.kingx.dungeons.geom.Point.Int;
 
 public class MazeMap {
 
-    private final boolean[][] footprint;
+    private final boolean[][][] footprints;
     private int walls = -1;
 
     public static final float SIZE = 1f;
 
-    public MazeMap(boolean[][] map) {
-        this.footprint = map;
+    public MazeMap(boolean[][][] map) {
+        this.footprints = map;
         walls = this.getWalls();
     }
 
@@ -25,10 +25,12 @@ public class MazeMap {
     public int getWalls() {
         if (walls == -1) {
             int counter = 0;
-            for (int i = 0; i < footprint.length; i++) {
-                for (int j = 0; j < footprint[i].length; j++) {
-                    if (!footprint[i][j]) {
-                        counter++;
+            for (int i = 0; i < footprints.length; i++) {
+                for (int j = 0; j < footprints[i].length; j++) {
+                    for (int k = 0; k < footprints[i][j].length; k++) {
+                        if (!footprints[i][j][k]) {
+                            counter++;
+                        }
                     }
                 }
             }
@@ -46,9 +48,9 @@ public class MazeMap {
     public Point.Int getRandomBlock() {
         Point.Int p = new Point.Int();
         do {
-            p.x = App.rand.nextInt(footprint.length);
-            p.y = App.rand.nextInt(footprint[p.x].length);
-        } while (!footprint[p.x][p.y]);
+            p.x = App.rand.nextInt(footprints.length);
+            p.y = App.rand.nextInt(footprints[p.x].length);
+        } while (!footprints[0][p.x][p.y]);
 
         return p;
     }
@@ -61,45 +63,30 @@ public class MazeMap {
     public Point.Int getRandomBlock(Point.Int start) {
         Point.Int p = new Point.Int();
         do {
-            p.x = App.rand.nextInt(footprint.length);
-            p.y = App.rand.nextInt(footprint[p.x].length);
-        } while (!footprint[p.x][p.y] || p.equals(start));
+            p.x = App.rand.nextInt(footprints.length);
+            p.y = App.rand.nextInt(footprints[p.x].length);
+        } while (!footprints[0][p.x][p.y] || p.equals(start));
         return p;
     }
 
     public boolean[][] getFootprint() {
-        return footprint;
+        return getFootprint(App.getCurrentFootprint());
+    }
+
+    public boolean[][] getFootprint(int i) {
+        return footprints[i];
+    }
+
+    public int getFootprints() {
+        return footprints.length;
     }
 
     public int getWidth() {
-        return footprint.length;
+        return footprints[0].length;
     }
 
     public int getHeight() {
-        return footprint[0].length;
-    }
-
-    public void print() {
-        print(footprint);
-    }
-
-    public static void print(boolean[][] maze) {
-        print(maze, null);
-    }
-
-    public static void print(boolean[][] maze, Point.Int current) {
-        String out = "";
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze[0].length; j++) {
-                if (current != null && current.equals(i, j)) {
-                    out += "\u25A3 ";
-                } else {
-                    out += maze[i][j] ? "\u25A0 " : "\u25A1 ";
-                }
-            }
-            out += "\n";
-        }
-        System.out.println(out);
+        return footprints[0][0].length;
     }
 
     public Vector3 getRandomPosition() {

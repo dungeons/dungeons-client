@@ -1,5 +1,6 @@
 package com.kingx.dungeons.input;
 
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.server.ClientCommand;
@@ -17,7 +18,19 @@ public class Input extends InputAdapter {
     }
 
     private boolean action(int keycode, int dir) {
-        send(new ClientCommand((short) keycode, System.currentTimeMillis(), dir));
+        if (App.INITIALIZED) {
+            switch (keycode) {
+                case Keys.PLUS:
+                    rotateCamera(0.1f);
+                    break;
+                case Keys.MINUS:
+                    rotateCamera(-0.1f);
+                    break;
+                default:
+                    send(new ClientCommand((short) keycode, System.currentTimeMillis(), dir));
+            }
+        }
+
         return false;
     }
 
@@ -36,9 +49,10 @@ public class Input extends InputAdapter {
     }
 
     private void send(ClientCommand cc) {
+        App.getServer().send(cc);
+    }
 
-        if (App.INITIALIZED) {
-            App.getServer().send(cc);
-        }
+    private void rotateCamera(float v) {
+        App.getDefaultCam().angle += v;
     }
 }

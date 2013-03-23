@@ -5,7 +5,6 @@ import com.kingx.artemis.ComponentMapper;
 import com.kingx.artemis.Entity;
 import com.kingx.artemis.annotations.Mapper;
 import com.kingx.artemis.systems.EntityProcessingSystem;
-import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.SpeedComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
@@ -41,17 +40,13 @@ public class MovementSystem extends EntityProcessingSystem {
 
         if (cameraMapper.has(e)) {
             FollowCameraComponent cameraComponent = cameraMapper.get(e);
-            cameraComponent.getCamera().position.x = position.getX();
-            if (App.isFps()) {
-                cameraComponent.getCamera().position.y = position.getY();
-                cameraComponent.getCamera().position.z = 1f;
-                cameraComponent.getCamera().direction.set(rotation.getVector());
-                cameraComponent.getCamera().up.set(0, 0, 1);
-            } else {
-                cameraComponent.getCamera().position.y = position.getY() + 2f;
-                cameraComponent.getCamera().lookAt(position.getX(), position.getY(), position.getZ());
-                cameraComponent.getCamera().position.z = cameraComponent.getHeight();
-            }
+
+            float angle = cameraComponent.getAngle();
+            cameraComponent.getCamera().position.x = 5 + (float) (Math.sin(angle) * cameraComponent.getHeight());
+            cameraComponent.getCamera().position.y = position.getY();
+            cameraComponent.getCamera().position.z = -5 + (float) (Math.cos(angle) * cameraComponent.getHeight());
+            cameraComponent.getCamera().lookAt(5, position.getY(), -5);
         }
+
     }
 }

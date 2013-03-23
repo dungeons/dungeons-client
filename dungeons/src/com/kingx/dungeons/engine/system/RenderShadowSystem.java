@@ -1,5 +1,7 @@
 package com.kingx.dungeons.engine.system;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
@@ -19,6 +21,7 @@ import com.kingx.dungeons.engine.component.ShadowComponent;
 import com.kingx.dungeons.engine.component.SightComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.geom.GroundFactory;
+import com.kingx.dungeons.geom.MazePoly;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.QuadTextureFrameBuffer;
 import com.kingx.dungeons.graphics.Shader;
@@ -71,12 +74,13 @@ public class RenderShadowSystem extends EntityProcessingSystem {
             PositionComponent pc = pm.getSafe(e);
             ShadowComponent sc = sm.getSafe(e);
 
+            ArrayList<MazePoly> mazes = App.getMazes();
             Camera[] lights = sc.getLights();
             for (Camera light : lights) {
                 light.position.x = pc.getX();
                 light.position.y = pc.getY();
             }
-            generateShadowMap(lights);
+            generateShadowMap(mazes.get(0), lights);
 
             depthMap.bind();
             Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
@@ -100,7 +104,9 @@ public class RenderShadowSystem extends EntityProcessingSystem {
             poly.render(shadowProjectShader, GL20.GL_TRIANGLES);
             shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
             shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
-            App.getMaze().getMesh().render(shadowProjectShader, GL20.GL_TRIANGLES);
+            for (MazePoly maze : mazes) {
+                maze.getMesh().render(shadowProjectShader, GL20.GL_TRIANGLES);
+            }
             shadowProjectShader.end();
         }
 
@@ -112,25 +118,25 @@ public class RenderShadowSystem extends EntityProcessingSystem {
      * @param lights
      *            lights for depthmap generation
      */
-    private void generateShadowMap(Camera[] lights) {
+    private void generateShadowMap(MazePoly maze, Camera[] lights) {
         shadowMap.begin();
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.gl.glClearColor(0, 0, 0, 0);
         for (int i = 0; i < lights.length; i++) {
             lights[i].update();
-            depthMap = generateShadowMap(lights[i]);
+            depthMap = generateShadowMap(maze, lights[i]);
         }
 
         shadowMap.end();
     }
 
-    private Texture generateShadowMap(Camera lightCam) {
+    private Texture generateShadowMap(MazePoly maze, Camera lightCam) {
         shadowMap.nextTexture();
         shadowGeneratorShader.begin();
         shadowGeneratorShader.setUniformMatrix("ProjectionMatrix", lightCam.projection);
         shadowGeneratorShader.setUniformMatrix("ViewMatrix", lightCam.view);
-        App.getMaze().getMesh().render(shadowGeneratorShader, GL20.GL_TRIANGLES);
+        maze.getMesh().render(shadowGeneratorShader, GL20.GL_TRIANGLES);
         shadowGeneratorShader.end();
         return shadowMap.getColorBufferTexture();
     }

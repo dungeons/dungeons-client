@@ -10,10 +10,10 @@ public class App extends JFrame {
 
     public static void main(String[] args) {
         App app = new App();
-        app.setSize(800, 640);
+        app.setSize(1920, 1080);
         app.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        Editor editor = new Editor(10, 50);
+        Editor editor = new Editor();
         app.add(editor);
 
         app.validate();

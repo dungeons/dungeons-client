@@ -11,14 +11,14 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.utils.Array;
 
 public final class Assets {
-    public static boolean[][] map;
+    public static boolean[][][] map;
     private static TextureAtlas atlas;
     private static HashMap<String, Array<AtlasRegion>> cachedTextures = new HashMap<String, Array<AtlasRegion>>();
     static {
         atlas = new TextureAtlas("data/textures/packed.atlas");
 
         try {
-            map = (boolean[][]) deserialize(Gdx.files.internal("data/map.dng"));
+            map = (boolean[][][]) deserialize(Gdx.files.internal("data/map.dng"));
         } catch (Exception e) {
             e.printStackTrace();
         }

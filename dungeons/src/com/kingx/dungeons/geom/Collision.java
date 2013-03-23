@@ -228,7 +228,8 @@ public class Collision {
     public static boolean canSee(Vector3 a, Vector3 b, float radius) {
         Ray ray = getRay(a, b);
         if (distance(a, b) <= radius) {
-            if (!intersectRayTrianglesBetweenPoints(ray, App.getMaze().getVerts(), a, b)) {
+            // FIXME maze 0
+            if (!intersectRayTrianglesBetweenPoints(ray, App.getMaze(0).getVerts(), a, b)) {
                 return true;
             }
         }

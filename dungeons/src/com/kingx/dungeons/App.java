@@ -1,11 +1,11 @@
 package com.kingx.dungeons;
 
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -13,12 +13,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.kingx.artemis.World;
-import com.kingx.dungeons.engine.concrete.Maze;
+import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.concrete.Wanderer;
 import com.kingx.dungeons.engine.concrete.Zombie;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
-import com.kingx.dungeons.geom.MazeBuilder;
 import com.kingx.dungeons.geom.MazeFactory;
 import com.kingx.dungeons.geom.MazePoly;
 import com.kingx.dungeons.graphics.MazeMap;
@@ -35,13 +34,12 @@ public class App implements ApplicationListener {
     public static Param SERVER;
 
     public static final Random rand = new Random();
-    private static Camera camera;
+    private static FollowCameraComponent camera;
 
     private static MazeMap mazeMap;
-    public static MazePoly mazeMesh;
+    public static ArrayList<MazePoly> mazeMesh;
 
     private static boolean wireframe;
-    private static boolean fps;
 
     public static final int MAZE_BLOCKS_COUNT = 20;
     public static final float MAZE_WALL_SIZE = 1f;
@@ -95,7 +93,7 @@ public class App implements ApplicationListener {
             init();
             INITIALIZED = true;
         }
-        camera.update();
+        camera.getCamera().update();
 
         renderShadowSystem.process();
         renderGeometrySystem.process();
@@ -128,9 +126,7 @@ public class App implements ApplicationListener {
      */
     private void createMaze() {
         mazeMap = new MazeMap(createMap());
-        mazeMesh = new MazeFactory(mazeMap, new Vector3(1f, 1f, 1f)).generate();
-        Maze mazeCreation = new Maze(world, mazeMesh);
-        mazeCreation.createEntity().addToWorld();
+        mazeMesh = new MazeFactory(mazeMap, 1f).getMazes();
     }
 
     /**
@@ -139,16 +135,17 @@ public class App implements ApplicationListener {
      * 
      * @return generated map
      */
-    private boolean[][] createMap() {
-        return Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT, MAZE_BLOCKS_COUNT) : Assets.map;
+    private boolean[][][] createMap() {
+        // return Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT, MAZE_BLOCKS_COUNT) : Assets.map;
+        return Assets.map;
     }
 
     /**
      * Register systems to the world and initialize.
      */
     private void addSystemsToWorld() {
-        renderShadowSystem = world.setSystem(new RenderShadowSystem(camera), true);
-        renderGeometrySystem = world.setSystem(new RenderGeometrySystem(camera), true);
+        renderShadowSystem = world.setSystem(new RenderShadowSystem(camera.getCamera()), true);
+        renderGeometrySystem = world.setSystem(new RenderGeometrySystem(camera.getCamera()), true);
     }
 
     /**
@@ -179,16 +176,16 @@ public class App implements ApplicationListener {
         if (camera == null) {
             camera = setUpCamera(width, height);
         } else {
-            camera.viewportWidth = width;
-            camera.viewportHeight = height;
+            camera.getCamera().viewportWidth = width;
+            camera.getCamera().viewportHeight = height;
         }
     }
 
-    public Camera setUpCamera(int width, int height) {
+    public FollowCameraComponent setUpCamera(int width, int height) {
         PerspectiveCamera camera = new PerspectiveCamera(67, width, height);
         camera.position.z = 15f;
         camera.direction.set(0, 0, -1f);
-        return camera;
+        return new FollowCameraComponent(camera, 15f, 0);
     }
 
     // Toggle switches
@@ -201,18 +198,14 @@ public class App implements ApplicationListener {
         return wireframe;
     }
 
-    public static void toggleFps() {
-        fps = !fps;
-    }
-
-    public static boolean isFps() {
-        return fps;
-    }
-
     // Global getters
 
-    public static MazePoly getMaze() {
+    public static ArrayList<MazePoly> getMazes() {
         return mazeMesh;
+    }
+
+    public static MazePoly getMaze(int i) {
+        return mazeMesh.get(i);
     }
 
     public static Wanderer getPlayer() {
@@ -223,12 +216,17 @@ public class App implements ApplicationListener {
         return mazeMap;
     }
 
-    public static Camera getDefaultCam() {
+    public static FollowCameraComponent getDefaultCam() {
         return camera;
     }
 
     public static AbstractServer getServer() {
         return server;
+    }
+
+    public static int getCurrentFootprint() {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
     // Application cycle events
