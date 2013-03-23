@@ -42,7 +42,7 @@ public class App implements ApplicationListener {
     private static boolean wireframe;
 
     public static final int MAZE_BLOCKS_COUNT = 20;
-    public static final float MAZE_WALL_SIZE = 1f;
+    public static final float MAZE_WALL_SIZE = 2f;
 
     private final Map<String, Param> params;
     private Clock clock;
@@ -126,7 +126,7 @@ public class App implements ApplicationListener {
      */
     private void createMaze() {
         mazeMap = new MazeMap(createMap());
-        mazeMesh = new MazeFactory(mazeMap, 1f).getMazes();
+        mazeMesh = new MazeFactory(mazeMap, MAZE_WALL_SIZE).getMazes();
     }
 
     /**
@@ -183,9 +183,7 @@ public class App implements ApplicationListener {
 
     public FollowCameraComponent setUpCamera(int width, int height) {
         PerspectiveCamera camera = new PerspectiveCamera(67, width, height);
-        camera.position.z = 15f;
-        camera.direction.set(0, 0, -1f);
-        return new FollowCameraComponent(camera, 15f, 0);
+        return new FollowCameraComponent(camera, 15f * MAZE_WALL_SIZE, 0);
     }
 
     // Toggle switches

@@ -6,13 +6,12 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
 
 public final class GroundFactory {
 
-    private final Vector3 WALL_SIZE;
+    private final float WALL_SIZE;
     private final int VERTS_PER_QUAD = 4;
 
     private static final float[][] positionOffset = { { 0, 0, 0 }, // 0/7
@@ -44,14 +43,14 @@ public final class GroundFactory {
     private final ArrayList<Short> indices = new ArrayList<Short>();
     private int vertsOffset = 0;
 
-    public GroundFactory(int width, int height, Vector3 wallSize) {
-        WALL_SIZE = wallSize;
+    public GroundFactory(int width, int height, float mazeWallSize) {
+        WALL_SIZE = mazeWallSize;
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
 
-                float x = i * WALL_SIZE.x;
-                float y = j * WALL_SIZE.y;
+                float x = i * WALL_SIZE;
+                float y = j * WALL_SIZE;
                 makeWall(x, y, -0.1f);
             }
         }
@@ -81,9 +80,9 @@ public final class GroundFactory {
     private void makeQuad(float x, float y, float z, int face, TextureRegion texture) {
         for (int i = 0; i < quads[face].length; i++) {
             Vector2 cords = getTextureCoordinates(i, texture);
-            verts.add(positionOffset[quads[face][i]][0] * WALL_SIZE.x + x); // x position
-            verts.add(positionOffset[quads[face][i]][1] * WALL_SIZE.y + y); // y position
-            verts.add(positionOffset[quads[face][i]][2] * WALL_SIZE.z + z); // z position
+            verts.add(positionOffset[quads[face][i]][0] * WALL_SIZE + x); // x position
+            verts.add(positionOffset[quads[face][i]][1] * WALL_SIZE + y); // y position
+            verts.add(positionOffset[quads[face][i]][2] * WALL_SIZE + z); // z position
             verts.add(cords.x); // tex-x position
             verts.add(cords.y); // tex-y position
             verts.add(normals[face][0]); // x normal

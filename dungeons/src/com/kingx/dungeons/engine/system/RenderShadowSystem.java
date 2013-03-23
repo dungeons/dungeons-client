@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector3;
 import com.kingx.artemis.Aspect;
 import com.kingx.artemis.ComponentMapper;
 import com.kingx.artemis.Entity;
@@ -49,7 +48,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         int width = App.getMap().getWidth();
         int height = App.getMap().getHeight();
 
-        poly = new GroundFactory(width, height, new Vector3(1f, 1f, 1f)).generate();
+        poly = new GroundFactory(width, height, App.MAZE_WALL_SIZE).generate();
 
         shadowGeneratorShader = Shader.getShader("shadowgen");
         shadowProjectShader = Shader.getShader("shadowproj");
