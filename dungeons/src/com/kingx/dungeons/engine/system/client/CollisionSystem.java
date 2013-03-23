@@ -62,14 +62,14 @@ public class CollisionSystem extends EntityProcessingSystem {
         if (!isWalkable(leftPoint)) {
             x = (leftPoint.x + 1) * App.MAZE_WALL_SIZE + halfSize;
         } else if (!isWalkable(rightPoint)) {
-            x = rightPoint.x - halfSize;
+            x = rightPoint.x * App.MAZE_WALL_SIZE - halfSize;
         }
 
         if (!isWalkable(downPoint)) {
             y = (downPoint.y + 1) * App.MAZE_WALL_SIZE + halfSize;
             collision = true;
         } else if (!isWalkable(upPoint)) {
-            y = upPoint.y - halfSize;
+            y = upPoint.y * App.MAZE_WALL_SIZE - halfSize;
             collision = true;
         }
 

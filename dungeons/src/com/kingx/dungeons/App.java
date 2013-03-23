@@ -41,7 +41,6 @@ public class App implements ApplicationListener {
 
     private static boolean wireframe;
 
-    public static final int MAZE_BLOCKS_COUNT = 20;
     public static final float MAZE_WALL_SIZE = 2f;
 
     private final Map<String, Param> params;
