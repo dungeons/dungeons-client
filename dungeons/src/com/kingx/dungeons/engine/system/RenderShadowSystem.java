@@ -16,6 +16,7 @@ import com.kingx.artemis.annotations.Mapper;
 import com.kingx.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
+import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.ShadowComponent;
 import com.kingx.dungeons.engine.component.SightComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
@@ -31,7 +32,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
     @Mapper
     ComponentMapper<ShadowComponent> sm;
 
-    private final Camera camera;
+    private final FollowCameraComponent camera;
 
     private boolean begin;
     private final ShaderProgram shadowGeneratorShader;
@@ -42,13 +43,11 @@ public class RenderShadowSystem extends EntityProcessingSystem {
     private Texture depthMap;
     private static final int TEXTURE_SIZE = 1024;
 
-    public RenderShadowSystem(Camera camera) {
+    public RenderShadowSystem(FollowCameraComponent camera) {
         super(Aspect.getAspectForAll(PositionComponent.class, ShadowComponent.class));
         this.camera = camera;
-        int width = App.getMap().getWidth();
-        int height = App.getMap().getHeight();
 
-        poly = new GroundFactory(width, height, App.MAZE_WALL_SIZE).generate();
+        poly = new GroundFactory(App.getMap(), App.MAZE_WALL_SIZE).generate();
 
         shadowGeneratorShader = Shader.getShader("shadowgen");
         shadowProjectShader = Shader.getShader("shadowproj");
@@ -69,45 +68,44 @@ public class RenderShadowSystem extends EntityProcessingSystem {
 
     @Override
     protected void process(Entity e) {
-        if (begin) {
-            PositionComponent pc = pm.getSafe(e);
-            ShadowComponent sc = sm.getSafe(e);
+        PositionComponent pc = pm.getSafe(e);
+        ShadowComponent sc = sm.getSafe(e);
 
-            ArrayList<MazePoly> mazes = App.getMazes();
-            Camera[] lights = sc.getLights();
-            for (Camera light : lights) {
-                light.position.x = pc.getX();
-                light.position.y = pc.getY();
-            }
-            generateShadowMap(mazes.get(0), lights);
-
-            depthMap.bind();
-            Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
-            Assets.getTexture("wall", 0).getTexture().bind();
-            Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-
-            shadowProjectShader.begin();
-            shadowProjectShader.setUniformMatrix("ProjectionMatrix", camera.projection);
-            shadowProjectShader.setUniformMatrix("ViewMatrix", camera.view);
-            for (int i = 0; i < lights.length; i++) {
-                shadowProjectShader.setUniformMatrix("LightSourceProjectionViewMatrix[" + i + "]", lights[i].combined);
-            }
-            shadowProjectShader.setUniformf("v_lightSpacePosition", lights[0].position);
-            shadowProjectShader.setUniformi("DepthMap", 0);
-
-            shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
-            shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
-            shadowProjectShader.setUniformi("u_texture", 1);
-            shadowProjectShader.setUniformf("u_useTextures", 1);
-            shadowProjectShader.setUniformf("u_sight", App.getPlayer().getEntity().getComponent(SightComponent.class).getRadius());
-            poly.render(shadowProjectShader, GL20.GL_TRIANGLES);
-            shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
-            shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
-            for (MazePoly maze : mazes) {
-                maze.getMesh().render(shadowProjectShader, GL20.GL_TRIANGLES);
-            }
-            shadowProjectShader.end();
+        ArrayList<MazePoly> mazes = App.getMazes();
+        Camera[] lights = sc.getLights();
+        for (Camera light : lights) {
+            light.position.x = pc.getX();
+            light.position.y = pc.getY();
         }
+        generateShadowMap(mazes.get(0), lights);
+
+        depthMap.bind();
+        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
+        Assets.getTexture("wall", 0).getTexture().bind();
+        Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+
+        shadowProjectShader.begin();
+        shadowProjectShader.setUniformMatrix("ProjectionMatrix", camera.getCamera().projection);
+        shadowProjectShader.setUniformMatrix("ViewMatrix", camera.getCamera().view);
+        for (int i = 0; i < lights.length; i++) {
+            shadowProjectShader.setUniformMatrix("LightSourceProjectionViewMatrix[" + i + "]", lights[i].combined);
+        }
+        shadowProjectShader.setUniformf("v_lightSpacePosition", lights[0].position);
+        shadowProjectShader.setUniformi("DepthMap", 0);
+
+        shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
+        shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
+        shadowProjectShader.setUniformi("u_texture", 1);
+        shadowProjectShader.setUniformf("u_useTextures", 1);
+        shadowProjectShader.setUniformf("u_sight", App.getPlayer().getEntity().getComponent(SightComponent.class).getRadius());
+        poly.render(shadowProjectShader, GL20.GL_TRIANGLES);
+        shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
+        shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
+
+        for (MazePoly maze : mazes) {
+            maze.getMesh().render(shadowProjectShader, GL20.GL_TRIANGLES);
+        }
+        shadowProjectShader.end();
 
     }
 
@@ -133,6 +131,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
     private Texture generateShadowMap(MazePoly maze, Camera lightCam) {
         shadowMap.nextTexture();
         shadowGeneratorShader.begin();
+
         shadowGeneratorShader.setUniformMatrix("ProjectionMatrix", lightCam.projection);
         shadowGeneratorShader.setUniformMatrix("ViewMatrix", lightCam.view);
         maze.getMesh().render(shadowGeneratorShader, GL20.GL_TRIANGLES);

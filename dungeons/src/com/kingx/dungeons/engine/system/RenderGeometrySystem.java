@@ -12,6 +12,7 @@ import com.kingx.artemis.annotations.Mapper;
 import com.kingx.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
+import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.HealthComponent;
 import com.kingx.dungeons.engine.component.SightComponent;
 import com.kingx.dungeons.engine.component.TextureComponent;
@@ -41,9 +42,9 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
     private PositionComponent playerPosition;
     private SightComponent playerSight;
 
-    public RenderGeometrySystem(Camera camera) {
+    public RenderGeometrySystem(FollowCameraComponent camera) {
         super(Aspect.getAspectForAll(PositionComponent.class, TextureComponent.class));
-        this.camera = camera;
+        this.camera = camera.getCamera();
         this.shader = Shader.getShader("sprite");
         sb.setShader(shader);
     }
@@ -94,7 +95,7 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
 
         if (currentTexture != null) {
             shader.setUniformf("u_tint", tc.getTint());
-            sb.draw(currentTexture, pc.getX() - ccs.getSize() / 2f, pc.getY() - ccs.getSize() / 2f, ccs.getSize(), ccs.getSize());
+            sb.draw(currentTexture, Collision.converX(pc) - ccs.getSize() / 2f, pc.getY() - ccs.getSize() / 2f, ccs.getSize(), ccs.getSize());
         }
     }
 

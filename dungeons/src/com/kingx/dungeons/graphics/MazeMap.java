@@ -70,7 +70,7 @@ public class MazeMap {
     }
 
     public boolean[][] getFootprint() {
-        return getFootprint(App.getCurrentFootprint());
+        return getFootprint(App.getCurrentView());
     }
 
     public boolean[][] getFootprint(int i) {

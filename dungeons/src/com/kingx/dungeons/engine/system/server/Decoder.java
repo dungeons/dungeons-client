@@ -9,6 +9,7 @@ import com.kingx.artemis.EntitySystem;
 import com.kingx.artemis.World;
 import com.kingx.artemis.annotations.Mapper;
 import com.kingx.artemis.utils.ImmutableBag;
+import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.RotationComponent;
@@ -43,9 +44,15 @@ public final class Decoder extends EntitySystem {
     protected void processEntities(ImmutableBag<Entity> entities) {
 
         for (ServerCommand c : buffer) {
-            Entity e = world.getEntity(c.getId());
-            if (e == null) {
-                e = world.createEntity(c.getId());
+            System.out.println(c);
+            /* Entity e = world.getEntity(c.getId());
+             if (e == null) {
+                 e = world.createEntity(c.getId());
+             }
+             */
+            Entity e = null;
+            if (c.getId() == 0) {
+                e = App.getPlayer().getEntity();
             }
 
             switch (c.getComponent()) {
@@ -66,6 +73,8 @@ public final class Decoder extends EntitySystem {
             }
 
         }
+
+        buffer.clear();
     }
 
     @Override

@@ -9,7 +9,6 @@ import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.dynamic.GravityComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
-import com.kingx.dungeons.geom.Point;
 import com.kingx.dungeons.geom.Point.Int;
 
 public class CollisionSystem extends EntityProcessingSystem {
@@ -43,40 +42,40 @@ public class CollisionSystem extends EntityProcessingSystem {
      *         otherwise
      */
     protected boolean resolveMove(PositionComponent position, SizeComponent size) {
+        /*
+                float halfSize = size.getSize() / 2f;
+                float x = Collision.converX(position);
+                float y = position.getY();
 
-        float halfSize = size.getSize() / 2f;
-        float x = position.getX();
-        float y = position.getY();
+                float leftBound = x - halfSize;
+                float rightBound = x + halfSize;
+                float downBound = y - halfSize;
+                float upBound = y + halfSize;
 
-        float leftBound = x - halfSize;
-        float rightBound = x + halfSize;
-        float downBound = y - halfSize;
-        float upBound = y + halfSize;
+                Int leftPoint = new Point.Int((int) (leftBound / App.MAZE_WALL_SIZE), (int) (y / App.MAZE_WALL_SIZE));
+                Int rightPoint = new Point.Int((int) (rightBound / App.MAZE_WALL_SIZE), (int) (y / App.MAZE_WALL_SIZE));
+                Int downPoint = new Point.Int((int) (x / App.MAZE_WALL_SIZE), (int) (downBound / App.MAZE_WALL_SIZE));
+                Int upPoint = new Point.Int((int) (x / App.MAZE_WALL_SIZE), (int) (upBound / App.MAZE_WALL_SIZE));
 
-        Int leftPoint = new Point.Int((int) (leftBound / App.MAZE_WALL_SIZE), (int) (y / App.MAZE_WALL_SIZE));
-        Int rightPoint = new Point.Int((int) (rightBound / App.MAZE_WALL_SIZE), (int) (y / App.MAZE_WALL_SIZE));
-        Int downPoint = new Point.Int((int) (x / App.MAZE_WALL_SIZE), (int) (downBound / App.MAZE_WALL_SIZE));
-        Int upPoint = new Point.Int((int) (x / App.MAZE_WALL_SIZE), (int) (upBound / App.MAZE_WALL_SIZE));
+                boolean collision = false;
+                if (!isWalkable(leftPoint)) {
+                    x = (leftPoint.x + 1) * App.MAZE_WALL_SIZE + halfSize;
+                } else if (!isWalkable(rightPoint)) {
+                    x = rightPoint.x * App.MAZE_WALL_SIZE - halfSize;
+                }
 
-        boolean collision = false;
-        if (!isWalkable(leftPoint)) {
-            x = (leftPoint.x + 1) * App.MAZE_WALL_SIZE + halfSize;
-        } else if (!isWalkable(rightPoint)) {
-            x = rightPoint.x * App.MAZE_WALL_SIZE - halfSize;
-        }
+                if (!isWalkable(downPoint)) {
+                    y = (downPoint.y + 1) * App.MAZE_WALL_SIZE + halfSize;
+                    collision = true;
+                } else if (!isWalkable(upPoint)) {
+                    y = upPoint.y * App.MAZE_WALL_SIZE - halfSize;
+                    collision = true;
+                }*/
 
-        if (!isWalkable(downPoint)) {
-            y = (downPoint.y + 1) * App.MAZE_WALL_SIZE + halfSize;
-            collision = true;
-        } else if (!isWalkable(upPoint)) {
-            y = upPoint.y * App.MAZE_WALL_SIZE - halfSize;
-            collision = true;
-        }
+        //  position.setX(Collision.unconverX(x, position));
+        // position.setY(y);
 
-        position.setX(x);
-        position.setY(y);
-
-        return collision;
+        return false;
     }
 
     /**

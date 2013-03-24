@@ -7,6 +7,7 @@ import com.kingx.artemis.World;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.dynamic.GravityComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
+import com.kingx.dungeons.engine.system.WorldRotateSystem;
 import com.kingx.dungeons.engine.system.client.CollisionSystem;
 import com.kingx.dungeons.engine.system.client.GravitySystem;
 import com.kingx.dungeons.engine.system.client.MovementSystem;
@@ -22,6 +23,7 @@ public class OfflineServer extends AbstractServer {
         world.setSystem(new MovementSystem());
         world.setSystem(new ZombieAI());
         world.setSystem(new CollisionSystem());
+        world.setSystem(new WorldRotateSystem());
     }
 
     @Override

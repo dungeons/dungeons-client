@@ -9,6 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
@@ -34,7 +35,8 @@ public class App implements ApplicationListener {
     public static Param SERVER;
 
     public static final Random rand = new Random();
-    private static FollowCameraComponent camera;
+    private static FollowCameraComponent worldCamera;
+    private static FollowCameraComponent avatarCamera;
 
     private static MazeMap mazeMap;
     public static ArrayList<MazePoly> mazeMesh;
@@ -83,6 +85,8 @@ public class App implements ApplicationListener {
     private RenderGeometrySystem renderGeometrySystem;
     private static Wanderer player;
     private static AbstractServer server;
+    private static int currentView;
+    BitmapFont font = null;
 
     @Override
     public void render() {
@@ -92,7 +96,8 @@ public class App implements ApplicationListener {
             init();
             INITIALIZED = true;
         }
-        camera.getCamera().update();
+        worldCamera.getCamera().update();
+        avatarCamera.getCamera().update();
 
         renderShadowSystem.process();
         renderGeometrySystem.process();
@@ -100,9 +105,10 @@ public class App implements ApplicationListener {
         if (DEBUG != null && renderShadowSystem.getDepthMap() != null) {
             onScreenRender.begin();
             onScreenRender.draw(renderShadowSystem.getDepthMap(), 0, 0, 100, 100, 1, 0, 0, 1);
+            font.draw(onScreenRender, App.getPlayer().getPositionComponent().toString(), 30, Gdx.graphics.getHeight() - 30);
+            font.draw(onScreenRender, String.valueOf(App.getCurrentView()), 30, Gdx.graphics.getHeight() - 60);
             onScreenRender.end();
         }
-
     }
 
     private void init() {
@@ -116,6 +122,7 @@ public class App implements ApplicationListener {
         world.initialize();
 
         clock.addService(server);
+        font = new BitmapFont();
 
     }
 
@@ -143,8 +150,8 @@ public class App implements ApplicationListener {
      * Register systems to the world and initialize.
      */
     private void addSystemsToWorld() {
-        renderShadowSystem = world.setSystem(new RenderShadowSystem(camera.getCamera()), true);
-        renderGeometrySystem = world.setSystem(new RenderGeometrySystem(camera.getCamera()), true);
+        renderShadowSystem = world.setSystem(new RenderShadowSystem(worldCamera), true);
+        renderGeometrySystem = world.setSystem(new RenderGeometrySystem(avatarCamera), true);
     }
 
     /**
@@ -152,7 +159,7 @@ public class App implements ApplicationListener {
      */
     private void createPlayer() {
         Vector3 p = mazeMap.getRandomPosition();
-        player = new Wanderer(world, p, 1f, 5f, camera);
+        player = new Wanderer(world, p, 1f, 5f, worldCamera);
         player.createEntity().addToWorld();
     }
 
@@ -172,11 +179,18 @@ public class App implements ApplicationListener {
 
     @Override
     public void resize(int width, int height) {
-        if (camera == null) {
-            camera = setUpCamera(width, height);
+        if (worldCamera == null) {
+            worldCamera = setUpCamera(width, height);
         } else {
-            camera.getCamera().viewportWidth = width;
-            camera.getCamera().viewportHeight = height;
+            worldCamera.getCamera().viewportWidth = width;
+            worldCamera.getCamera().viewportHeight = height;
+        }
+
+        if (avatarCamera == null) {
+            avatarCamera = setUpCamera(width, height);
+        } else {
+            avatarCamera.getCamera().viewportWidth = width;
+            avatarCamera.getCamera().viewportHeight = height;
         }
     }
 
@@ -213,17 +227,24 @@ public class App implements ApplicationListener {
         return mazeMap;
     }
 
-    public static FollowCameraComponent getDefaultCam() {
-        return camera;
+    public static FollowCameraComponent getWorldCamera() {
+        return worldCamera;
+    }
+
+    public static FollowCameraComponent getAvatarCamera() {
+        return avatarCamera;
     }
 
     public static AbstractServer getServer() {
         return server;
     }
 
-    public static int getCurrentFootprint() {
-        // TODO Auto-generated method stub
-        return 0;
+    public static int getCurrentView() {
+        return currentView;
+    }
+
+    public static void setCurrentView(int cv) {
+        currentView = cv;
     }
 
     // Application cycle events

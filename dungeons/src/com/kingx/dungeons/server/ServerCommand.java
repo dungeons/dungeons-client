@@ -7,7 +7,7 @@ public class ServerCommand {
     private final short componentProperty;
     private final int value;
 
-    private ServerCommand(int id, short component, short componentProperty, int value) {
+    public ServerCommand(int id, short component, short componentProperty, int value) {
         this.id = id;
         this.component = component;
         this.componentProperty = componentProperty;
@@ -29,4 +29,10 @@ public class ServerCommand {
     public int getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return "ServerCommand [id=" + id + ", component=" + component + ", componentProperty=" + componentProperty + ", value=" + value + "]";
+    }
+
 }

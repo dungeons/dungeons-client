@@ -9,6 +9,11 @@ import javax.swing.SwingUtilities;
 
 import com.kingx.artemis.World;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.engine.system.WorldRotateSystem;
+import com.kingx.dungeons.engine.system.client.CollisionSystem;
+import com.kingx.dungeons.engine.system.client.GravitySystem;
+import com.kingx.dungeons.engine.system.client.MovementSystem;
+import com.kingx.dungeons.engine.system.client.ZombieAI;
 import com.kingx.dungeons.engine.system.server.Decoder;
 
 public class OnlineServer extends AbstractServer {
@@ -28,6 +33,12 @@ public class OnlineServer extends AbstractServer {
 
         decoderSystem = new Decoder(world);
         world.setSystem(decoderSystem, true);
+
+        world.setSystem(new GravitySystem());
+        world.setSystem(new MovementSystem());
+        world.setSystem(new ZombieAI());
+        world.setSystem(new CollisionSystem());
+        world.setSystem(new WorldRotateSystem());
     }
 
     private void initServer() {
@@ -44,10 +55,10 @@ public class OnlineServer extends AbstractServer {
 
             @Override
             public void run() {
-                int read;
                 try {
-                    while ((read = in.read()) != -1) {
-                        System.out.println(read);
+                    while (true) {
+                        ServerCommand sc = new ServerCommand(in.readInt(), in.readShort(), in.readShort(), in.readInt());
+                        recieve(sc);
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -74,5 +85,7 @@ public class OnlineServer extends AbstractServer {
     @Override
     public void updateInternal(float delta) {
         decoderSystem.process();
+        world.setDelta(delta);
+        world.process();
     }
 }

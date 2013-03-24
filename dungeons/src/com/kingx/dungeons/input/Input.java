@@ -53,6 +53,6 @@ public class Input extends InputAdapter {
     }
 
     private void rotateCamera(float v) {
-        App.getDefaultCam().angle += v;
+        App.getWorldCamera().angle += v;
     }
 }

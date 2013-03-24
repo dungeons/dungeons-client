@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
+import com.kingx.dungeons.graphics.MazeMap;
 
 public final class GroundFactory {
 
@@ -43,15 +44,43 @@ public final class GroundFactory {
     private final ArrayList<Short> indices = new ArrayList<Short>();
     private int vertsOffset = 0;
 
-    public GroundFactory(int width, int height, float mazeWallSize) {
+    public GroundFactory(MazeMap maze, float mazeWallSize) {
         WALL_SIZE = mazeWallSize;
+        for (int i = 0; i < maze.getFootprints(); i++) {
+            for (int j = 1; j < maze.getFootprint(i).length - 1; j++) {
+                for (int k = 0; k < maze.getFootprint(i)[j].length; k++) {
 
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
+                    TextureRegion texture = getWallTexture(App.rand.nextInt(4));
+                    float x = 0, y = 0, z = 0;
 
-                float x = i * WALL_SIZE;
-                float y = j * WALL_SIZE;
-                makeWall(x, y, -0.1f);
+                    switch (i) {
+                        case 0:
+                            x = j;
+                            y = k;
+                            z = -0.1f;
+                            makeQuad(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE, 5, texture);
+                            break;
+                        case 1:
+                            x = maze.getFootprint(i).length - 1;
+                            y = k;
+                            z = -j - 1 + 0.1f;
+                            makeQuad(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE, 3, texture);
+                            break;
+                        case 2:
+                            x = maze.getFootprint(i).length - j - 1;
+                            y = k;
+                            z = -maze.getFootprint(i).length + 0.1f;
+                            makeQuad(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE, 3, texture);
+                            break;
+                        case 3:
+                            x = 0;
+                            y = k;
+                            z = -maze.getFootprint(i).length + j + 1 - 0.1f;
+                            makeQuad(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE, 1, texture);
+                            break;
+                    }
+
+                }
             }
         }
     }
@@ -70,11 +99,6 @@ public final class GroundFactory {
         mesh.setVertices(outVerts);
         mesh.setIndices(outIndices);
         return mesh;
-    }
-
-    private void makeWall(float x, float y, float z) {
-        TextureRegion texture = getWallTexture(App.rand.nextInt(4));
-        makeQuad(x, y, z, 5, texture);
     }
 
     private void makeQuad(float x, float y, float z, int face, TextureRegion texture) {

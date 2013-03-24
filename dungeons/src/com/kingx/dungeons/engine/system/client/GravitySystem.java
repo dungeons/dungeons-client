@@ -31,7 +31,7 @@ public class GravitySystem extends EntityProcessingSystem {
         SizeComponent size = sizeMapper.get(e);
 
         gravity.setFalling(resolveFall(position, size));
-        if (gravity.isFalling()) {
+        if (false) {
             resolveMove(position, gravity);
         }
     }

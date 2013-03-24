@@ -15,7 +15,7 @@ public class PositionComponent extends AbstractComponent {
 
     @Override
     public String toString() {
-        return "PositionComponent [x=" + vector.x + ", y=" + vector.y + ", z=" + vector.z + "]";
+        return "[x=" + vector.x + ", y=" + vector.y + ", z=" + vector.z + "]";
     }
 
     @Override

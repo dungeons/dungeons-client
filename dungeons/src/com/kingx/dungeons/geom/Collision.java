@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Plane;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 
 /**
  * This class contains method coppied and modified from {@link Intersector}
@@ -240,4 +241,32 @@ public class Collision {
         return new Ray(a, b.cpy().sub(a));
     }
 
+    public static float converX(PositionComponent position) {
+
+        switch (App.getCurrentView()) {
+            case 0:
+                return position.getX();
+            case 1:
+                return position.getZ();
+            case 2:
+                return position.getX();
+            case 3:
+                return position.getZ() + App.getMap().getWidth();
+        }
+        return 0;
+    }
+
+    public static float unconverX(float v, PositionComponent position) {
+        switch (App.getCurrentView()) {
+            case 0:
+                return v;
+            case 1:
+                return position.getX();
+            case 2:
+                return position.getX();
+            case 3:
+                return App.getMap().getWidth() - v;
+        }
+        return 0;
+    }
 }
