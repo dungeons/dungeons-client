@@ -1,61 +1,91 @@
 package com.kingx.dungeons.engine.component.dynamic;
 
 import com.badlogic.gdx.math.Vector3;
+import com.kingx.dungeons.App;
 
 public class PositionComponent extends AbstractComponent {
-    public Vector3 vector;
+    public Vector3 inWorld;
 
     public PositionComponent(float x, float y, float z) {
-        this.vector = new Vector3(x, y, z);
+        this.inWorld = new Vector3(x, y, z);
     }
 
     public PositionComponent(Vector3 vector) {
-        this.vector = vector;
+        this.inWorld = vector;
     }
 
-    @Override
-    public String toString() {
-        return "[x=" + vector.x + ", y=" + vector.y + ", z=" + vector.z + "]";
+    public float getX() {
+        return inWorld.x;
+    }
+
+    public float getY() {
+        return inWorld.y;
+    }
+
+    public float getZ() {
+        return inWorld.z;
+    }
+
+    public void setX(float x) {
+        inWorld.x = x;
+    }
+
+    public void setY(float y) {
+        inWorld.y = y;
+    }
+
+    public void setZ(float z) {
+        inWorld.z = z;
     }
 
     @Override
     public void setComponent(int id, int value) {
-        switch (id) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public String toString() {
+        return inWorld.toString();
+    }
+
+    public void set(Vector3 vec) {
+        this.inWorld.set(vec);
+    }
+
+    public Vector3 get() {
+        return inWorld;
+    }
+
+    public float getScreenX() {
+        switch (App.getCurrentView()) {
             case 0:
-                this.vector.x = value / AbstractComponent.INT_TO_FLOAT;
+                return getX();
+            case 1:
+                return -getZ() + 1;
+            case 2:
+                return App.getMap().getWidth() - getX();
+            case 3:
+                return getZ() + App.getMap().getWidth() - 1;
+        }
+        return 0;
+    }
+
+    public void setScreenX(float x) {
+        switch (App.getCurrentView()) {
+            case 0:
+                setX(x);
                 break;
             case 1:
-                this.vector.y = value / AbstractComponent.INT_TO_FLOAT;
+                setZ(-x + 1);
                 break;
             case 2:
-                this.vector.z = value / AbstractComponent.INT_TO_FLOAT;
+                setX(-x +App.getMap().getWidth());
+                break;
+            case 3:
+                setZ(x - App.getMap().getWidth() + 1);
                 break;
         }
-
-    }
-
-    public float getX() {
-        return vector.x;
-    }
-
-    public float getY() {
-        return vector.y;
-    }
-
-    public float getZ() {
-        return vector.z;
-    }
-
-    public void setX(float x) {
-        vector.x = x;
-    }
-
-    public void setY(float y) {
-        vector.y = y;
-    }
-
-    public void setZ(float z) {
-        vector.z = z;
     }
 
 }

@@ -8,6 +8,7 @@ import com.kingx.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.WorldRotateComponent;
+import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
 import com.kingx.dungeons.geom.Collision;
@@ -35,19 +36,18 @@ public class WorldRotateSystem extends EntityProcessingSystem {
         camera.getCamera().lookAt(5, position.getY(), -5);
 
         camera = App.getWorldCamera();
-        float x = Collision.converX(position);
+        float x = position.getScreenX();
         if (x < size.getSize() / 2) {
-            System.out.println(position.vector.x);
-            rotateLeft(camera);
-            Collision.unconverX(size.getSize() / 2, position);
+            rotateLeft(camera, world.getMove());
+            Collision.correct(position, size);
         } else if (x > App.getMap().getWidth() - size.getSize() / 2) {
-            rotateRight(camera);
-            Collision.unconverX(App.getMap().getWidth() - size.getSize() / 2, position);
+            rotateRight(camera, world.getMove());
+            Collision.correct(position, size);
         }
 
-        camera.getCamera().position.x = 5 + (float) (Math.sin(camera.angle) * camera.getHeight());
+        camera.getCamera().position.x = 5 + (float) (Math.sin(camera.angle + camera.arbitratyAngle) * camera.getHeight());
         camera.getCamera().position.y = position.getY();
-        camera.getCamera().position.z = -5 + (float) (Math.cos(camera.angle) * camera.getHeight());
+        camera.getCamera().position.z = -5 + (float) (Math.cos(camera.angle + camera.arbitratyAngle) * camera.getHeight());
         camera.getCamera().lookAt(5, position.getY(), -5);
 
         camera = App.getAvatarCamera();
@@ -58,15 +58,17 @@ public class WorldRotateSystem extends EntityProcessingSystem {
 
     }
 
-    private void rotateRight(FollowCameraComponent camera) {
-        System.out.println("right");
-        camera.angle += Math.PI / 2f;
+    private void rotateRight(FollowCameraComponent camera, MoveComponent moveComponent) {
+        System.out.println("right " + (App.getCurrentView() + 1) % 4);
+        //    camera.angle += Math.PI / 2f;
+        moveComponent.addRotation(90f);
         App.setCurrentView((App.getCurrentView() + 1) % 4);
     }
 
-    private void rotateLeft(FollowCameraComponent camera) {
+    private void rotateLeft(FollowCameraComponent camera, MoveComponent moveComponent) {
         System.out.println("left " + (App.getCurrentView() + 3) % 4);
-        camera.angle -= Math.PI / 2f;
+        //      camera.angle -= Math.PI / 2f;
+        moveComponent.addRotation(-90f);
         App.setCurrentView((App.getCurrentView() + 3) % 4);
     }
 }

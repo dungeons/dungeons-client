@@ -13,7 +13,7 @@ import com.kingx.dungeons.graphics.MazeMap;
 public final class MazeFactory {
 
     private final float WALL_SIZE;
-    private final int VERTS_PER_QUAD = 4;
+    private final static int VERTS_PER_QUAD = 4;
 
     private static final float[][] positionOffset = { { 0, 0, 0 }, // 0/7
             { 1, 0, 0 }, // 1/7
@@ -54,29 +54,32 @@ public final class MazeFactory {
                 for (int k = 0; k < maze.getFootprint(i)[j].length; k++) {
 
                     float x = 0, y = 0, z = 0;
+
+                    float offset = 0f;
+
                     if (!maze.getFootprint(i)[j][k]) {
                         switch (i) {
                             case 0:
                                 x = j;
                                 y = k;
-                                z = 0;
+                                z = -offset;
                                 break;
                             case 1:
-                                x = maze.getFootprint(i).length - 1;
+                                x = maze.getFootprint(i).length;
                                 y = k;
-                                z = -j - 1;
+                                z = -j - offset;
                                 break;
                             case 2:
 
-                                x = maze.getFootprint(i).length - j - 1;
+                                x = maze.getFootprint(i).length - j;
                                 y = k;
-                                z = -maze.getFootprint(i).length;
+                                z = -maze.getFootprint(i).length - offset;
                                 break;
                             case 3:
 
                                 x = 0;
                                 y = k;
-                                z = -maze.getFootprint(i).length + j + 1;
+                                z = -maze.getFootprint(i).length + j - offset;
                                 break;
                         }
                         makeWall(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE);
@@ -91,6 +94,48 @@ public final class MazeFactory {
             vertsOffset = 0;
 
         }
+    }
+
+    public static Mesh makeMeABox() {
+        ArrayList<Float> verts = new ArrayList<Float>();
+        ArrayList<Short> indices = new ArrayList<Short>();
+        int vertsOffset = 0;
+
+        for (int face = 0; face < quads.length; face++) {
+            TextureRegion texture = getWallTexture(App.rand.nextInt(4));
+            for (int i = 0; i < quads[face].length; i++) {
+                Vector2 cords = getTextureCoordinates(i, texture);
+                int size = 1;
+                verts.add(positionOffset[quads[face][i]][0] * size - 0.5f); // x position
+                verts.add(positionOffset[quads[face][i]][1] * size - 0.5f); // y position
+                verts.add(positionOffset[quads[face][i]][2] * size - 0.5f); // z position
+                verts.add(cords.x); // tex-x position
+                verts.add(cords.y); // tex-y position
+                verts.add(normals[face][0]); // x normal
+                verts.add(normals[face][1]); // y normal
+                verts.add(normals[face][2]); // z normal
+            }
+
+            indices.add((short) (vertsOffset + 0));
+            indices.add((short) (vertsOffset + 1));
+            indices.add((short) (vertsOffset + 3));
+
+            indices.add((short) (vertsOffset + 3));
+            indices.add((short) (vertsOffset + 1));
+            indices.add((short) (vertsOffset + 2));
+
+            vertsOffset += VERTS_PER_QUAD;
+        }
+
+        float[] outVerts = new float[verts.size()];
+        short[] outIndices = new short[indices.size()];
+        for (int i = 0; i < verts.size(); i++) {
+            outVerts[i] = verts.get(i);
+        }
+        for (int i = 0; i < indices.size(); i++) {
+            outIndices[i] = indices.get(i);
+        }
+        return new Mesh(true, outVerts.length, outIndices.length, VertexAttribute.Position(), VertexAttribute.TexCoords(0), VertexAttribute.Normal());
     }
 
     private MazePoly generateInternal() {
@@ -142,7 +187,7 @@ public final class MazeFactory {
         vertsOffset += VERTS_PER_QUAD;
     }
 
-    private Vector2 getTextureCoordinates(int i, TextureRegion tr) {
+    private static Vector2 getTextureCoordinates(int i, TextureRegion tr) {
         switch (i) {
             case 0:
                 return new Vector2(tr.getU(), tr.getV());
@@ -156,7 +201,7 @@ public final class MazeFactory {
         return null;
     }
 
-    private TextureRegion getWallTexture(int i) {
+    private static TextureRegion getWallTexture(int i) {
         return Assets.getTexture("wall", i);
     }
 

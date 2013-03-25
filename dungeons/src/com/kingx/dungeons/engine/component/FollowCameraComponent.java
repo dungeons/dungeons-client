@@ -6,7 +6,8 @@ import com.kingx.artemis.Component;
 public class FollowCameraComponent extends Component {
     public final Camera camera;
     public float height;
-    public float angle = (float) (Math.PI / 2f);
+    public float angle;
+    public float arbitratyAngle;
 
     public FollowCameraComponent(Camera camera, float height, float angle) {
         this.camera = camera;

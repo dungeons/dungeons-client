@@ -47,35 +47,36 @@ public final class GroundFactory {
     public GroundFactory(MazeMap maze, float mazeWallSize) {
         WALL_SIZE = mazeWallSize;
         for (int i = 0; i < maze.getFootprints(); i++) {
-            for (int j = 1; j < maze.getFootprint(i).length - 1; j++) {
+            for (int j = 1; j < maze.getFootprint(i).length; j++) {
                 for (int k = 0; k < maze.getFootprint(i)[j].length; k++) {
 
                     TextureRegion texture = getWallTexture(App.rand.nextInt(4));
                     float x = 0, y = 0, z = 0;
 
+                    float offset = 0f;
                     switch (i) {
                         case 0:
                             x = j;
                             y = k;
-                            z = -0.1f;
+                            z = -offset;
                             makeQuad(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE, 5, texture);
                             break;
                         case 1:
-                            x = maze.getFootprint(i).length - 1;
+                            x = maze.getFootprint(i).length;
                             y = k;
-                            z = -j - 1 + 0.1f;
+                            z = -j - offset;
                             makeQuad(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE, 3, texture);
                             break;
                         case 2:
-                            x = maze.getFootprint(i).length - j - 1;
+                            x = maze.getFootprint(i).length - j;
                             y = k;
-                            z = -maze.getFootprint(i).length + 0.1f;
-                            makeQuad(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE, 3, texture);
+                            z = -maze.getFootprint(i).length - offset;
+                            makeQuad(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE, 4, texture);
                             break;
                         case 3:
                             x = 0;
                             y = k;
-                            z = -maze.getFootprint(i).length + j + 1 - 0.1f;
+                            z = -maze.getFootprint(i).length + j - offset;
                             makeQuad(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE, 1, texture);
                             break;
                     }

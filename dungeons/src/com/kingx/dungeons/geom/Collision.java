@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
+import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
 
 /**
  * This class contains method coppied and modified from {@link Intersector}
@@ -241,32 +242,35 @@ public class Collision {
         return new Ray(a, b.cpy().sub(a));
     }
 
-    public static float converX(PositionComponent position) {
+    public static void correct(PositionComponent position, SizeComponent size) {
+        float z, x;
+        float offset = size.getSize() / 2f;
 
-        switch (App.getCurrentView()) {
-            case 0:
-                return position.getX();
-            case 1:
-                return position.getZ();
-            case 2:
-                return position.getX();
-            case 3:
-                return position.getZ() + App.getMap().getWidth();
-        }
-        return 0;
+        x = position.getX();
+        x = Math.max(x, offset);
+        x = Math.min(x, App.getMap().getWidth() - offset);
+
+        z = position.getZ();
+        z = Math.min(z, offset);
+        z = Math.max(z, -App.getMap().getWidth() + offset);
+
+        position.setX(x);
+        position.setZ(z);
     }
 
-    public static float unconverX(float v, PositionComponent position) {
-        switch (App.getCurrentView()) {
-            case 0:
-                return v;
-            case 1:
-                return position.getX();
-            case 2:
-                return position.getX();
-            case 3:
-                return App.getMap().getWidth() - v;
-        }
-        return 0;
+    public static void correctLight(Vector3 position) {
+        float z, x;
+        float offset = 0.9f;
+
+        x = position.x;
+        x = Math.max(x, offset);
+        x = Math.min(x, App.getMap().getWidth() - offset);
+
+        z = position.z;
+        z = Math.min(z, -offset);
+        z = Math.max(z, -App.getMap().getWidth() + offset);
+
+        position.x = x;
+        position.z = z;
     }
 }

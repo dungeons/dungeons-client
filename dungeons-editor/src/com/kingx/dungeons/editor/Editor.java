@@ -29,7 +29,7 @@ public class Editor extends JPanel {
         addDragListeners();
         setOpaque(true);
         setBackground(new Color(170, 170, 170));
-        map = new Map(MazeBuilder.getMaze(36, 50));
+        map = new Map(MazeBuilder.getMaze(36, 9));
     }
 
     /**

@@ -9,6 +9,7 @@ import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.dynamic.GravityComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
+import com.kingx.dungeons.geom.Point;
 import com.kingx.dungeons.geom.Point.Int;
 
 public class CollisionSystem extends EntityProcessingSystem {
@@ -42,40 +43,42 @@ public class CollisionSystem extends EntityProcessingSystem {
      *         otherwise
      */
     protected boolean resolveMove(PositionComponent position, SizeComponent size) {
-        /*
-                float halfSize = size.getSize() / 2f;
-                float x = Collision.converX(position);
-                float y = position.getY();
 
-                float leftBound = x - halfSize;
-                float rightBound = x + halfSize;
-                float downBound = y - halfSize;
-                float upBound = y + halfSize;
+        // FIXME Nasty hack: half-size is cut off so it does not collide on borders.
+        float halfSize = size.getSize() / 2f - 0.1f;
+        float x = position.getScreenX();
+        float y = position.getY();
+        //        System.out.println("getting my x : " + x);
 
-                Int leftPoint = new Point.Int((int) (leftBound / App.MAZE_WALL_SIZE), (int) (y / App.MAZE_WALL_SIZE));
-                Int rightPoint = new Point.Int((int) (rightBound / App.MAZE_WALL_SIZE), (int) (y / App.MAZE_WALL_SIZE));
-                Int downPoint = new Point.Int((int) (x / App.MAZE_WALL_SIZE), (int) (downBound / App.MAZE_WALL_SIZE));
-                Int upPoint = new Point.Int((int) (x / App.MAZE_WALL_SIZE), (int) (upBound / App.MAZE_WALL_SIZE));
+        float leftBound = x - halfSize;
+        float rightBound = x + halfSize;
+        float downBound = y - halfSize;
+        float upBound = y + halfSize;
 
-                boolean collision = false;
-                if (!isWalkable(leftPoint)) {
-                    x = (leftPoint.x + 1) * App.MAZE_WALL_SIZE + halfSize;
-                } else if (!isWalkable(rightPoint)) {
-                    x = rightPoint.x * App.MAZE_WALL_SIZE - halfSize;
-                }
+        Int leftPoint = new Point.Int((int) (leftBound / App.MAZE_WALL_SIZE), (int) (y / App.MAZE_WALL_SIZE));
+        Int rightPoint = new Point.Int((int) (rightBound / App.MAZE_WALL_SIZE), (int) (y / App.MAZE_WALL_SIZE));
+        Int downPoint = new Point.Int((int) (x / App.MAZE_WALL_SIZE), (int) (downBound / App.MAZE_WALL_SIZE));
+        Int upPoint = new Point.Int((int) (x / App.MAZE_WALL_SIZE), (int) (upBound / App.MAZE_WALL_SIZE));
 
-                if (!isWalkable(downPoint)) {
-                    y = (downPoint.y + 1) * App.MAZE_WALL_SIZE + halfSize;
-                    collision = true;
-                } else if (!isWalkable(upPoint)) {
-                    y = upPoint.y * App.MAZE_WALL_SIZE - halfSize;
-                    collision = true;
-                }*/
+        boolean collision = false;
+        if (!isWalkable(leftPoint, position)) {
+            x = (leftPoint.x + 1) * App.MAZE_WALL_SIZE + halfSize;
+        } else if (!isWalkable(rightPoint, position)) {
+            x = rightPoint.x * App.MAZE_WALL_SIZE - halfSize;
+        }
 
-        //  position.setX(Collision.unconverX(x, position));
-        // position.setY(y);
+        if (!isWalkable(downPoint, position)) {
+            y = (downPoint.y + 1) * App.MAZE_WALL_SIZE + halfSize;
+            collision = true;
+        } else if (!isWalkable(upPoint, position)) {
+            y = upPoint.y * App.MAZE_WALL_SIZE - halfSize;
+            collision = true;
+        }
 
-        return false;
+        position.setScreenX(x);
+        position.setY(y);
+
+        return collision;
     }
 
     /**
@@ -83,11 +86,19 @@ public class CollisionSystem extends EntityProcessingSystem {
      * 
      * @param point
      *            to be checked
+     * @param position
      * @return {@code true} if point is walkable, {@code false} otherwise
      */
-    private boolean isWalkable(Int point) {
+    private boolean isWalkable(Int point, PositionComponent position) {
         boolean[][] footprint = App.getMap().getFootprint();
+
+        if (point.x == footprint.length) {
+            footprint = App.getMap().getNextFootprint();
+            point.x = 0;
+        }
+
         if (point.x < 0 || point.x >= footprint.length) {
+            System.out.println("colide " + position);
             return false;
         }
 

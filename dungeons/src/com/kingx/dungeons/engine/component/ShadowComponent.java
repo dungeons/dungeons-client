@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.kingx.artemis.Component;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 
 public class ShadowComponent extends Component {
 
@@ -26,6 +27,15 @@ public class ShadowComponent extends Component {
 
     public Camera[] getLights() {
         return lights;
+    }
+
+    public void update(PositionComponent position) {
+        for (Camera light : lights) {
+            light.position.x = position.getX();
+            light.position.y = position.getY();
+
+            //            Collision.correctLight(light.position);
+        }
     }
 
 }

@@ -1,6 +1,6 @@
 package com.kingx.dungeons.graphics;
 
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.geom.Point;
 import com.kingx.dungeons.geom.Point.Int;
@@ -48,8 +48,8 @@ public class MazeMap {
     public Point.Int getRandomBlock() {
         Point.Int p = new Point.Int();
         do {
-            p.x = App.rand.nextInt(footprints.length);
-            p.y = App.rand.nextInt(footprints[p.x].length);
+            p.x = App.rand.nextInt(footprints[App.getCurrentView()].length);
+            p.y = App.rand.nextInt(footprints[App.getCurrentView()][p.x].length);
         } while (!footprints[0][p.x][p.y]);
 
         return p;
@@ -73,6 +73,10 @@ public class MazeMap {
         return getFootprint(App.getCurrentView());
     }
 
+    public boolean[][] getNextFootprint() {
+        return getFootprint((App.getCurrentView() + 1) % footprints.length);
+    }
+
     public boolean[][] getFootprint(int i) {
         return footprints[i];
     }
@@ -82,16 +86,16 @@ public class MazeMap {
     }
 
     public int getWidth() {
-        return footprints[0].length;
+        return footprints[0].length + 1;
     }
 
     public int getHeight() {
         return footprints[0][0].length;
     }
 
-    public Vector3 getRandomPosition() {
+    public Vector2 getRandomPosition() {
         Int p = getRandomBlock();
-        return new Vector3(SIZE * (p.x + 0.5f), SIZE * (p.y + 0.5f), 0);
+        return new Vector2(SIZE * (p.x + 0.5f), SIZE * (p.y + 0.5f));
     }
 
 }

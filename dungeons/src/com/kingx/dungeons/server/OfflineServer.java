@@ -11,7 +11,6 @@ import com.kingx.dungeons.engine.system.WorldRotateSystem;
 import com.kingx.dungeons.engine.system.client.CollisionSystem;
 import com.kingx.dungeons.engine.system.client.GravitySystem;
 import com.kingx.dungeons.engine.system.client.MovementSystem;
-import com.kingx.dungeons.engine.system.client.ZombieAI;
 import com.kingx.dungeons.input.InputConstants;
 import com.kingx.dungeons.input.Touch;
 
@@ -21,9 +20,9 @@ public class OfflineServer extends AbstractServer {
         super(world);
         world.setSystem(new GravitySystem());
         world.setSystem(new MovementSystem());
-        world.setSystem(new ZombieAI());
-        world.setSystem(new CollisionSystem());
+        // world.setSystem(new ZombieAI());
         world.setSystem(new WorldRotateSystem());
+        world.setSystem(new CollisionSystem());
     }
 
     @Override

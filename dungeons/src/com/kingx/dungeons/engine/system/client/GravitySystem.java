@@ -31,7 +31,7 @@ public class GravitySystem extends EntityProcessingSystem {
         SizeComponent size = sizeMapper.get(e);
 
         gravity.setFalling(resolveFall(position, size));
-        if (false) {
+        if (gravity.isFalling()) {
             resolveMove(position, gravity);
         }
     }
@@ -64,7 +64,7 @@ public class GravitySystem extends EntityProcessingSystem {
     protected boolean resolveFall(PositionComponent position, SizeComponent size) {
 
         float halfSize = size.getSize() / 2f;
-        float x = position.getX();
+        float x = position.getScreenX();
         float y = position.getY();
 
         // FIXME downBound is offset by 0.1f so it intersects. Its error prone and ugly.

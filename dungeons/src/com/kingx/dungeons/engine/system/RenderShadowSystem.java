@@ -73,10 +73,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
 
         ArrayList<MazePoly> mazes = App.getMazes();
         Camera[] lights = sc.getLights();
-        for (Camera light : lights) {
-            light.position.x = pc.getX();
-            light.position.y = pc.getY();
-        }
+        sc.update(pc);
         generateShadowMap(mazes.get(0), lights);
 
         depthMap.bind();

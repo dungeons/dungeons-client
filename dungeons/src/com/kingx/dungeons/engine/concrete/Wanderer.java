@@ -1,6 +1,6 @@
 package com.kingx.dungeons.engine.concrete;
 
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 import com.kingx.artemis.World;
 import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.HealthComponent;
@@ -29,10 +29,10 @@ public class Wanderer extends ConcreteEntity {
     private final GravityComponent gravity;
     private final WorldRotateComponent worldRotate;
 
-    public Wanderer(World world, Vector3 position, float size, float speed, FollowCameraComponent camera) {
+    public Wanderer(World world, Vector2 p, float size, float speed, FollowCameraComponent camera) {
         super(world);
 
-        positionComponent = new PositionComponent(position);
+        positionComponent = new PositionComponent(p.x, p.y, 0.5f);
         moveComponent = new MoveComponent(0, 0);
         shader = new ShaderComponent(Shader.getShader("normal"));
         textures = new TextureComponent("wanderer", "wanderer", Colors.AVATAR);
@@ -40,7 +40,7 @@ public class Wanderer extends ConcreteEntity {
         sight = new SightComponent(5f);
         gravity = new GravityComponent(3f, moveComponent);
         SizeComponent sizeComponent = new SizeComponent(size);
-        worldRotate = new WorldRotateComponent(0, positionComponent, sizeComponent);
+        worldRotate = new WorldRotateComponent(positionComponent, moveComponent, sizeComponent);
 
         bag.add(positionComponent);
         bag.add(new RotationComponent(0, 1, 0));

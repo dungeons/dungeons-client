@@ -1,11 +1,11 @@
 package com.kingx.dungeons.engine.system.client;
 
+import com.badlogic.gdx.math.Vector3;
 import com.kingx.artemis.Aspect;
 import com.kingx.artemis.ComponentMapper;
 import com.kingx.artemis.Entity;
 import com.kingx.artemis.annotations.Mapper;
 import com.kingx.artemis.systems.EntityProcessingSystem;
-import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.SpeedComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
@@ -30,24 +30,10 @@ public class MovementSystem extends EntityProcessingSystem {
         postionMapper.has(e);
         PositionComponent position = postionMapper.get(e);
         SpeedComponent speed = speedMapper.get(e);
-        MoveComponent moveVector = inputMapper.get(e);
+        MoveComponent move = inputMapper.get(e);
 
-        float unconverted = moveVector.getX() * speed.getCurrent() * world.delta;
-        switch (App.getCurrentView()) {
-            case 0:
-                position.vector.x += unconverted;
-                break;
-            case 1:
-                position.vector.x += unconverted;
-                break;
-            case 2:
-                position.vector.x += unconverted;
-                break;
-            case 3:
-                position.vector.z += unconverted;
-                break;
-        }
-        position.vector.y += moveVector.getY() * speed.getCurrent() * world.delta;
+        Vector3 result = position.get().add(move.getRotatedVector().cpy().mul(speed.getCurrent() * world.delta));
+        position.set(result);
 
     }
 }

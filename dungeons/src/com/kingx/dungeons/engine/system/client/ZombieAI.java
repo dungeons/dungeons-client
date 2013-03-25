@@ -77,7 +77,7 @@ public class ZombieAI extends EntityProcessingSystem {
         public boolean checkConditions(Entity entity) {
             this.data = dataMapper.get(entity);
 
-            data.seeTarget = Collision.canSee(data.playerPosition.vector, data.entityPosition.vector, data.sight.getRadius());
+            data.seeTarget = Collision.canSee(data.playerPosition.inWorld, data.entityPosition.inWorld, data.sight.getRadius());
             if (data.seeTarget) {
                 updatePosition(data);
                 data.texture.setTint(data.normalColor);
@@ -149,8 +149,8 @@ public class ZombieAI extends EntityProcessingSystem {
     }
 
     public static boolean canSee(Ray ray, float[] verts, ZombieAIComponent data) {
-        if (Collision.distance(data.playerPosition.vector, data.entityPosition.vector) <= data.sight.getRadius()) {
-            if (!Collision.intersectRayTrianglesBetweenPoints(ray, verts, data.playerPosition.vector, data.entityPosition.vector)) {
+        if (Collision.distance(data.playerPosition.inWorld, data.entityPosition.inWorld) <= data.sight.getRadius()) {
+            if (!Collision.intersectRayTrianglesBetweenPoints(ray, verts, data.playerPosition.inWorld, data.entityPosition.inWorld)) {
                 return true;
             }
         }
@@ -158,17 +158,17 @@ public class ZombieAI extends EntityProcessingSystem {
     }
 
     public static Vector3 getDirection(ZombieAIComponent data) {
-        return data.playerPosition.vector.cpy().sub(data.entityPosition.vector);
+        return data.playerPosition.inWorld.cpy().sub(data.entityPosition.inWorld);
     }
 
     public static Vector3 getLastDirection(ZombieAIComponent data) {
-        return data.targetPosition.cpy().sub(data.entityPosition.vector);
+        return data.targetPosition.cpy().sub(data.entityPosition.inWorld);
     }
 
     public static void updatePosition(ZombieAIComponent data) {
         if (data.targetPosition == null) {
             data.targetPosition = new Vector3();
         }
-        data.targetPosition.set(data.playerPosition.vector);
+        data.targetPosition.set(data.playerPosition.inWorld);
     }
 }
