@@ -41,6 +41,7 @@ public class App implements ApplicationListener {
 
     private static MazeMap mazeMap;
     public static ArrayList<MazePoly> mazeMesh;
+    public static ArrayList<CubeRegion> cubeRegions;
 
     private static boolean wireframe;
 
@@ -133,6 +134,7 @@ public class App implements ApplicationListener {
 
     private void init() {
         createMaze();
+        createCubes();
         createPlayer();
         // createZombies(50);
         addSystemsToWorld();
@@ -153,6 +155,10 @@ public class App implements ApplicationListener {
     private void createMaze() {
         mazeMap = new MazeMap(createMap());
         mazeMesh = new MazeFactory(mazeMap, MAZE_WALL_SIZE).getMazes();
+    }
+
+    private void createCubes() {
+        cubeRegions = new CubeFactory(mazeMap, MAZE_WALL_SIZE).getCubeRegions();
     }
 
     /**
@@ -233,6 +239,10 @@ public class App implements ApplicationListener {
 
     public static ArrayList<MazePoly> getMazes() {
         return mazeMesh;
+    }
+
+    public static ArrayList<CubeRegion> getCubeRegions() {
+        return cubeRegions;
     }
 
     public static MazePoly getMaze(int i) {

@@ -28,6 +28,7 @@ public class Wanderer extends ConcreteEntity {
     private final SightComponent sight;
     private final GravityComponent gravity;
     private final WorldRotateComponent worldRotate;
+    private final ShadowComponent shadow;
 
     public Wanderer(World world, Vector2 p, float size, float speed, FollowCameraComponent camera) {
         super(world);
@@ -41,6 +42,7 @@ public class Wanderer extends ConcreteEntity {
         gravity = new GravityComponent(3f, moveComponent);
         SizeComponent sizeComponent = new SizeComponent(size);
         worldRotate = new WorldRotateComponent(positionComponent, moveComponent, sizeComponent);
+        shadow = new ShadowComponent();
 
         bag.add(positionComponent);
         bag.add(new RotationComponent(0, 1, 0));
@@ -53,7 +55,7 @@ public class Wanderer extends ConcreteEntity {
         bag.add(sight);
         bag.add(gravity);
         bag.add(worldRotate);
-        bag.add(new ShadowComponent());
+        bag.add(shadow);
 
         if (camera != null) {
             bag.add(camera);
@@ -90,6 +92,10 @@ public class Wanderer extends ConcreteEntity {
 
     public WorldRotateComponent getWorldRotate() {
         return worldRotate;
+    }
+
+    public ShadowComponent getShadow() {
+        return shadow;
     }
 
 }

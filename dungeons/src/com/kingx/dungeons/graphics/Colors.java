@@ -1,6 +1,7 @@
 package com.kingx.dungeons.graphics;
 
 import com.badlogic.gdx.graphics.Color;
+import com.kingx.dungeons.App;
 
 /**
  * Helper class with useful color constants for shaders
@@ -19,4 +20,12 @@ public class Colors {
     public static final Color DEBUG_ZOMBIE_SEARCH = new Color(0, 0, 1f, 1f);
     public static final Color DEBUG_ZOMBIE_SEE = new Color(0, 1, 0, 1f);
     public static final Color DEBUG_ZOMBIE_ATTACK = new Color(1, 0, 0, 1f);
+
+    public static Color random() {
+        float r = App.rand.nextFloat();
+        float g = App.rand.nextFloat();
+        float b = App.rand.nextFloat();
+        float a = App.rand.nextFloat();
+        return new Color(r, g, b, a);
+    }
 }

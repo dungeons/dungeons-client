@@ -16,13 +16,14 @@ import com.kingx.artemis.annotations.Mapper;
 import com.kingx.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
+import com.kingx.dungeons.CubeRegion;
 import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.ShadowComponent;
 import com.kingx.dungeons.engine.component.SightComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.geom.GroundFactory;
-import com.kingx.dungeons.geom.MazePoly;
 import com.kingx.dungeons.graphics.Colors;
+import com.kingx.dungeons.graphics.CubeBatch;
 import com.kingx.dungeons.graphics.QuadTextureFrameBuffer;
 import com.kingx.dungeons.graphics.Shader;
 
@@ -39,8 +40,12 @@ public class RenderShadowSystem extends EntityProcessingSystem {
     private final ShaderProgram shadowProjectShader;
     private final QuadTextureFrameBuffer shadowMap;
     private final Mesh poly;
-    private final float BOUNDS = 500f;
     private Texture depthMap;
+    private CubeBatch batchRender;
+    private ShaderProgram spriteShader;
+    private CubeBatch batchRender2;
+
+    private static final boolean experimental = true;
     private static final int TEXTURE_SIZE = 1024;
 
     public RenderShadowSystem(FollowCameraComponent camera) {
@@ -59,6 +64,10 @@ public class RenderShadowSystem extends EntityProcessingSystem {
     @Override
     protected void begin() {
         begin = true;
+        if (batchRender == null) {
+            batchRender = new CubeBatch();
+            batchRender2 = new CubeBatch();
+        }
     }
 
     @Override
@@ -71,17 +80,20 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         PositionComponent pc = pm.getSafe(e);
         ShadowComponent sc = sm.getSafe(e);
 
-        ArrayList<MazePoly> mazes = App.getMazes();
+        ArrayList<CubeRegion> cubeRegions = App.getCubeRegions();
+
         Camera[] lights = sc.getLights();
         sc.update(pc);
-        generateShadowMap(mazes.get(0), lights);
+
+        generateShadowMap(cubeRegions, lights);
 
         depthMap.bind();
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
         Assets.getTexture("wall", 0).getTexture().bind();
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 
-        shadowProjectShader.begin();
+        batchRender.setShader(shadowProjectShader);
+        batchRender.begin();
         shadowProjectShader.setUniformMatrix("ProjectionMatrix", camera.getCamera().projection);
         shadowProjectShader.setUniformMatrix("ViewMatrix", camera.getCamera().view);
         for (int i = 0; i < lights.length; i++) {
@@ -96,13 +108,15 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowProjectShader.setUniformf("u_useTextures", 1);
         shadowProjectShader.setUniformf("u_sight", App.getPlayer().getEntity().getComponent(SightComponent.class).getRadius());
         poly.render(shadowProjectShader, GL20.GL_TRIANGLES);
+        batchRender.end();
+
+        batchRender2.setShader(shadowProjectShader);
+        batchRender2.begin();
         shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
         shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
 
-        for (MazePoly maze : mazes) {
-            maze.getMesh().render(shadowProjectShader, GL20.GL_TRIANGLES);
-        }
-        shadowProjectShader.end();
+        batchRender2.draw(cubeRegions);
+        batchRender2.end();
 
     }
 
@@ -112,26 +126,30 @@ public class RenderShadowSystem extends EntityProcessingSystem {
      * @param lights
      *            lights for depthmap generation
      */
-    private void generateShadowMap(MazePoly maze, Camera[] lights) {
+    private void generateShadowMap(ArrayList<CubeRegion> cubeRegions, Camera[] lights) {
         shadowMap.begin();
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.gl.glClearColor(0, 0, 0, 0);
         for (int i = 0; i < lights.length; i++) {
             lights[i].update();
-            depthMap = generateShadowMap(maze, lights[i]);
+            depthMap = generateShadowMap(cubeRegions, lights[i]);
         }
 
         shadowMap.end();
     }
 
-    private Texture generateShadowMap(MazePoly maze, Camera lightCam) {
+    private Texture generateShadowMap(ArrayList<CubeRegion> cubeRegions, Camera lightCam) {
         shadowMap.nextTexture();
         shadowGeneratorShader.begin();
 
         shadowGeneratorShader.setUniformMatrix("ProjectionMatrix", lightCam.projection);
         shadowGeneratorShader.setUniformMatrix("ViewMatrix", lightCam.view);
-        maze.getMesh().render(shadowGeneratorShader, GL20.GL_TRIANGLES);
+
+        batchRender.setShader(shadowGeneratorShader);
+        batchRender.begin();
+        batchRender.draw(cubeRegions.get(App.getCurrentView()));
+        batchRender.end();
         shadowGeneratorShader.end();
         return shadowMap.getColorBufferTexture();
     }
