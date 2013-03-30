@@ -16,36 +16,36 @@ import com.kingx.artemis.annotations.Mapper;
 import com.kingx.artemis.systems.EntityProcessingSystem;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
-import com.kingx.dungeons.CubeRegion;
 import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.ShadowComponent;
 import com.kingx.dungeons.engine.component.SightComponent;
+import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.geom.GroundFactory;
 import com.kingx.dungeons.graphics.Colors;
-import com.kingx.dungeons.graphics.CubeBatch;
 import com.kingx.dungeons.graphics.QuadTextureFrameBuffer;
 import com.kingx.dungeons.graphics.Shader;
+import com.kingx.dungeons.graphics.cube.CubeRegion;
+import com.kingx.dungeons.graphics.cube.CubeRenderer;
 
 public class RenderShadowSystem extends EntityProcessingSystem {
     @Mapper
     ComponentMapper<PositionComponent> pm;
     @Mapper
+    ComponentMapper<MoveComponent> mm;
+    @Mapper
     ComponentMapper<ShadowComponent> sm;
 
     private final FollowCameraComponent camera;
 
-    private boolean begin;
     private final ShaderProgram shadowGeneratorShader;
     private final ShaderProgram shadowProjectShader;
     private final QuadTextureFrameBuffer shadowMap;
     private final Mesh poly;
     private Texture depthMap;
-    private CubeBatch batchRender;
-    private ShaderProgram spriteShader;
-    private CubeBatch batchRender2;
+    private CubeRenderer batchRender;
+    private CubeRenderer batchRender2;
 
-    private static final boolean experimental = true;
     private static final int TEXTURE_SIZE = 1024;
 
     public RenderShadowSystem(FollowCameraComponent camera) {
@@ -63,27 +63,27 @@ public class RenderShadowSystem extends EntityProcessingSystem {
 
     @Override
     protected void begin() {
-        begin = true;
         if (batchRender == null) {
-            batchRender = new CubeBatch();
-            batchRender2 = new CubeBatch();
+            batchRender = new CubeRenderer();
+            batchRender2 = new CubeRenderer();
         }
     }
 
     @Override
     protected void end() {
-        begin = false;
     }
 
     @Override
     protected void process(Entity e) {
         PositionComponent pc = pm.getSafe(e);
+        MoveComponent mc = mm.getSafe(e);
         ShadowComponent sc = sm.getSafe(e);
 
         ArrayList<CubeRegion> cubeRegions = App.getCubeRegions();
 
         Camera[] lights = sc.getLights();
-        sc.update(pc);
+        sc.move(pc);
+        sc.rotate(mc);
 
         generateShadowMap(cubeRegions, lights);
 
@@ -107,6 +107,8 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowProjectShader.setUniformi("u_texture", 1);
         shadowProjectShader.setUniformf("u_useTextures", 1);
         shadowProjectShader.setUniformf("u_sight", App.getPlayer().getEntity().getComponent(SightComponent.class).getRadius());
+        shadowProjectShader.setUniformf("u_side", App.getCurrentView());
+        shadowProjectShader.setUniformf("u_worldWidth", App.getMap().getWidth());
         poly.render(shadowProjectShader, GL20.GL_TRIANGLES);
         batchRender.end();
 

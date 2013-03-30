@@ -8,7 +8,6 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,7 +21,8 @@ import com.kingx.dungeons.engine.system.RenderShadowSystem;
 import com.kingx.dungeons.geom.MazeFactory;
 import com.kingx.dungeons.geom.MazePoly;
 import com.kingx.dungeons.graphics.MazeMap;
-import com.kingx.dungeons.graphics.Shader;
+import com.kingx.dungeons.graphics.cube.CubeFactory;
+import com.kingx.dungeons.graphics.cube.CubeRegion;
 import com.kingx.dungeons.input.Input;
 import com.kingx.dungeons.server.AbstractServer;
 import com.kingx.dungeons.server.OfflineServer;
@@ -42,6 +42,7 @@ public class App implements ApplicationListener {
     private static MazeMap mazeMap;
     public static ArrayList<MazePoly> mazeMesh;
     public static ArrayList<CubeRegion> cubeRegions;
+    public static final float MAP_OFFSET = 0.1f;
 
     private static boolean wireframe;
 
@@ -105,31 +106,12 @@ public class App implements ApplicationListener {
         renderGeometrySystem.process();
 
         if (DEBUG != null && renderShadowSystem.getDepthMap() != null) {
-            renderBox();
             onScreenRender.begin();
             onScreenRender.draw(renderShadowSystem.getDepthMap(), 0, 0, 100, 100, 1, 0, 0, 1);
             font.draw(onScreenRender, App.getPlayer().getPositionComponent().toString(), 30, Gdx.graphics.getHeight() - 30);
             font.draw(onScreenRender, String.valueOf(App.getCurrentView()), 30, Gdx.graphics.getHeight() - 60);
             onScreenRender.end();
         }
-    }
-
-    private Mesh box;
-
-    private void renderBox() {
-        if (box == null) {
-            box = MazeFactory.makeMeABox();
-        }
-        ShaderProgram boxyShader = Shader.getShader("box");
-        //  App.getWorldCamera().getCamera().translate(5, 5, 2);
-        boxyShader.begin();
-        boxyShader.setUniformMatrix("ProjectionMatrix", App.getWorldCamera().getCamera().projection);
-        boxyShader.setUniformMatrix("ViewMatrix", App.getWorldCamera().getCamera().view);
-        boxyShader.setUniformi("u_texture", 0);
-        box.render(boxyShader, GL20.GL_TRIANGLES);
-        boxyShader.end();
-        //     App.getWorldCamera().getCamera().translate(-5, -5, -2);
-
     }
 
     private void init() {

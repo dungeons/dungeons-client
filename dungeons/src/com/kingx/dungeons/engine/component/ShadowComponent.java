@@ -2,13 +2,16 @@ package com.kingx.dungeons.engine.component;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.math.Vector3;
 import com.kingx.artemis.Component;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 
 public class ShadowComponent extends Component {
 
     private final Camera[] lights;
+    private float lastAngle;
 
     public ShadowComponent() {
 
@@ -21,7 +24,7 @@ public class ShadowComponent extends Component {
             lights[i].direction.x = Math.round(Math.cos(Math.PI / 2 * (i + offset)));
             lights[i].direction.y = Math.round(Math.sin(Math.PI / 2 * (i + offset)));
             lights[i].direction.z = 0.01f;
-            lights[i].position.z = 0.1f * App.MAZE_WALL_SIZE;
+            lights[i].position.z = App.MAP_OFFSET * App.MAZE_WALL_SIZE;
         }
     }
 
@@ -29,13 +32,34 @@ public class ShadowComponent extends Component {
         return lights;
     }
 
-    public void update(PositionComponent position) {
+    public void move(PositionComponent position) {
         for (Camera light : lights) {
             light.position.x = position.getX();
             light.position.y = position.getY();
-
-            //            Collision.correctLight(light.position);
+            light.position.z = position.getZ();
         }
     }
 
+    public void rotate(MoveComponent mc) {
+        float angle = mc.getRotation();
+        float difference = 0;
+        if (lastAngle != angle) {
+            difference = angle - lastAngle;
+        }
+        lastAngle = angle;
+
+        for (int i = 0; i < lights.length; i++) {
+
+            if (difference != 0) {
+
+                System.out.println("Light[" + i + "] previous : " + lights[i].direction);
+                Vector3 temp = lights[i].position.cpy();
+                lights[i].translate(temp.cpy().mul(-1));
+                lights[i].rotate(Vector3.Y, difference);
+                lights[i].translate(temp);
+                System.out.println("Light[" + i + "] after : " + lights[i].direction);
+            }
+            lights[i].update();
+        }
+    }
 }

@@ -1,8 +1,7 @@
-package com.kingx.dungeons.graphics;
+package com.kingx.dungeons.graphics.cube;
 
 import java.util.ArrayList;
 
-import com.kingx.dungeons.geom.CubeVertex;
 
 public class Cube {
 

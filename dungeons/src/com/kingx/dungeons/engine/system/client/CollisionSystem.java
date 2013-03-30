@@ -98,7 +98,6 @@ public class CollisionSystem extends EntityProcessingSystem {
         }
 
         if (point.x < 0 || point.x >= footprint.length) {
-            System.out.println("colide " + position);
             return false;
         }
 

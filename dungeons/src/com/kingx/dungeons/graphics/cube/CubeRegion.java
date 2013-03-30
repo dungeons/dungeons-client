@@ -1,8 +1,7 @@
-package com.kingx.dungeons;
+package com.kingx.dungeons.graphics.cube;
 
 import java.util.ArrayList;
 
-import com.kingx.dungeons.graphics.Cube;
 
 public class CubeRegion {
 

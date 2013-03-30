@@ -1,4 +1,4 @@
-package com.kingx.dungeons.geom;
+package com.kingx.dungeons.graphics.cube;
 
 
 public class CubeVertex {

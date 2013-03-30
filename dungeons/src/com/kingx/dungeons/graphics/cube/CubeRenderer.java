@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.kingx.dungeons.graphics;
+package com.kingx.dungeons.graphics.cube;
 
 import java.util.ArrayList;
 
@@ -29,8 +29,6 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
-import com.kingx.dungeons.CubeRegion;
-import com.kingx.dungeons.geom.CubeVertex;
 
 /**
  * <p>
@@ -41,9 +39,9 @@ import com.kingx.dungeons.geom.CubeVertex;
  * 
  * <p>
  * To draw something with a SpriteBatch one has to first call the
- * {@link CubeBatch#begin()} method which will setup appropriate render states.
- * When you are done with drawing you have to call {@link CubeBatch#end()} which
- * will actually draw the things you specified.
+ * {@link CubeRenderer#begin()} method which will setup appropriate render
+ * states. When you are done with drawing you have to call
+ * {@link CubeRenderer#end()} which will actually draw the things you specified.
  * </p>
  * 
  * <p>
@@ -79,7 +77,7 @@ import com.kingx.dungeons.geom.CubeVertex;
  * 
  * @author mzechner
  */
-public class CubeBatch implements Disposable {
+public class CubeRenderer implements Disposable {
     private Mesh mesh;
     private Mesh[] buffers;
 
@@ -111,7 +109,7 @@ public class CubeBatch implements Disposable {
     public int maxSpritesInBatch = 0;
     private ShaderProgram customShader = null;
     private int vertexSize;
-    private final int cubeSize;
+    private final int cubeCount;
     private final int buffersCount;
 
     /**
@@ -120,7 +118,7 @@ public class CubeBatch implements Disposable {
      * right and the origin being in the bottom left corner of the screen. The
      * projection will be pixel perfect with respect to the screen resolution.
      */
-    public CubeBatch() {
+    public CubeRenderer() {
         this(1000);
     }
 
@@ -128,7 +126,7 @@ public class CubeBatch implements Disposable {
      * Constructs a SpriteBatch with the specified size and (if GL2) the default
      * shader. See {@link #CubeBatch(int, ShaderProgram)}.
      */
-    public CubeBatch(int size) {
+    public CubeRenderer(int size) {
         this(size, null);
     }
 
@@ -158,7 +156,7 @@ public class CubeBatch implements Disposable {
      *            the default shader to use. This is not owned by the
      *            SpriteBatch and must be disposed separately.
      */
-    public CubeBatch(int size, ShaderProgram defaultShader) {
+    public CubeRenderer(int size, ShaderProgram defaultShader) {
         this(size, 1, defaultShader);
     }
 
@@ -167,7 +165,7 @@ public class CubeBatch implements Disposable {
      * and (if GL2) the default shader. See
      * {@link #CubeBatch(int, int, ShaderProgram)}.
      */
-    public CubeBatch(int size, int buffers) {
+    public CubeRenderer(int size, int buffers) {
         this(size, buffers, null);
     }
 
@@ -200,8 +198,8 @@ public class CubeBatch implements Disposable {
      *            the default shader to use. This is not owned by the
      *            SpriteBatch and must be disposed separately.
      */
-    public CubeBatch(int size, int buffers, ShaderProgram defaultShader) {
-        this.cubeSize = size;
+    public CubeRenderer(int size, int buffers, ShaderProgram defaultShader) {
+        this.cubeCount = size;
         this.buffersCount = buffers;
         reset();
 
@@ -285,9 +283,9 @@ public class CubeBatch implements Disposable {
     private void reset() {
 
         vertexSize = CubeVertex.size;
-        vertices = new float[cubeSize * Cube.VERTS_PER_QUAD * Cube.QUADS * CubeVertex.size];
+        vertices = new float[cubeCount * Cube.VERTS_PER_QUAD * Cube.QUADS * CubeVertex.size];
 
-        short[] indices = new short[cubeSize * Cube.INDICES_PER_QUAD * Cube.QUADS];
+        short[] indices = new short[cubeCount * Cube.INDICES_PER_QUAD * Cube.QUADS];
         short j = 0;
         for (int i = 0; i < indices.length; i += 6, j += 4) {
             indices[i + 0] = (short) (j + 0);
@@ -379,7 +377,6 @@ public class CubeBatch implements Disposable {
             }
             // return;
         }
-        System.out.println(cubeVerts.length);
     }
 
     /**

@@ -1,24 +1,26 @@
 package com.kingx.dungeons.engine.component.dynamic;
 
+import com.badlogic.gdx.math.Vector3;
+
 public class SizeComponent extends AbstractComponent {
-    private float size;
+    private final Vector3 vector;
 
     public SizeComponent(float size) {
-        this.size = size;
-    }
-
-    @Override
-    public String toString() {
-        return "SizeComponent [size=" + size + "]";
+        this.vector = new Vector3(size, size, 0);
     }
 
     @Override
     public void setComponent(int id, int value) {
-        size = value / AbstractComponent.INT_TO_FLOAT;
+        vector.x = value / AbstractComponent.INT_TO_FLOAT;
+        vector.y = value / AbstractComponent.INT_TO_FLOAT;
     }
 
     public float getSize() {
-        return size;
+        return vector.x;
+    }
+
+    public Vector3 get() {
+        return vector;
     }
 
 }

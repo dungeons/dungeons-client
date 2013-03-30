@@ -244,7 +244,7 @@ public class Collision {
 
     public static void correct(PositionComponent position, SizeComponent size) {
         float z, x;
-        float offset = size.getSize() / 2f;
+        float offset = 1 - App.MAP_OFFSET;
 
         x = position.getX();
         x = Math.max(x, offset);
@@ -256,21 +256,5 @@ public class Collision {
 
         position.setX(x);
         position.setZ(z);
-    }
-
-    public static void correctLight(Vector3 position) {
-        float z, x;
-        float offset = 0.9f;
-
-        x = position.x;
-        x = Math.max(x, offset);
-        x = Math.min(x, App.getMap().getWidth() - offset);
-
-        z = position.z;
-        z = Math.min(z, -offset);
-        z = Math.max(z, -App.getMap().getWidth() + offset);
-
-        position.x = x;
-        position.z = z;
     }
 }

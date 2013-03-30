@@ -19,6 +19,8 @@ public class WorldRotateSystem extends EntityProcessingSystem {
     @Mapper
     ComponentMapper<FollowCameraComponent> cameraMapper;
 
+    private static final float RIGHT_ANGLE = 90f;
+
     public WorldRotateSystem() {
         super(Aspect.getAspectForAll(WorldRotateComponent.class));
     }
@@ -37,10 +39,12 @@ public class WorldRotateSystem extends EntityProcessingSystem {
 
         camera = App.getWorldCamera();
         float x = position.getScreenX();
-        if (x < size.getSize() / 2) {
+
+        float offset = 1 - App.MAP_OFFSET;
+        if (x < offset) {
             rotateLeft(camera, world.getMove());
             Collision.correct(position, size);
-        } else if (x > App.getMap().getWidth() - size.getSize() / 2) {
+        } else if (x > App.getMap().getWidth() - offset) {
             rotateRight(camera, world.getMove());
             Collision.correct(position, size);
         }
@@ -59,16 +63,14 @@ public class WorldRotateSystem extends EntityProcessingSystem {
     }
 
     private void rotateRight(FollowCameraComponent camera, MoveComponent moveComponent) {
-        System.out.println("right " + (App.getCurrentView() + 1) % 4);
-        //    camera.angle += Math.PI / 2f;
-        moveComponent.addRotation(90f);
+        camera.angle += Math.PI / 2f;
+        moveComponent.addRotation(RIGHT_ANGLE);
         App.setCurrentView((App.getCurrentView() + 1) % 4);
     }
 
     private void rotateLeft(FollowCameraComponent camera, MoveComponent moveComponent) {
-        System.out.println("left " + (App.getCurrentView() + 3) % 4);
-        //      camera.angle -= Math.PI / 2f;
-        moveComponent.addRotation(-90f);
+        camera.angle -= Math.PI / 2f;
+        moveComponent.addRotation(-RIGHT_ANGLE);
         App.setCurrentView((App.getCurrentView() + 3) % 4);
     }
 }

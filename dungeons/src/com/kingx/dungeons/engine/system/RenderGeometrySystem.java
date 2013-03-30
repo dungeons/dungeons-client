@@ -1,10 +1,6 @@
 package com.kingx.dungeons.engine.system;
 
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector3;
 import com.kingx.artemis.Aspect;
 import com.kingx.artemis.ComponentMapper;
@@ -21,9 +17,7 @@ import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
 import com.kingx.dungeons.geom.Collision;
-import com.kingx.dungeons.geom.Polygon;
-import com.kingx.dungeons.graphics.Colors;
-import com.kingx.dungeons.graphics.Shader;
+import com.kingx.dungeons.graphics.sprite.SpriteRenderer;
 
 public class RenderGeometrySystem extends EntityProcessingSystem {
     @Mapper
@@ -39,16 +33,15 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
     @Mapper
     ComponentMapper<SightComponent> sightMapper;
 
-    private final Camera camera;
-    private final ShaderProgram shader;
+    private final FollowCameraComponent camera;
     private PositionComponent playerPosition;
     private SightComponent playerSight;
-    private Mesh mesh;
+
+    private final SpriteRenderer sr = new SpriteRenderer();
 
     public RenderGeometrySystem(FollowCameraComponent camera) {
-        super(Aspect.getAspectForAll(PositionComponent.class, TextureComponent.class));
-        this.camera = camera.getCamera();
-        this.shader = Shader.getShader("sprite");
+        super(Aspect.getAspectForAll(PositionComponent.class, MoveComponent.class, TextureComponent.class));
+        this.camera = camera;
     }
 
     /**
@@ -58,6 +51,8 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
     protected void begin() {
         playerPosition = positionMapper.getSafe(App.getPlayer().getEntity());
         playerSight = sightMapper.getSafe(App.getPlayer().getEntity());
+        sr.begin();
+        sr.setProjectionMatrix(camera.getCamera().combined);
     }
 
     /**
@@ -65,14 +60,16 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
      */
     @Override
     protected void end() {
+        sr.end();
     }
 
     @Override
     protected void process(Entity e) {
 
-        SizeComponent ccs = sizeMapper.getSafe(e);
+        MoveComponent move = moveMapper.getSafe(e);
         TextureComponent tc = textureMapper.getSafe(e);
         PositionComponent pc = positionMapper.getSafe(e);
+        SizeComponent sc = sizeMapper.getSafe(e);
         if (!Collision.canSee(pc.inWorld, playerPosition.inWorld, playerSight.getRadius())) {
             return;
         }
@@ -93,24 +90,8 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
         }
 
         if (currentTexture != null) {
-
-            mesh = Polygon.createPlain(0.5f, currentTexture.getU(), currentTexture.getV(), currentTexture.getU2(), currentTexture.getV2());
-
             currentTexture.getTexture().bind();
-            shader.begin();
-            camera.translate(pc.inWorld.cpy().mul(-1));
-            camera.update();
-            shader.setUniformMatrix("u_projTrans", camera.combined);
-            camera.translate(pc.inWorld);
-            camera.update();
-            shader.setUniformi("sampler2D", 0);
-            shader.setUniformf("u_tint", Colors.ZOMBIE_ALARM);
-            mesh.render(shader, GL20.GL_TRIANGLE_STRIP);
-
-            shader.begin();
-
-            // sb.setProjectionMatrix(camera.combined);
-            //  sb.draw(currentTexture, pc.getX() - ccs.getSize() / 2f, pc.getY() - ccs.getSize() / 2f, ccs.getSize(), ccs.getSize());
+            sr.draw(currentTexture, pc.get(), sc.get(), move.getRotation());
 
         }
     }
