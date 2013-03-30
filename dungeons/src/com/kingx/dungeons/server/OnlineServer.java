@@ -34,9 +34,8 @@ public class OnlineServer extends AbstractServer {
         decoderSystem = new Decoder(world);
         world.setSystem(decoderSystem, true);
 
-        world.setSystem(new GravitySystem());
         world.setSystem(new MovementSystem());
-        world.setSystem(new ZombieAI());
+        //world.setSystem(new ZombieAI());
         world.setSystem(new CollisionSystem());
         world.setSystem(new WorldRotateSystem());
     }

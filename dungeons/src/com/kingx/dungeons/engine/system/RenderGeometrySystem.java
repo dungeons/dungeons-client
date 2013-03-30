@@ -16,7 +16,6 @@ import com.kingx.dungeons.engine.component.TextureComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
-import com.kingx.dungeons.geom.Collision;
 import com.kingx.dungeons.graphics.sprite.SpriteRenderer;
 
 public class RenderGeometrySystem extends EntityProcessingSystem {
@@ -70,9 +69,9 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
         TextureComponent tc = textureMapper.getSafe(e);
         PositionComponent pc = positionMapper.getSafe(e);
         SizeComponent sc = sizeMapper.getSafe(e);
-        if (!Collision.canSee(pc.inWorld, playerPosition.inWorld, playerSight.getRadius())) {
-            return;
-        }
+        /*  if (!Collision.canSee(pc.inWorld, playerPosition.inWorld, playerSight.getRadius())) {
+              return;
+          }*/
 
         TextureRegion currentTexture = null;
 

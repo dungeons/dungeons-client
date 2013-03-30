@@ -40,9 +40,6 @@ public final class CubeFactory {
             { 0, 0, -1 } // Bottom
     };
 
-    private final ArrayList<Float> verts = new ArrayList<Float>();
-    private final ArrayList<Short> indices = new ArrayList<Short>();
-    private final int vertsOffset = 0;
     private ArrayList<Cube> cubes;
     private final ArrayList<CubeRegion> regions;
 
@@ -74,21 +71,17 @@ public final class CubeFactory {
                                 z = -j - offset;
                                 break;
                             case 2:
-
                                 x = maze.getFootprint(i).length - j;
                                 y = k;
                                 z = -maze.getFootprint(i).length - offset;
                                 break;
                             case 3:
-
                                 x = 0;
                                 y = k;
                                 z = -maze.getFootprint(i).length + j - offset;
                                 break;
                         }
-
                         cubes.add(makeCube(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE));
-
                     }
                 }
             }
@@ -96,7 +89,47 @@ public final class CubeFactory {
             regions.add(region);
 
         }
+        /*
+                for (int i = 0; i < regions.size(); i++) {
+                    boolean[][] footprint = maze.getFootprint((i + 1) % regions.size());
+                    cubes = new ArrayList<Cube>();
 
+                    int j = footprint.length;
+                    for (int k = 0; k < footprint[0].length; k++) {
+
+                        float x = 0, y = 0, z = 0;
+
+                        float offset = 0f;
+
+                        if (!footprint[0][k]) {
+                            switch (i) {
+                                case 0:
+                                    x = j;
+                                    y = k;
+                                    z = -offset;
+                                    break;
+                                case 1:
+                                    x = footprint.length;
+                                    y = k;
+                                    z = -j - offset;
+                                    break;
+                                case 2:
+                                    x = footprint.length - j;
+                                    y = k;
+                                    z = -footprint.length - offset;
+                                    break;
+                                case 3:
+                                    x = 0;
+                                    y = k;
+                                    z = -footprint.length + j - offset;
+                                    break;
+                            }
+                            cubes.add(makeCube(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE));
+                        }
+                    }
+                    regions.get(i).addCubes(cubes);
+                }
+        */
     }
 
     public ArrayList<CubeRegion> getCubeRegions() {

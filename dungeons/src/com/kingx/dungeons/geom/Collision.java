@@ -228,14 +228,15 @@ public class Collision {
      * @return
      */
     public static boolean canSee(Vector3 a, Vector3 b, float radius) {
-        Ray ray = getRay(a, b);
+        throw new IllegalArgumentException("Not implemented yet.");
+        /*Ray ray = getRay(a, b);
         if (distance(a, b) <= radius) {
             // FIXME maze 0
             if (!intersectRayTrianglesBetweenPoints(ray, App.getMaze(0).getVerts(), a, b)) {
                 return true;
             }
         }
-        return false;
+        return false;*/
     }
 
     private static Ray getRay(Vector3 a, Vector3 b) {

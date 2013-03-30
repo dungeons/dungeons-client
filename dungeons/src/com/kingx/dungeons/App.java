@@ -18,7 +18,6 @@ import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.concrete.Wanderer;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
-import com.kingx.dungeons.geom.MazeFactory;
 import com.kingx.dungeons.geom.MazePoly;
 import com.kingx.dungeons.graphics.MazeMap;
 import com.kingx.dungeons.graphics.cube.CubeFactory;
@@ -136,7 +135,6 @@ public class App implements ApplicationListener {
      */
     private void createMaze() {
         mazeMap = new MazeMap(createMap());
-        mazeMesh = new MazeFactory(mazeMap, MAZE_WALL_SIZE).getMazes();
     }
 
     private void createCubes() {

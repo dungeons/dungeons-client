@@ -2,7 +2,6 @@ package com.kingx.dungeons.graphics.cube;
 
 import java.util.ArrayList;
 
-
 public class CubeRegion {
 
     private ArrayList<Cube> cubes;
@@ -13,6 +12,10 @@ public class CubeRegion {
 
     public void setCubes(ArrayList<Cube> cubes) {
         this.cubes = cubes;
+    }
+
+    public void addCubes(ArrayList<Cube> cubes) {
+        this.cubes.addAll(cubes);
     }
 
 }
