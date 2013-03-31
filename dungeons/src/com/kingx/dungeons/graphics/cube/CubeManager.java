@@ -23,8 +23,12 @@ public class CubeManager {
         CubeRegion region = cubeRegions.get(current);
         region.removeCube(point);
 
-        boolean[][] footprint = App.getMap().getFootprint(point);
-
+        boolean[][] footprint = App.getMap().getFootprint();
+        point = point.cpy();
+        if (point.x == footprint.length) {
+            footprint = App.getMap().getNextFootprint();
+            point.x = 0;
+        }
         footprint[point.x][point.y] = true;
 
     }

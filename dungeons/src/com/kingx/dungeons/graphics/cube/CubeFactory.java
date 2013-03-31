@@ -90,39 +90,15 @@ public final class CubeFactory {
         }
 
         for (int i = 0; i < regions.size(); i++) {
-            boolean[][] footprint = maze.getFootprint((i + 1) % regions.size());
+            Cube[][] current = regions.get(i).getCubes();
+            Cube[][] next = regions.get((i + 1) % regions.size()).getCubes();
 
-            int j = footprint.length;
-            cubes = regions.get(i).getCubes();
-            for (int k = 0; k < footprint[0].length; k++) {
+            int last = current.length - 1;
 
-                float x = 0, y = 0, z = 0;
-
-                if (!footprint[0][k]) {
-                    switch (i) {
-                        case 0:
-                            x = j;
-                            y = k;
-                            z = 0;
-                            break;
-                        case 1:
-                            x = footprint.length;
-                            y = k;
-                            z = -j;
-                            break;
-                        case 2:
-                            x = footprint.length - j;
-                            y = k;
-                            z = -footprint.length;
-                            break;
-                        case 3:
-                            x = 0;
-                            y = k;
-                            z = -footprint.length + j;
-                            break;
-                    }
-                    cubes[j][k] = makeCube(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE);
-                }
+            for (int k = 0; k < current[last].length; k++) {
+                System.out.println("Assigning " + next[0][k] + "to" + current[last][k]);
+                current[last][k] = next[0][k];
+                //next[0][k] = current[last][k];
             }
         }
     }

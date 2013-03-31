@@ -64,6 +64,10 @@ public abstract class Point {
                 return false;
             return true;
         }
+
+        public Int cpy() {
+            return new Int(this.x, this.y);
+        }
     }
 
     /**

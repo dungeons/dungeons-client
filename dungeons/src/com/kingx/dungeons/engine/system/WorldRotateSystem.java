@@ -36,16 +36,16 @@ public class WorldRotateSystem extends EntityProcessingSystem {
         camera = App.getWorldCamera();
 
         float x = position.getScreenX();
-        float boundsOffset = App.UNIT - App.MAP_OFFSET;
+        float boundsOffset = App.UNIT - App.PLAYER_OFFSET;
         // FIXME making offset smaller it gives player more space and wont trigger collision.
-        boundsOffset -= 0.3f;
+        //  boundsOffset -= 0.3f;
 
         if (x < CubeRegion.min.x + boundsOffset) {
             rotateLeft(camera, world.getMove());
-            Collision.correct(position, size);
+            Collision.correct(position.get(), App.PLAYER_OFFSET);
         } else if (x > CubeRegion.max.x - boundsOffset) {
             rotateRight(camera, world.getMove());
-            Collision.correct(position, size);
+            Collision.correct(position.get(), App.PLAYER_OFFSET);
         }
 
         updateCamera(App.getWorldCamera(), position, camera.getAngle() + camera.getArbitratyAngle());

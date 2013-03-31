@@ -20,8 +20,8 @@ public class OfflineServer extends AbstractServer {
 
     public OfflineServer(World world) {
         super(world);
-        world.setSystem(new GravitySystem());
         world.setSystem(new MovementSystem());
+        world.setSystem(new GravitySystem());
         // world.setSystem(new ZombieAI());
         world.setSystem(new CollisionSystem());
         world.setSystem(new WorldRotateSystem());
@@ -54,6 +54,11 @@ public class OfflineServer extends AbstractServer {
         MiningComponent mining = App.getPlayer().getMining();
         int mapped = getKey(c.getAction(), move.mapping);
         switch (mapped) {
+            case Keys.S:
+                if (!gravity.isFalling()) {
+                    move.vector.y += c.getValue() == 0 ? 1 : -1;
+                }
+                break;
             case Keys.A:
                 move.vector.x += c.getValue() == 0 ? 1 : -1;
                 break;
@@ -65,7 +70,7 @@ public class OfflineServer extends AbstractServer {
                     move.vector.y = 1.5f;
                 }
                 break;
-            case Keys.X:
+            case Keys.E:
                 mining.setMining(c.getValue() != 0);
                 break;
         }

@@ -7,6 +7,7 @@ import com.kingx.artemis.Component;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
+import com.kingx.dungeons.geom.Collision;
 
 public class ShadowComponent extends Component {
 
@@ -24,7 +25,7 @@ public class ShadowComponent extends Component {
             lights[i].direction.x = Math.round(Math.cos(Math.PI / 2 * (i + offset)));
             lights[i].direction.y = Math.round(Math.sin(Math.PI / 2 * (i + offset)));
             lights[i].direction.z = 0.01f;
-            lights[i].position.z = App.MAP_OFFSET * App.UNIT;
+            lights[i].position.z = App.PLAYER_OFFSET * App.UNIT;
         }
     }
 
@@ -37,6 +38,8 @@ public class ShadowComponent extends Component {
             light.position.x = position.getX();
             light.position.y = position.getY();
             light.position.z = position.getZ();
+
+            Collision.correct(light.position, App.LIGHT_OFFSET);
         }
     }
 

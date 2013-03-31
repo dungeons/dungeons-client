@@ -119,7 +119,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
         shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
 
-        batchRender2.draw(cubeRegions);
+        batchRender2.draw(cubeRegions.get(App.getCurrentView()));
         batchRender2.end();
 
     }

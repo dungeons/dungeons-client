@@ -42,4 +42,9 @@ public class CollisionComponent extends Component {
         this.right = right;
     }
 
+    @Override
+    public String toString() {
+        return "CollisionComponent [up=" + up + ", down=" + down + ", left=" + left + ", right=" + right + "]";
+    }
+
 }

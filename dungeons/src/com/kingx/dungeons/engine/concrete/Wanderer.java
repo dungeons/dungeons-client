@@ -38,7 +38,7 @@ public class Wanderer extends ConcreteEntity {
     public Wanderer(World world, Vector2 p, float size, float speed, FollowCameraComponent camera) {
         super(world);
 
-        positionComponent = new PositionComponent(p.x, p.y, App.MAP_OFFSET);
+        positionComponent = new PositionComponent(p.x, p.y, App.PLAYER_OFFSET);
         moveComponent = new MoveComponent(0, 0);
         shader = new ShaderComponent(Shader.getShader("normal"));
         textures = new TextureComponent("wanderer", "wanderer", Colors.AVATAR);

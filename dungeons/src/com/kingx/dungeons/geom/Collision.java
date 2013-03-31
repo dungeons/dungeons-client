@@ -245,20 +245,155 @@ public class Collision {
         return new Ray(a, b.cpy().sub(a));
     }
 
-    public static void correct(PositionComponent position, SizeComponent size) {
-        float z, x;
-        float offset = 1 - App.MAP_OFFSET;
+    public static void correct(Vector3 position, float offset) {
+        float borderOffset = 1 - offset;
 
-        x = position.getX();
-        x = Math.max(x, CubeRegion.min.x + offset);
-        x = Math.min(x, CubeRegion.max.x - offset);
+        position.x = Math.max(position.x, CubeRegion.min.x + borderOffset);
+        position.x = Math.min(position.x, CubeRegion.max.x - borderOffset);
 
-        z = position.getZ();
-        z = Math.min(z, CubeRegion.max.z - offset);
-        z = Math.max(z, CubeRegion.min.z + offset);
+        position.z = Math.min(position.z, CubeRegion.max.z - borderOffset);
+        position.z = Math.max(position.z, CubeRegion.min.z + borderOffset);
+    }
 
-        position.setX(x);
-        position.setZ(z);
+    /**
+     * Checks for collision on given position. If object is entity is colliding,
+     * it is pushed to the other side
+     * 
+     * @param position
+     *            current position of entity
+     * @param size
+     *            size of entity
+     * @return {@code true} whether there were collision, {@code false}
+     *         otherwise
+     */
+    public static Int resolveCollisionUp(PositionComponent position, SizeComponent size) {
+
+        float halfSize = size.getSize() / 2f;
+        float x = position.getScreenX();
+        float y = position.getY();
+
+        float upBound = y + halfSize;
+
+        int clampedValue = (int) (upBound / App.UNIT);
+
+        // Edges are not colliding
+        if (clampedValue != upBound) {
+            Int upPoint = new Point.Int((int) (x / App.UNIT), (int) (upBound / App.UNIT));
+
+            if (!isWalkable(upPoint)) {
+                y = upPoint.y * App.UNIT - halfSize;
+                position.setY(y);
+                return upPoint;
+            }
+
+        }
+        return null;
+    }
+
+    /**
+     * Checks for collision on given position. If object is entity is colliding,
+     * it is pushed to the other side
+     * 
+     * @param position
+     *            current position of entity
+     * @param size
+     *            size of entity
+     * @return {@code true} whether there were collision, {@code false}
+     *         otherwise
+     */
+    public static Int resolveCollisionDown(PositionComponent position, SizeComponent size) {
+
+        float halfSize = size.getSize() / 2f;
+        float x = position.getScreenX();
+        float y = position.getY();
+
+        float downBound = y - halfSize;
+
+        int clampedValue = (int) (downBound / App.UNIT);
+
+        // Edges are not colliding
+        if (clampedValue != downBound) {
+            Int downPoint = new Point.Int((int) (x / App.UNIT), (int) (downBound / App.UNIT));
+
+            if (!isWalkable(downPoint)) {
+                y = (downPoint.y + 1) * App.UNIT + halfSize;
+                position.setY(y);
+                return downPoint;
+            }
+
+        }
+        return null;
+    }
+
+    /**
+     * Checks for collision on given position. If object is entity is colliding,
+     * it is pushed to the other side
+     * 
+     * @param position
+     *            current position of entity
+     * @param size
+     *            size of entity
+     * @return {@code true} whether there were collision, {@code false}
+     *         otherwise
+     */
+    public static Int resolveCollisionLeft(PositionComponent position, SizeComponent size) {
+
+        float halfSize = size.getSize() / 2f;
+        float x = position.getScreenX();
+        float y = position.getY();
+
+        float leftBound = x - halfSize;
+
+        int clampedValue = (int) (leftBound / App.UNIT);
+
+        // Edges are not colliding
+        if (clampedValue != leftBound) {
+            Int leftPoint = new Point.Int((int) (leftBound / App.UNIT), (int) (y / App.UNIT));
+
+            if (!isWalkable(leftPoint)) {
+                x = (leftPoint.x + 1) * App.UNIT + halfSize;
+                position.setScreenX(x);
+                return leftPoint;
+            }
+
+        }
+        return null;
+    }
+
+    /**
+     * Checks for collision on given position. If object is entity is colliding,
+     * it is pushed to the other side
+     * 
+     * @param position
+     *            current position of entity
+     * @param size
+     *            size of entity
+     * @return {@code true} whether there were collision, {@code false}
+     *         otherwise
+     */
+    public static Int resolveCollisionRight(PositionComponent position, SizeComponent size) {
+
+        float halfSize = size.getSize() / 2f;
+        float x = position.getScreenX();
+        float y = position.getY();
+
+        float rightBound = x + halfSize;
+
+        int clampedValue = (int) (rightBound / App.UNIT);
+
+        // Edges are not colliding
+        if (clampedValue != rightBound) {
+            Int rightPoint = new Point.Int((int) (rightBound / App.UNIT), (int) (y / App.UNIT));
+
+            if (!isWalkable(rightPoint)) {
+                x = rightPoint.x * App.UNIT - halfSize;
+                position.setScreenX(x);
+                return rightPoint;
+            }
+
+        }
+
+        return null;
     }
 
     /**
@@ -269,10 +404,15 @@ public class Collision {
      * @return {@code true} if point is walkable, {@code false} otherwise
      */
     public static boolean isWalkable(Int point) {
-        boolean[][] footprint = App.getMap().getFootprint(point);
+        boolean[][] footprint = App.getMap().getFootprint();
+        point = point.cpy();
+        if (point.x == footprint.length) {
+            footprint = App.getMap().getNextFootprint();
+            point.x = 0;
+        }
 
-        if (point.x < 0 || point.x >= footprint.length) {
-            return false;
+        if (point.x < 0 || point.x >= footprint.length + 1) {
+            return true;
         }
 
         if (point.y < 0 || point.y >= footprint[0].length) {

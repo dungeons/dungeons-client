@@ -42,7 +42,8 @@ public class App implements ApplicationListener {
     private static MazeMap mazeMap;
     private static CubeManager cubeManager;
 
-    public static final float MAP_OFFSET = 0.1f;
+    public static final float PLAYER_OFFSET = 0.5f;
+    public static final float LIGHT_OFFSET = 0.1f;
 
     private static boolean wireframe;
 
@@ -152,8 +153,8 @@ public class App implements ApplicationListener {
      */
     private boolean[][][] createMap() {
         // return Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT, MAZE_BLOCKS_COUNT) : Assets.map;
-        return MazeBuilder.getLayeredMaze(36, 50);
-        //return Assets.map;
+        return MazeBuilder.getLayeredMaze(36, 9);
+        // return Assets.map;
     }
 
     /**
