@@ -89,47 +89,47 @@ public final class CubeFactory {
             regions.add(region);
 
         }
-        /*
-                for (int i = 0; i < regions.size(); i++) {
-                    boolean[][] footprint = maze.getFootprint((i + 1) % regions.size());
-                    cubes = new ArrayList<Cube>();
 
-                    int j = footprint.length;
-                    for (int k = 0; k < footprint[0].length; k++) {
+        for (int i = 0; i < regions.size(); i++) {
+            boolean[][] footprint = maze.getFootprint((i + 1) % regions.size());
+            cubes = new ArrayList<Cube>();
 
-                        float x = 0, y = 0, z = 0;
+            int j = footprint.length;
+            for (int k = 0; k < footprint[0].length; k++) {
 
-                        float offset = 0f;
+                float x = 0, y = 0, z = 0;
 
-                        if (!footprint[0][k]) {
-                            switch (i) {
-                                case 0:
-                                    x = j;
-                                    y = k;
-                                    z = -offset;
-                                    break;
-                                case 1:
-                                    x = footprint.length;
-                                    y = k;
-                                    z = -j - offset;
-                                    break;
-                                case 2:
-                                    x = footprint.length - j;
-                                    y = k;
-                                    z = -footprint.length - offset;
-                                    break;
-                                case 3:
-                                    x = 0;
-                                    y = k;
-                                    z = -footprint.length + j - offset;
-                                    break;
-                            }
-                            cubes.add(makeCube(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE));
-                        }
+                float offset = 0f;
+
+                if (!footprint[0][k]) {
+                    switch (i) {
+                        case 0:
+                            x = j;
+                            y = k;
+                            z = -offset;
+                            break;
+                        case 1:
+                            x = footprint.length;
+                            y = k;
+                            z = -j - offset;
+                            break;
+                        case 2:
+                            x = footprint.length - j;
+                            y = k;
+                            z = -footprint.length - offset;
+                            break;
+                        case 3:
+                            x = 0;
+                            y = k;
+                            z = -footprint.length + j - offset;
+                            break;
                     }
-                    regions.get(i).addCubes(cubes);
+                    cubes.add(makeCube(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE));
                 }
-        */
+            }
+            regions.get(i).addCubes(cubes);
+        }
+
     }
 
     public ArrayList<CubeRegion> getCubeRegions() {

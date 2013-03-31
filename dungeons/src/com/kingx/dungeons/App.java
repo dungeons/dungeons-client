@@ -18,7 +18,6 @@ import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.concrete.Wanderer;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
-import com.kingx.dungeons.geom.MazePoly;
 import com.kingx.dungeons.graphics.MazeMap;
 import com.kingx.dungeons.graphics.cube.CubeFactory;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
@@ -39,7 +38,6 @@ public class App implements ApplicationListener {
     private static FollowCameraComponent avatarCamera;
 
     private static MazeMap mazeMap;
-    public static ArrayList<MazePoly> mazeMesh;
     public static ArrayList<CubeRegion> cubeRegions;
     public static final float MAP_OFFSET = 0.1f;
 
@@ -217,16 +215,8 @@ public class App implements ApplicationListener {
 
     // Global getters
 
-    public static ArrayList<MazePoly> getMazes() {
-        return mazeMesh;
-    }
-
     public static ArrayList<CubeRegion> getCubeRegions() {
         return cubeRegions;
-    }
-
-    public static MazePoly getMaze(int i) {
-        return mazeMesh.get(i);
     }
 
     public static Wanderer getPlayer() {

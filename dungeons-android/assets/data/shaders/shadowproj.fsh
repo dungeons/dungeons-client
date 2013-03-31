@@ -59,7 +59,7 @@ worldPostitoin.z = 0.0;
 }else if(u_side == 1.0){ 
 worldPostitoin.x = u_worldWidth - 1.0;
 }else if(u_side == 2.0){ 
-worldPostitoin.z = -u_worldWidth + 2.0;
+worldPostitoin.z = -u_worldWidth + 1.0;
 }else if(u_side == 3.0){ 
 worldPostitoin.x = 1.0;
 }
