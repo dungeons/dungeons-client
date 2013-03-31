@@ -11,6 +11,29 @@ public class MazeBuilder {
         return builder.generate(width, height);
     }
 
+    public static boolean[][][] getLayeredMaze(int width, int height) {
+        if (width % 4 != 0) {
+            throw new IllegalArgumentException("Map's width has to be multiple of 4.");
+        }
+        boolean[][] original = builder.generate(width, height);
+
+        width = width / 4;
+
+        boolean[][][] output = new boolean[4][width][height];
+
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < output[i].length; j++) {
+                for (int k = 0; k < output[i][j].length; k++) {
+
+                    output[i][j][k] = original[i * width + j][k];
+
+                }
+            }
+        }
+        return output;
+
+    }
+
     private final Random random = new Random();
     private final Point.Int[] ways = new Point.Int[4];
     private final boolean[] flags = new boolean[4];

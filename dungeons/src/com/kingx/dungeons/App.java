@@ -18,6 +18,7 @@ import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.concrete.Wanderer;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
+import com.kingx.dungeons.geom.MazeBuilder;
 import com.kingx.dungeons.graphics.MazeMap;
 import com.kingx.dungeons.graphics.cube.CubeFactory;
 import com.kingx.dungeons.graphics.cube.CubeManager;
@@ -151,7 +152,8 @@ public class App implements ApplicationListener {
      */
     private boolean[][][] createMap() {
         // return Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT, MAZE_BLOCKS_COUNT) : Assets.map;
-        return Assets.map;
+        return MazeBuilder.getLayeredMaze(36, 9);
+        //return Assets.map;
     }
 
     /**
