@@ -20,11 +20,9 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Mesh.VertexDataType;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
@@ -81,8 +79,6 @@ public class CubeRenderer implements Disposable {
     private Mesh mesh;
     private Mesh[] buffers;
 
-    private Texture lastTexture = null;
-
     private int idx = 0;
     private int currBufferIdx = 0;
     private float[] vertices;
@@ -90,8 +86,6 @@ public class CubeRenderer implements Disposable {
     private boolean drawing = false;
 
     private final boolean blendingDisabled = false;
-    private final int blendSrcFunc = GL11.GL_SRC_ALPHA;
-    private final int blendDstFunc = GL11.GL_ONE_MINUS_SRC_ALPHA;
 
     private final ShaderProgram shader;
     private boolean ownsShader;
@@ -106,7 +100,6 @@ public class CubeRenderer implements Disposable {
     public int totalRenderCalls = 0;
 
     /** the maximum number of sprites rendered in one batch so far **/
-    public int maxSpritesInBatch = 0;
     private ShaderProgram customShader = null;
     private int vertexSize;
     private final int cubeCount;
@@ -276,7 +269,6 @@ public class CubeRenderer implements Disposable {
         }
 
         idx = 0;
-        lastTexture = null;
         drawing = true;
     }
 
@@ -319,7 +311,6 @@ public class CubeRenderer implements Disposable {
             throw new IllegalStateException("SpriteBatch.begin must be called before end.");
         if (idx > 0)
             renderMesh();
-        lastTexture = null;
         idx = 0;
         drawing = false;
 
@@ -398,8 +389,8 @@ public class CubeRenderer implements Disposable {
         renderCalls++;
         totalRenderCalls++;
         int cubesInBatch = idx / vertexSize;
-        if (cubesInBatch > maxSpritesInBatch)
-            maxSpritesInBatch = cubesInBatch;
+        if (cubesInBatch > cubeCount)
+            cubesInBatch = cubeCount;
 
         //lastTexture.bind();
 

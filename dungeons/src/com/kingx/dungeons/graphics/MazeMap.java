@@ -61,9 +61,26 @@ public class MazeMap {
     public Point.Int getRandomBlock(Point.Int start) {
         Point.Int p = new Point.Int();
         do {
-            p.x = App.rand.nextInt(footprints.length);
-            p.y = App.rand.nextInt(footprints[p.x].length);
+            p.x = App.rand.nextInt(footprints[App.getCurrentView()].length);
+            p.y = App.rand.nextInt(footprints[App.getCurrentView()][p.x].length);
         } while (!footprints[0][p.x][p.y] || p.equals(start));
+        return p;
+    }
+
+    /**
+     * Searches for a walkable block different from block specified
+     * 
+     * @return first walkable block
+     */
+    public Point.Int getRandomBlock(int maxx, int maxy) {
+        Point.Int p = new Point.Int();
+        do {
+            boolean[][] current = footprints[App.getCurrentView()];
+            p.x = App.rand.nextInt(Math.min(maxx, current.length));
+            maxy = Math.min(maxy, current[p.x].length);
+            p.y = current[p.x].length - maxy + App.rand.nextInt(maxy);
+            System.out.println(current[p.x].length);
+        } while (!footprints[0][p.x][p.y]);
         return p;
     }
 
@@ -93,6 +110,11 @@ public class MazeMap {
 
     public Vector2 getRandomPosition() {
         Int p = getRandomBlock();
+        return new Vector2(App.UNIT * (p.x + 0.5f), App.UNIT * (p.y + 0.5f));
+    }
+
+    public Vector2 getRandomPosition(int maxx, int maxy) {
+        Int p = getRandomBlock(maxx, maxy);
         return new Vector2(App.UNIT * (p.x + 0.5f), App.UNIT * (p.y + 0.5f));
     }
 

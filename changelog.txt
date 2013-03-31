@@ -30,3 +30,7 @@ v 0.0.1d8
 - Updated texture handling
 - health system added.
 - Zombies now remember last player position.
+
+v 0.0.1d9
+- Map is distributed to 4 regions that makes up a cuboid.
+- Player can dig cubes around him.

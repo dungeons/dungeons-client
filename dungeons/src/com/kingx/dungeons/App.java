@@ -152,7 +152,7 @@ public class App implements ApplicationListener {
      */
     private boolean[][][] createMap() {
         // return Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT, MAZE_BLOCKS_COUNT) : Assets.map;
-        return MazeBuilder.getLayeredMaze(36, 9);
+        return MazeBuilder.getLayeredMaze(36, 50);
         //return Assets.map;
     }
 
@@ -168,7 +168,8 @@ public class App implements ApplicationListener {
      * Place player in the game
      */
     private void createPlayer() {
-        Vector2 p = mazeMap.getRandomPosition();
+
+        Vector2 p = mazeMap.getRandomPosition(10, 10);
         player = new Wanderer(world, p, 1f, 10f, avatarCamera);
         player.createEntity().addToWorld();
     }
