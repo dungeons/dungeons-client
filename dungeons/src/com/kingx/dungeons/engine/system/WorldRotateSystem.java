@@ -30,20 +30,16 @@ public class WorldRotateSystem extends EntityProcessingSystem {
     protected void process(Entity e) {
         WorldRotateComponent world = worldMapper.getSafe(e);
         FollowCameraComponent camera = cameraMapper.getSafe(e);
-
         PositionComponent position = world.getPosition();
         SizeComponent size = world.getSize();
-        camera.getCamera().position.x = 5;
-        camera.getCamera().position.y = position.getY();
-        camera.getCamera().position.z = 10f;
-        camera.getCamera().lookAt(5, position.getY(), -5);
 
         camera = App.getWorldCamera();
-        float x = position.getScreenX();
 
+        float x = position.getScreenX();
         float boundsOffset = App.UNIT - App.MAP_OFFSET;
         // FIXME making offset smaller it gives player more space and wont trigger collision.
         boundsOffset -= 0.3f;
+
         if (x < CubeRegion.min.x + boundsOffset) {
             rotateLeft(camera, world.getMove());
             Collision.correct(position, size);
@@ -52,17 +48,16 @@ public class WorldRotateSystem extends EntityProcessingSystem {
             Collision.correct(position, size);
         }
 
-        camera.getCamera().position.x = 5 + (float) (Math.sin(camera.angle + camera.arbitratyAngle) * camera.getHeight());
-        camera.getCamera().position.y = position.getY();
-        camera.getCamera().position.z = -5 + (float) (Math.cos(camera.angle + camera.arbitratyAngle) * camera.getHeight());
-        camera.getCamera().lookAt(5, position.getY(), -5);
+        updateCamera(App.getWorldCamera(), position, camera.getAngle() + camera.getArbitratyAngle());
+        updateCamera(App.getAvatarCamera(), position, camera.getAngle());
 
-        camera = App.getAvatarCamera();
-        camera.getCamera().position.x = 5 + (float) (Math.sin(camera.angle) * camera.getHeight());
-        camera.getCamera().position.y = position.getY();
-        camera.getCamera().position.z = -5 + (float) (Math.cos(camera.angle) * camera.getHeight());
-        camera.getCamera().lookAt(5, position.getY(), -5);
+    }
 
+    private void updateCamera(FollowCameraComponent camera, PositionComponent position, float angle) {
+        camera.getCamera().position.x = CubeRegion.mean.x + (float) (Math.sin(angle) * camera.getHeight());
+        camera.getCamera().position.y = position.getY();
+        camera.getCamera().position.z = CubeRegion.mean.z + (float) (Math.cos(angle) * camera.getHeight());
+        camera.getCamera().lookAt(CubeRegion.mean.x, position.getY(), CubeRegion.mean.z);
     }
 
     private void rotateRight(FollowCameraComponent camera, MoveComponent moveComponent) {

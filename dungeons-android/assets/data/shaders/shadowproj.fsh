@@ -104,13 +104,7 @@ void main ()
 		float g = round (interpolate(u_source_color.g ,u_ground_color.g, distance, 1.0)*del) / del;
 		float b = round (interpolate(u_source_color.b ,u_ground_color.b, distance, 1.0)*del) / del;
      
-        if(u_side == 0.0 && vWorldVertex.z  >=  u_maxBound.z - 0.01){
-            shadow = true;
-        }else if(u_side == 1.0 && vWorldVertex.x  >= u_maxBound.x - 0.01){ 
-            shadow = true;
-        }else if(u_side == 2.0 && vWorldVertex.z  <=  u_minBound.z + 0.01){ 
-            shadow = true;
-        }else if(u_side == 3.0 && vWorldVertex.x  <=  u_minBound.x + 0.01){ 
+        if(vWorldVertex.z  >=  u_maxBound.z - 0.01 || vWorldVertex.x  >= u_maxBound.x - 0.01 || vWorldVertex.z  <=  u_minBound.z + 0.01 || vWorldVertex.x  <=  u_minBound.x + 0.01){
             shadow = true;
         }
         

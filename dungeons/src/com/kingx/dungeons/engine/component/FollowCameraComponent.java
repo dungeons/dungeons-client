@@ -27,4 +27,8 @@ public class FollowCameraComponent extends Component {
         return angle;
     }
 
+    public float getArbitratyAngle() {
+        return arbitratyAngle;
+    }
+
 }

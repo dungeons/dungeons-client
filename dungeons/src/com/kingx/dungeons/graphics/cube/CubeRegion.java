@@ -28,6 +28,7 @@ public class CubeRegion {
     }
 
     public static Vector3 min = new Vector3();
+    public static Vector3 mean = new Vector3();
     public static Vector3 max = new Vector3();
 
     private void computeBoundaries(ArrayList<Cube> cubes) {
@@ -57,8 +58,12 @@ public class CubeRegion {
 
             }
         }
-        System.out.println("Min: " + min);
-        System.out.println("Max: " + max);
+
+        mean.set((max.x + min.x) / 2f, (max.y + min.y) / 2f, (max.z + min.z) / 2f);
+
+        System.out.println("Min:  " + min);
+        System.out.println("Max:  " + max);
+        System.out.println("Mean: " + mean);
     }
 
     private void resetBoundaries() {

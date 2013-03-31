@@ -57,29 +57,27 @@ public final class CubeFactory {
 
                     float x = 0, y = 0, z = 0;
 
-                    float offset = 0f;
-
                     if (!maze.getFootprint(i)[j][k]) {
                         switch (i) {
                             case 0:
                                 x = j;
                                 y = k;
-                                z = -offset;
+                                z = 0;
                                 break;
                             case 1:
                                 x = maze.getFootprint(i).length;
                                 y = k;
-                                z = -j - offset;
+                                z = -j;
                                 break;
                             case 2:
                                 x = maze.getFootprint(i).length - j;
                                 y = k;
-                                z = -maze.getFootprint(i).length - offset;
+                                z = -maze.getFootprint(i).length;
                                 break;
                             case 3:
                                 x = 0;
                                 y = k;
-                                z = -maze.getFootprint(i).length + j - offset;
+                                z = -maze.getFootprint(i).length + j;
                                 break;
                         }
                         cubes.add(makeCube(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE));
@@ -100,29 +98,27 @@ public final class CubeFactory {
 
                 float x = 0, y = 0, z = 0;
 
-                float offset = 0f;
-
                 if (!footprint[0][k]) {
                     switch (i) {
                         case 0:
                             x = j;
                             y = k;
-                            z = -offset;
+                            z = 0;
                             break;
                         case 1:
                             x = footprint.length;
                             y = k;
-                            z = -j - offset;
+                            z = -j;
                             break;
                         case 2:
                             x = footprint.length - j;
                             y = k;
-                            z = -footprint.length - offset;
+                            z = -footprint.length;
                             break;
                         case 3:
                             x = 0;
                             y = k;
-                            z = -footprint.length + j - offset;
+                            z = -footprint.length + j;
                             break;
                     }
                     cubes.add(makeCube(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE));
@@ -164,12 +160,12 @@ public final class CubeFactory {
         CubeVertex cv = new CubeVertex();
         Vector2 cords = getTextureCoordinates(i, texture);
         cv.setPosition(positionOffset[quads[face][i]][0] * WALL_SIZE + x,  // x position
-                positionOffset[quads[face][i]][1] * WALL_SIZE + y,  // y position
-                positionOffset[quads[face][i]][2] * WALL_SIZE + z); // z position
+                       positionOffset[quads[face][i]][1] * WALL_SIZE + y,  // y position
+                       positionOffset[quads[face][i]][2] * WALL_SIZE + z); // z position
         cv.setTexCoords(cords.x, cords.y);
-        cv.setNormal(normals[face][0], // x normal
-               normals[face][1],  // y normal
-               normals[face][2]); // z normal
+        cv.setNormal(normals[face][0],  // x normal
+                     normals[face][1],  // y normal
+                     normals[face][2]); // z normal
 
         Color c = Colors.random();
        cv.setColor(c.r, c.g, c.b, c.a);
