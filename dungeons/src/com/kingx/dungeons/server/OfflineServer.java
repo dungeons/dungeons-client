@@ -5,11 +5,13 @@ import java.util.Map;
 import com.badlogic.gdx.Input.Keys;
 import com.kingx.artemis.World;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.engine.component.MiningComponent;
 import com.kingx.dungeons.engine.component.dynamic.GravityComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.system.WorldRotateSystem;
 import com.kingx.dungeons.engine.system.client.CollisionSystem;
 import com.kingx.dungeons.engine.system.client.GravitySystem;
+import com.kingx.dungeons.engine.system.client.MiningSystem;
 import com.kingx.dungeons.engine.system.client.MovementSystem;
 import com.kingx.dungeons.input.InputConstants;
 import com.kingx.dungeons.input.Touch;
@@ -21,8 +23,9 @@ public class OfflineServer extends AbstractServer {
         world.setSystem(new GravitySystem());
         world.setSystem(new MovementSystem());
         // world.setSystem(new ZombieAI());
-        world.setSystem(new WorldRotateSystem());
         world.setSystem(new CollisionSystem());
+        world.setSystem(new WorldRotateSystem());
+        world.setSystem(new MiningSystem());
     }
 
     @Override
@@ -48,6 +51,7 @@ public class OfflineServer extends AbstractServer {
     private void processKey(ClientCommand c) {
         MoveComponent move = App.getPlayer().getMoveComponent();
         GravityComponent gravity = App.getPlayer().getGravity();
+        MiningComponent mining = App.getPlayer().getMining();
         int mapped = getKey(c.getAction(), move.mapping);
         switch (mapped) {
             case Keys.A:
@@ -60,6 +64,9 @@ public class OfflineServer extends AbstractServer {
                 if (!gravity.isFalling() && c.getValue() == 1) {
                     move.vector.y = 1.5f;
                 }
+                break;
+            case Keys.X:
+                mining.setMining(c.getValue() != 0);
                 break;
         }
     }

@@ -272,12 +272,13 @@ public class Collision {
         boolean[][] footprint = App.getMap().getFootprint();
 
         if (point.x == footprint.length) {
+            //System.out.println("change");
             footprint = App.getMap().getNextFootprint();
             point.x = 0;
         }
 
         if (point.x < 0 || point.x >= footprint.length) {
-            return true;
+            return false;
         }
 
         if (point.y < 0 || point.y >= footprint[0].length) {

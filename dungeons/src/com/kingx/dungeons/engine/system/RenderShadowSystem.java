@@ -79,7 +79,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         MoveComponent mc = mm.getSafe(e);
         ShadowComponent sc = sm.getSafe(e);
 
-        ArrayList<CubeRegion> cubeRegions = App.getCubeRegions();
+        ArrayList<CubeRegion> cubeRegions = App.getCubeManager().getCubeRegions();
 
         Camera[] lights = sc.getLights();
         sc.move(pc);

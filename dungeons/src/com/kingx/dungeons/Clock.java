@@ -42,6 +42,7 @@ public class Clock implements Runnable {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+
                 }
             } else {
                 while (accumulator >= delta) {

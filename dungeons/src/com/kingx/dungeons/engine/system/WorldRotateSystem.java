@@ -61,12 +61,14 @@ public class WorldRotateSystem extends EntityProcessingSystem {
     }
 
     private void rotateRight(FollowCameraComponent camera, MoveComponent moveComponent) {
+        //System.out.println("right");
         camera.angle += Math.PI / 2f;
         moveComponent.addRotation(RIGHT_ANGLE);
         App.setCurrentView((App.getCurrentView() + 1) % 4);
     }
 
     private void rotateLeft(FollowCameraComponent camera, MoveComponent moveComponent) {
+        //68System.out.println("left");
         camera.angle -= Math.PI / 2f;
         moveComponent.addRotation(-RIGHT_ANGLE);
         App.setCurrentView((App.getCurrentView() + 3) % 4);

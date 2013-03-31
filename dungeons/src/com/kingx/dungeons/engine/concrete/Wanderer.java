@@ -3,8 +3,10 @@ package com.kingx.dungeons.engine.concrete;
 import com.badlogic.gdx.math.Vector2;
 import com.kingx.artemis.World;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.engine.component.CollisionComponent;
 import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.HealthComponent;
+import com.kingx.dungeons.engine.component.MiningComponent;
 import com.kingx.dungeons.engine.component.ShaderComponent;
 import com.kingx.dungeons.engine.component.ShadowComponent;
 import com.kingx.dungeons.engine.component.SightComponent;
@@ -30,6 +32,8 @@ public class Wanderer extends ConcreteEntity {
     private final GravityComponent gravity;
     private final WorldRotateComponent worldRotate;
     private final ShadowComponent shadow;
+    private final CollisionComponent collision;
+    private final MiningComponent mining;
 
     public Wanderer(World world, Vector2 p, float size, float speed, FollowCameraComponent camera) {
         super(world);
@@ -44,6 +48,8 @@ public class Wanderer extends ConcreteEntity {
         SizeComponent sizeComponent = new SizeComponent(size);
         worldRotate = new WorldRotateComponent(positionComponent, moveComponent, sizeComponent);
         shadow = new ShadowComponent();
+        collision = new CollisionComponent();
+        mining = new MiningComponent(false);
 
         bag.add(positionComponent);
         bag.add(new RotationComponent(0, 1, 0));
@@ -57,6 +63,8 @@ public class Wanderer extends ConcreteEntity {
         bag.add(gravity);
         bag.add(worldRotate);
         bag.add(shadow);
+        bag.add(collision);
+        bag.add(mining);
 
         if (camera != null) {
             bag.add(camera);
@@ -97,6 +105,10 @@ public class Wanderer extends ConcreteEntity {
 
     public ShadowComponent getShadow() {
         return shadow;
+    }
+
+    public MiningComponent getMining() {
+        return mining;
     }
 
 }

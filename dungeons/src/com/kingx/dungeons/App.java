@@ -20,6 +20,7 @@ import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
 import com.kingx.dungeons.graphics.MazeMap;
 import com.kingx.dungeons.graphics.cube.CubeFactory;
+import com.kingx.dungeons.graphics.cube.CubeManager;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
 import com.kingx.dungeons.input.Input;
 import com.kingx.dungeons.server.AbstractServer;
@@ -38,7 +39,8 @@ public class App implements ApplicationListener {
     private static FollowCameraComponent avatarCamera;
 
     private static MazeMap mazeMap;
-    public static ArrayList<CubeRegion> cubeRegions;
+    private static CubeManager cubeManager;
+
     public static final float MAP_OFFSET = 0.1f;
 
     private static boolean wireframe;
@@ -136,7 +138,9 @@ public class App implements ApplicationListener {
     }
 
     private void createCubes() {
-        cubeRegions = new CubeFactory(mazeMap, UNIT).getCubeRegions();
+
+        ArrayList<CubeRegion> cubeRegions = new CubeFactory(mazeMap, UNIT).getCubeRegions();
+        cubeManager = new CubeManager(cubeRegions);
     }
 
     /**
@@ -215,8 +219,8 @@ public class App implements ApplicationListener {
 
     // Global getters
 
-    public static ArrayList<CubeRegion> getCubeRegions() {
-        return cubeRegions;
+    public static CubeManager getCubeManager() {
+        return cubeManager;
     }
 
     public static Wanderer getPlayer() {

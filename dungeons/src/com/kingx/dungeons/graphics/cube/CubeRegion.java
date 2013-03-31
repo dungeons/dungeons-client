@@ -3,6 +3,8 @@ package com.kingx.dungeons.graphics.cube;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.math.Vector3;
+import com.kingx.dungeons.App;
+import com.kingx.dungeons.geom.Point.Int;
 
 public class CubeRegion {
 
@@ -71,8 +73,12 @@ public class CubeRegion {
         max.set(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
     }
 
-    public static float getWidth() {
-        return max.x - min.x;
+    public static int getWidth() {
+        return (int) ((max.x - min.x) / App.UNIT);
+    }
+
+    public void removeCube(Int point) {
+
     }
 
 }
