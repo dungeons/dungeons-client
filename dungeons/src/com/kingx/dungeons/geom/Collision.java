@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
+import com.kingx.dungeons.geom.Point.Int;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
 
 /**
@@ -258,5 +259,31 @@ public class Collision {
 
         position.setX(x);
         position.setZ(z);
+    }
+
+    /**
+     * Check whether is point in map bounds and walkable
+     * 
+     * @param point
+     *            to be checked
+     * @return {@code true} if point is walkable, {@code false} otherwise
+     */
+    public static boolean isWalkable(Int point) {
+        boolean[][] footprint = App.getMap().getFootprint();
+
+        if (point.x == footprint.length) {
+            footprint = App.getMap().getNextFootprint();
+            point.x = 0;
+        }
+
+        if (point.x < 0 || point.x >= footprint.length) {
+            return true;
+        }
+
+        if (point.y < 0 || point.y >= footprint[0].length) {
+            return false;
+        }
+
+        return footprint[point.x][point.y];
     }
 }

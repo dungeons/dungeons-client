@@ -9,6 +9,7 @@ import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.dynamic.GravityComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
+import com.kingx.dungeons.geom.Collision;
 import com.kingx.dungeons.geom.Point;
 import com.kingx.dungeons.geom.Point.Int;
 
@@ -61,16 +62,16 @@ public class CollisionSystem extends EntityProcessingSystem {
         Int upPoint = new Point.Int((int) (x / App.UNIT), (int) (upBound / App.UNIT));
 
         boolean collision = false;
-        if (!isWalkable(leftPoint, position)) {
+        if (!Collision.isWalkable(leftPoint)) {
             x = (leftPoint.x + 1) * App.UNIT + halfSize;
-        } else if (!isWalkable(rightPoint, position)) {
+        } else if (!Collision.isWalkable(rightPoint)) {
             x = rightPoint.x * App.UNIT - halfSize;
         }
 
-        if (!isWalkable(downPoint, position)) {
+        if (!Collision.isWalkable(downPoint)) {
             y = (downPoint.y + 1) * App.UNIT + halfSize;
             collision = true;
-        } else if (!isWalkable(upPoint, position)) {
+        } else if (!Collision.isWalkable(upPoint)) {
             y = upPoint.y * App.UNIT - halfSize;
             collision = true;
         }
@@ -81,30 +82,4 @@ public class CollisionSystem extends EntityProcessingSystem {
         return collision;
     }
 
-    /**
-     * Check whether is point in map bounds and walkable
-     * 
-     * @param point
-     *            to be checked
-     * @param position
-     * @return {@code true} if point is walkable, {@code false} otherwise
-     */
-    private boolean isWalkable(Int point, PositionComponent position) {
-        boolean[][] footprint = App.getMap().getFootprint();
-
-        if (point.x == footprint.length) {
-            footprint = App.getMap().getNextFootprint();
-            point.x = 0;
-        }
-
-        if (point.x < 0 || point.x >= footprint.length) {
-            return true;
-        }
-
-        if (point.y < 0 || point.y >= footprint[0].length) {
-            return false;
-        }
-
-        return footprint[point.x][point.y];
-    }
 }
