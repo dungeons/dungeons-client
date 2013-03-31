@@ -1,31 +1,23 @@
 package com.kingx.dungeons.graphics.cube;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.math.Vector3;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.geom.Point.Int;
 
 public class CubeRegion {
 
-    private ArrayList<Cube> cubes;
+    private Cube[][] cubes;
 
-    public CubeRegion() {
-        resetBoundaries();
+    public CubeRegion(Cube[][] cubes) {
+        setCubes(cubes);
     }
 
-    public ArrayList<Cube> getCubes() {
+    public Cube[][] getCubes() {
         return cubes;
     }
 
-    public void setCubes(ArrayList<Cube> cubes) {
+    public void setCubes(Cube[][] cubes) {
         this.cubes = cubes;
-        resetBoundaries();
-        computeBoundaries(cubes);
-    }
-
-    public void addCubes(ArrayList<Cube> cubes) {
-        this.cubes.addAll(cubes);
         computeBoundaries(cubes);
     }
 
@@ -33,31 +25,38 @@ public class CubeRegion {
     public static Vector3 mean = new Vector3();
     public static Vector3 max = new Vector3();
 
-    private void computeBoundaries(ArrayList<Cube> cubes) {
-        for (Cube cube : cubes) {
-            for (CubeVertex vert : cube.getVerts()) {
+    static {
+        resetBoundaries();
+    }
 
-                // x coord
-                if (vert.getPosition()[0] < min.x) {
-                    min.x = vert.getPosition()[0];
-                } else if (vert.getPosition()[0] > max.x) {
-                    max.x = vert.getPosition()[0];
+    private void computeBoundaries(Cube[][] cubes) {
+        for (Cube[] temp : cubes) {
+            for (Cube cube : temp) {
+                if (cube != null) {
+                    for (CubeVertex vert : cube.getVerts()) {
+
+                        // x coord
+                        if (vert.getPosition()[0] < min.x) {
+                            min.x = vert.getPosition()[0];
+                        } else if (vert.getPosition()[0] > max.x) {
+                            max.x = vert.getPosition()[0];
+                        }
+
+                        // y coord
+                        if (vert.getPosition()[1] < min.y) {
+                            min.y = vert.getPosition()[1];
+                        } else if (vert.getPosition()[1] > max.y) {
+                            max.y = vert.getPosition()[1];
+                        }
+
+                        // z coord
+                        if (vert.getPosition()[2] < min.z) {
+                            min.z = vert.getPosition()[2];
+                        } else if (vert.getPosition()[2] > max.z) {
+                            max.z = vert.getPosition()[2];
+                        }
+                    }
                 }
-
-                // y coord
-                if (vert.getPosition()[1] < min.y) {
-                    min.y = vert.getPosition()[1];
-                } else if (vert.getPosition()[1] > max.y) {
-                    max.y = vert.getPosition()[1];
-                }
-
-                // z coord
-                if (vert.getPosition()[2] < min.z) {
-                    min.z = vert.getPosition()[2];
-                } else if (vert.getPosition()[2] > max.z) {
-                    max.z = vert.getPosition()[2];
-                }
-
             }
         }
 
@@ -68,7 +67,7 @@ public class CubeRegion {
         System.out.println("Mean: " + mean);
     }
 
-    private void resetBoundaries() {
+    private static void resetBoundaries() {
         min.set(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE);
         max.set(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
     }
@@ -78,7 +77,7 @@ public class CubeRegion {
     }
 
     public void removeCube(Int point) {
-
+        cubes[point.x][point.y] = null;
     }
 
 }

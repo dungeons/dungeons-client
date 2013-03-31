@@ -96,4 +96,16 @@ public class MazeMap {
         return new Vector2(App.UNIT * (p.x + 0.5f), App.UNIT * (p.y + 0.5f));
     }
 
+    /**
+     * This methods modifies point value.
+     */
+    public boolean[][] getFootprint(Int point) {
+        boolean[][] footprint = getFootprint();
+        if (point.x == footprint.length) {
+            footprint = App.getMap().getNextFootprint();
+            point.x = 0;
+        }
+        return footprint;
+    }
+
 }

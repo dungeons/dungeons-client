@@ -27,8 +27,16 @@ public class MiningSystem extends EntityProcessingSystem {
         if (mining.isMining()) {
             if (collision.getLeft() != null) {
                 App.getCubeManager().removeCube(collision.getLeft());
+                return;
+            } else if (collision.getRight() != null) {
+                App.getCubeManager().removeCube(collision.getRight());
+                return;
+            }
+
+            if (collision.getDown() != null) {
+                App.getCubeManager().removeCube(collision.getDown());
+                return;
             }
         }
     }
-
 }

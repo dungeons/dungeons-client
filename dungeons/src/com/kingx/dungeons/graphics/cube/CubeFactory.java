@@ -41,7 +41,7 @@ public final class CubeFactory {
             { 0, 0, -1 } // Bottom
     };
 
-    private ArrayList<Cube> cubes;
+    private Cube[][] cubes;
     private final ArrayList<CubeRegion> regions;
 
     public CubeFactory(MazeMap maze, float wallSize) {
@@ -50,10 +50,9 @@ public final class CubeFactory {
 
         regions = new ArrayList<CubeRegion>();
         for (int i = 0; i < maze.getFootprints(); i++) {
-            CubeRegion region = new CubeRegion();
-            cubes = new ArrayList<Cube>();
-            for (int j = 0; j < maze.getFootprint(i).length; j++) {
-                for (int k = 0; k < maze.getFootprint(i)[j].length; k++) {
+            cubes = new Cube[maze.getFootprint(i).length + 1][maze.getFootprint(i)[0].length];
+            for (int j = 0; j < cubes.length - 1; j++) {
+                for (int k = 0; k < cubes[j].length; k++) {
 
                     float x = 0, y = 0, z = 0;
 
@@ -80,20 +79,21 @@ public final class CubeFactory {
                                 z = -maze.getFootprint(i).length + j;
                                 break;
                         }
-                        cubes.add(makeCube(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE));
+                        System.out.println(x * WALL_SIZE);
+                        cubes[j][k] = makeCube(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE);
                     }
                 }
             }
-            region.setCubes(cubes);
-            regions.add(region);
+
+            regions.add(new CubeRegion(cubes));
 
         }
 
         for (int i = 0; i < regions.size(); i++) {
             boolean[][] footprint = maze.getFootprint((i + 1) % regions.size());
-            cubes = new ArrayList<Cube>();
 
             int j = footprint.length;
+            cubes = regions.get(i).getCubes();
             for (int k = 0; k < footprint[0].length; k++) {
 
                 float x = 0, y = 0, z = 0;
@@ -121,12 +121,10 @@ public final class CubeFactory {
                             z = -footprint.length + j;
                             break;
                     }
-                    cubes.add(makeCube(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE));
+                    cubes[j][k] = makeCube(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE);
                 }
             }
-            regions.get(i).addCubes(cubes);
         }
-
     }
 
     public ArrayList<CubeRegion> getCubeRegions() {

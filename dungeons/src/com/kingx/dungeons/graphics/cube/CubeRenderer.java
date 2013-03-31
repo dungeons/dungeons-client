@@ -340,8 +340,12 @@ public class CubeRenderer implements Disposable {
     }
 
     public void draw(CubeRegion region) {
-        for (Cube cube : region.getCubes()) {
-            draw(cube);
+        for (Cube[] temp : region.getCubes()) {
+            for (Cube cube : temp) {
+                if (cube != null) {
+                    draw(cube);
+                }
+            }
         }
     }
 

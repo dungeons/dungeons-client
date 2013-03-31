@@ -17,8 +17,15 @@ public class CubeManager {
     }
 
     public void removeCube(Int point) {
-        CubeRegion region = cubeRegions.get(App.getCurrentView());
-        region.removeCube(point);
-    }
 
+        int current = App.getCurrentView();
+
+        CubeRegion region = cubeRegions.get(current);
+        region.removeCube(point);
+
+        boolean[][] footprint = App.getMap().getFootprint(point);
+
+        footprint[point.x][point.y] = true;
+
+    }
 }
