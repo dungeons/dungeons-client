@@ -20,9 +20,12 @@ uniform float u_mapOffset;
 uniform bool u_useTextures;
 uniform float u_sight;
 uniform float u_side;
-uniform float u_worldWidth;
 uniform bool u_forceShadow;
 
+uniform float u_worldWidth;
+
+uniform vec3 u_minBound;
+uniform vec3 u_maxBound;
 
 // Varying variables.
 varying vec4 vWorldVertex;
@@ -54,17 +57,6 @@ void main ()
 {
 	/// THESE COMMENTS REPRESENT WHAT I THINK THIS CODE DOES. I HAVE NO IDEA WHAT IS CORRECT
     vec4 worldPostitoin = vWorldVertex;
-if(u_side == 0.0){
-worldPostitoin.z = 0.0;
-}else if(u_side == 1.0){ 
-worldPostitoin.x = u_worldWidth - 1.0;
-}else if(u_side == 2.0){ 
-worldPostitoin.z = -u_worldWidth + 1.0;
-}else if(u_side == 3.0){ 
-worldPostitoin.x = 1.0;
-}
-   // worldPostitoin.z = 0.0;
-
 	bool shadow = false;
 	vec3 depth;
 		for(float i = 0.0; i < 4.0; i++){
@@ -112,15 +104,16 @@ worldPostitoin.x = 1.0;
 		float g = round (interpolate(u_source_color.g ,u_ground_color.g, distance, 1.0)*del) / del;
 		float b = round (interpolate(u_source_color.b ,u_ground_color.b, distance, 1.0)*del) / del;
      
-     if(u_side == 0.0 && vWorldVertex.z  >= .99){
-shadow = true;
-}else if(u_side == 1.0 && vWorldVertex.x  >= u_worldWidth - 0.01){ 
-shadow = true;
-}else if(u_side == 2.0 && vWorldVertex.z  <=  - u_worldWidth + 0.01){ 
-shadow = true;
-}else if(u_side == 3.0 && vWorldVertex.x  <= 0.01){ 
-shadow = true;
-}
+        if(u_side == 0.0 && vWorldVertex.z  >=  u_maxBound.z - 0.01){
+            shadow = true;
+        }else if(u_side == 1.0 && vWorldVertex.x  >= u_maxBound.x - 0.01){ 
+            shadow = true;
+        }else if(u_side == 2.0 && vWorldVertex.z  <=  u_minBound.z + 0.01){ 
+            shadow = true;
+        }else if(u_side == 3.0 && vWorldVertex.x  <=  u_minBound.x + 0.01){ 
+            shadow = true;
+        }
+        
 	    if(u_forceShadow || shadow){
 	  		gl_FragColor = u_ground_color * texture2D(u_texture,v_texCoord);
         }else{

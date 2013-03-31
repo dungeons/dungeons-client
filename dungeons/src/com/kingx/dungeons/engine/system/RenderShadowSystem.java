@@ -21,8 +21,8 @@ import com.kingx.dungeons.engine.component.ShadowComponent;
 import com.kingx.dungeons.engine.component.SightComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
-import com.kingx.dungeons.geom.GroundFactory;
 import com.kingx.dungeons.graphics.Colors;
+import com.kingx.dungeons.graphics.GroundFactory;
 import com.kingx.dungeons.graphics.QuadTextureFrameBuffer;
 import com.kingx.dungeons.graphics.Shader;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
@@ -52,7 +52,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         super(Aspect.getAspectForAll(PositionComponent.class, ShadowComponent.class));
         this.camera = camera;
 
-        poly = new GroundFactory(App.getMap(), App.MAZE_WALL_SIZE).generate();
+        poly = new GroundFactory(App.getMap(), App.UNIT).generate();
 
         shadowGeneratorShader = Shader.getShader("shadowgen");
         shadowProjectShader = Shader.getShader("shadowproj");
@@ -108,7 +108,9 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowProjectShader.setUniformf("u_useTextures", 1);
         shadowProjectShader.setUniformf("u_sight", App.getPlayer().getEntity().getComponent(SightComponent.class).getRadius());
         shadowProjectShader.setUniformf("u_side", App.getCurrentView());
-        shadowProjectShader.setUniformf("u_worldWidth", App.getMap().getWidth());
+        shadowProjectShader.setUniformf("u_worldWidth", CubeRegion.getWidth());
+        shadowProjectShader.setUniformf("u_minBound", CubeRegion.min);
+        shadowProjectShader.setUniformf("u_maxBound", CubeRegion.max);
         poly.render(shadowProjectShader, GL20.GL_TRIANGLES);
         batchRender.end();
 

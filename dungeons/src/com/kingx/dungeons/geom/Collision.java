@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
+import com.kingx.dungeons.graphics.cube.CubeRegion;
 
 /**
  * This class contains method coppied and modified from {@link Intersector}
@@ -248,12 +249,12 @@ public class Collision {
         float offset = 1 - App.MAP_OFFSET;
 
         x = position.getX();
-        x = Math.max(x, offset);
-        x = Math.min(x, App.getMap().getWidth() - offset);
+        x = Math.max(x, CubeRegion.min.x + offset);
+        x = Math.min(x, CubeRegion.max.x - offset);
 
         z = position.getZ();
-        z = Math.min(z, offset);
-        z = Math.max(z, -App.getMap().getWidth() + offset);
+        z = Math.min(z, CubeRegion.max.z - offset);
+        z = Math.max(z, CubeRegion.min.z + offset);
 
         position.setX(x);
         position.setZ(z);

@@ -10,8 +10,6 @@ public class MazeMap {
     private final boolean[][][] footprints;
     private int walls = -1;
 
-    public static final float SIZE = 1f;
-
     public MazeMap(boolean[][][] map) {
         this.footprints = map;
         walls = this.getWalls();
@@ -95,7 +93,7 @@ public class MazeMap {
 
     public Vector2 getRandomPosition() {
         Int p = getRandomBlock();
-        return new Vector2(SIZE * (p.x + 0.5f), SIZE * (p.y + 0.5f));
+        return new Vector2(App.UNIT * (p.x + 0.5f), App.UNIT * (p.y + 0.5f));
     }
 
 }

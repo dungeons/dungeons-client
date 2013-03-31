@@ -43,7 +43,7 @@ public class App implements ApplicationListener {
 
     private static boolean wireframe;
 
-    public static final float MAZE_WALL_SIZE = 1f;
+    public static final float UNIT = 1f;
 
     private final Map<String, Param> params;
     private Clock clock;
@@ -136,7 +136,7 @@ public class App implements ApplicationListener {
     }
 
     private void createCubes() {
-        cubeRegions = new CubeFactory(mazeMap, MAZE_WALL_SIZE).getCubeRegions();
+        cubeRegions = new CubeFactory(mazeMap, UNIT).getCubeRegions();
     }
 
     /**
@@ -163,7 +163,7 @@ public class App implements ApplicationListener {
      */
     private void createPlayer() {
         Vector2 p = mazeMap.getRandomPosition();
-        player = new Wanderer(world, p, 1f, 5f, avatarCamera);
+        player = new Wanderer(world, p, 1f, 10f, avatarCamera);
         player.createEntity().addToWorld();
     }
 
@@ -200,7 +200,7 @@ public class App implements ApplicationListener {
 
     public FollowCameraComponent setUpCamera(int width, int height) {
         PerspectiveCamera camera = new PerspectiveCamera(67, width, height);
-        return new FollowCameraComponent(camera, 15f * MAZE_WALL_SIZE, 0);
+        return new FollowCameraComponent(camera, 15f * UNIT, 0);
     }
 
     // Toggle switches

@@ -12,6 +12,7 @@ import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
 import com.kingx.dungeons.geom.Collision;
+import com.kingx.dungeons.graphics.cube.CubeRegion;
 
 public class WorldRotateSystem extends EntityProcessingSystem {
     @Mapper
@@ -40,11 +41,13 @@ public class WorldRotateSystem extends EntityProcessingSystem {
         camera = App.getWorldCamera();
         float x = position.getScreenX();
 
-        float offset = 1 - App.MAP_OFFSET;
-        if (x < offset) {
+        float boundsOffset = App.UNIT - App.MAP_OFFSET;
+        // FIXME making offset smaller it gives player more space and wont trigger collision.
+        boundsOffset -= 0.3f;
+        if (x < CubeRegion.min.x + boundsOffset) {
             rotateLeft(camera, world.getMove());
             Collision.correct(position, size);
-        } else if (x > App.getMap().getWidth() - offset) {
+        } else if (x > CubeRegion.max.x - boundsOffset) {
             rotateRight(camera, world.getMove());
             Collision.correct(position, size);
         }

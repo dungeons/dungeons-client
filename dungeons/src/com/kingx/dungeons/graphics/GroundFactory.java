@@ -1,4 +1,4 @@
-package com.kingx.dungeons.geom;
+package com.kingx.dungeons.graphics;
 
 import java.util.ArrayList;
 
@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
-import com.kingx.dungeons.graphics.MazeMap;
 
 public final class GroundFactory {
 

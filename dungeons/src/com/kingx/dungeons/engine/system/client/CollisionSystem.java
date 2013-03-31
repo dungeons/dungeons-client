@@ -55,23 +55,23 @@ public class CollisionSystem extends EntityProcessingSystem {
         float downBound = y - halfSize;
         float upBound = y + halfSize;
 
-        Int leftPoint = new Point.Int((int) (leftBound / App.MAZE_WALL_SIZE), (int) (y / App.MAZE_WALL_SIZE));
-        Int rightPoint = new Point.Int((int) (rightBound / App.MAZE_WALL_SIZE), (int) (y / App.MAZE_WALL_SIZE));
-        Int downPoint = new Point.Int((int) (x / App.MAZE_WALL_SIZE), (int) (downBound / App.MAZE_WALL_SIZE));
-        Int upPoint = new Point.Int((int) (x / App.MAZE_WALL_SIZE), (int) (upBound / App.MAZE_WALL_SIZE));
+        Int leftPoint = new Point.Int((int) (leftBound / App.UNIT), (int) (y / App.UNIT));
+        Int rightPoint = new Point.Int((int) (rightBound / App.UNIT), (int) (y / App.UNIT));
+        Int downPoint = new Point.Int((int) (x / App.UNIT), (int) (downBound / App.UNIT));
+        Int upPoint = new Point.Int((int) (x / App.UNIT), (int) (upBound / App.UNIT));
 
         boolean collision = false;
         if (!isWalkable(leftPoint, position)) {
-            x = (leftPoint.x + 1) * App.MAZE_WALL_SIZE + halfSize;
+            x = (leftPoint.x + 1) * App.UNIT + halfSize;
         } else if (!isWalkable(rightPoint, position)) {
-            x = rightPoint.x * App.MAZE_WALL_SIZE - halfSize;
+            x = rightPoint.x * App.UNIT - halfSize;
         }
 
         if (!isWalkable(downPoint, position)) {
-            y = (downPoint.y + 1) * App.MAZE_WALL_SIZE + halfSize;
+            y = (downPoint.y + 1) * App.UNIT + halfSize;
             collision = true;
         } else if (!isWalkable(upPoint, position)) {
-            y = upPoint.y * App.MAZE_WALL_SIZE - halfSize;
+            y = upPoint.y * App.UNIT - halfSize;
             collision = true;
         }
 
@@ -98,7 +98,7 @@ public class CollisionSystem extends EntityProcessingSystem {
         }
 
         if (point.x < 0 || point.x >= footprint.length) {
-            return false;
+            return true;
         }
 
         if (point.y < 0 || point.y >= footprint[0].length) {

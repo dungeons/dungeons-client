@@ -15,14 +15,15 @@ public final class CubeFactory {
     private final float WALL_SIZE;
     private final static int VERTS_PER_QUAD = 4;
 
+    private static final int pos = 1;
     private static final float[][] positionOffset = { { 0, 0, 0 }, // 0/7
-            { 1, 0, 0 }, // 1/7
-            { 1, 1, 0 }, // 2/7
-            { 0, 1, 0 }, // 3/7
-            { 0, 0, 1 }, // 4/7
-            { 1, 0, 1 }, // 5/7
-            { 1, 1, 1 }, // 6/7
-            { 0, 1, 1 } // 7/7
+            { pos, 0, 0 }, // 1/7
+            { pos, pos, 0 }, // 2/7
+            { 0, pos, 0 }, // 3/7
+            { 0, 0, pos }, // 4/7
+            { pos, 0, pos }, // 5/7
+            { pos, pos, pos }, // 6/7
+            { 0, pos, pos } // 7/7
     };
 
     private static final int[][] quads = { { 0, 1, 5, 4 }, // Front

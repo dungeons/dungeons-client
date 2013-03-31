@@ -24,7 +24,7 @@ public class ShadowComponent extends Component {
             lights[i].direction.x = Math.round(Math.cos(Math.PI / 2 * (i + offset)));
             lights[i].direction.y = Math.round(Math.sin(Math.PI / 2 * (i + offset)));
             lights[i].direction.z = 0.01f;
-            lights[i].position.z = App.MAP_OFFSET * App.MAZE_WALL_SIZE;
+            lights[i].position.z = App.MAP_OFFSET * App.UNIT;
         }
     }
 
@@ -51,13 +51,10 @@ public class ShadowComponent extends Component {
         for (int i = 0; i < lights.length; i++) {
 
             if (difference != 0) {
-
-                System.out.println("Light[" + i + "] previous : " + lights[i].direction);
                 Vector3 temp = lights[i].position.cpy();
                 lights[i].translate(temp.cpy().mul(-1));
                 lights[i].rotate(Vector3.Y, difference);
                 lights[i].translate(temp);
-                System.out.println("Light[" + i + "] after : " + lights[i].direction);
             }
             lights[i].update();
         }

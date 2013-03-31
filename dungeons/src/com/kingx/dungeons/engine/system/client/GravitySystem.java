@@ -70,7 +70,7 @@ public class GravitySystem extends EntityProcessingSystem {
         // FIXME downBound is offset by 0.1f so it intersects. Its error prone and ugly.
         float downBound = y - halfSize - 0.1f;
 
-        Int downPoint = new Point.Int((int) (x / App.MAZE_WALL_SIZE), (int) (downBound / App.MAZE_WALL_SIZE));
+        Int downPoint = new Point.Int((int) (x / App.UNIT), (int) (downBound / App.UNIT));
 
         return isWalkable(downPoint);
     }
