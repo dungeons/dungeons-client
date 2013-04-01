@@ -7,56 +7,58 @@ import java.util.List;
 import com.kingx.dungeons.App;
 
 public class GenericGenerator extends AbstractGenerator {
-    private int[][] maze;
+    private int[][] terain;
 
-    List<Chance> chances = new ArrayList<Chance>();
+    List<Trigger> chances = new ArrayList<Trigger>();
 
     @Override
     public int[][] build(int width, int height) {
-        maze = new int[width][height];
+        terain = new int[width][height];
 
-        chances.add(new Chance(10, 0));
-        chances.add(new Chance(50, 2));
+        chances.add(new Trigger(10, new SpotMutator(terain, 0)));
+        chances.add(new Trigger(50, new SpotMutator(terain, 2)));
+        chances.add(new Trigger(100, new MineralCapsle(terain, 0, 1)));
         Collections.sort(chances);
 
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze[i].length; j++) {
-                maze[i][j] = 1;
+        for (int i = 0; i < terain.length; i++) {
+            for (int j = 0; j < terain[i].length; j++) {
+                terain[i][j] = 1;
             }
         }
 
-        for (int i = 0; i < maze.length; i++) {
-            for (int j = 0; j < maze[i].length; j++) {
-                for (Chance chance : chances) {
-                    if (chance.isValid()) {
-                        maze[i][j] = chance.getValue();
-                    }
+        for (int i = 0; i < terain.length; i++) {
+            for (int j = 0; j < terain[i].length; j++) {
+                for (Trigger chance : chances) {
+                    chance.initMutator(i, j);
                 }
             }
         }
 
-        return maze;
+        return terain;
     }
 
-    private static class Chance implements Comparable<Chance> {
+    private static class Trigger implements Comparable<Trigger> {
         private final int chance;
-        private final int value;
+        private final TerainMutator mutator;
 
-        public Chance(int chance, int value) {
+        public Trigger(int chance, TerainMutator mutator) {
             this.chance = chance;
-            this.value = value;
+            this.mutator = mutator;
         }
 
-        public int getValue() {
-            return value;
+        public void initMutator(int x, int y) {
+            if (!isValid())
+                return;
+
+            mutator.mutate(x, y);
         }
 
-        public boolean isValid() {
+        private boolean isValid() {
             return App.rand.nextInt(chance) == 0;
         }
 
         @Override
-        public int compareTo(Chance o) {
+        public int compareTo(Trigger o) {
             if (this.chance > o.chance) {
                 return 1;
             } else if (this.chance < o.chance) {
