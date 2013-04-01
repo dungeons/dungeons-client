@@ -12,9 +12,6 @@ import com.kingx.dungeons.graphics.MazeMap;
 
 public final class CubeFactory {
 
-    private final float WALL_SIZE;
-    private final static int VERTS_PER_QUAD = 4;
-
     private static final int pos = 1;
     private static final float[][] positionOffset = { { 0, 0, 0 }, // 0/7
             { pos, 0, 0 }, // 1/7
@@ -44,9 +41,7 @@ public final class CubeFactory {
     private Cube[][] cubes;
     private final ArrayList<CubeRegion> regions;
 
-    public CubeFactory(MazeMap maze, float wallSize) {
-
-        WALL_SIZE = wallSize;
+    public CubeFactory(MazeMap maze) {
 
         regions = new ArrayList<CubeRegion>();
         for (int i = 0; i < maze.getFootprints(); i++) {
@@ -56,7 +51,7 @@ public final class CubeFactory {
 
                     float x = 0, y = 0, z = 0;
 
-                    if (!maze.getFootprint(i)[j][k]) {
+                    if (maze.getFootprint(i)[j][k] != 0) {
                         switch (i) {
                             case 0:
                                 x = j;
@@ -79,8 +74,8 @@ public final class CubeFactory {
                                 z = -maze.getFootprint(i).length + j;
                                 break;
                         }
-                        System.out.println(x * WALL_SIZE);
-                        cubes[j][k] = makeCube(x * WALL_SIZE, y * WALL_SIZE, z * WALL_SIZE);
+                        System.out.println(x * App.UNIT);
+                        cubes[j][k] = makeCube(x * App.UNIT, y * App.UNIT, z * App.UNIT, maze.getFootprint(i)[j][k]);
                     }
                 }
             }
@@ -107,12 +102,13 @@ public final class CubeFactory {
         return regions;
     }
 
-    private Cube makeCube(float x, float y, float z) {
+    private Cube makeCube(float x, float y, float z, int type) {
 
         Cube c = new Cube();
 
         for (int i = 0; i < quads.length; i++) {
-            TextureRegion texture = getWallTexture(App.rand.nextInt(4));
+
+            TextureRegion texture = getTexture(type);
             c.addVerts(makeQuad(x, y, z, i, texture));
         }
 
@@ -133,9 +129,9 @@ public final class CubeFactory {
         // @formatter:off
         CubeVertex cv = new CubeVertex();
         Vector2 cords = getTextureCoordinates(i, texture);
-        cv.setPosition(positionOffset[quads[face][i]][0] * WALL_SIZE + x,  // x position
-                       positionOffset[quads[face][i]][1] * WALL_SIZE + y,  // y position
-                       positionOffset[quads[face][i]][2] * WALL_SIZE + z); // z position
+        cv.setPosition(positionOffset[quads[face][i]][0] * App.UNIT + x,  // x position
+                       positionOffset[quads[face][i]][1] * App.UNIT + y,  // y position
+                       positionOffset[quads[face][i]][2] * App.UNIT + z); // z position
         cv.setTexCoords(cords.x, cords.y);
         cv.setNormal(normals[face][0],  // x normal
                      normals[face][1],  // y normal
@@ -161,8 +157,15 @@ public final class CubeFactory {
         return null;
     }
 
-    private static TextureRegion getWallTexture(int i) {
-        return Assets.getTexture("wall", i);
+    private static TextureRegion getTexture(int i) {
+        switch (i) {
+            case 1:
+                return Assets.getTexture("wall", App.rand.nextInt(4));
+            case 2:
+                return Assets.getTexture("diamond", 0);
+            default:
+                return null;
+        }
     }
 
 }

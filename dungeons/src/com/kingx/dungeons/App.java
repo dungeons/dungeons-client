@@ -142,7 +142,7 @@ public class App implements ApplicationListener {
 
     private void createCubes() {
 
-        ArrayList<CubeRegion> cubeRegions = new CubeFactory(mazeMap, UNIT).getCubeRegions();
+        ArrayList<CubeRegion> cubeRegions = new CubeFactory(mazeMap).getCubeRegions();
         cubeManager = new CubeManager(cubeRegions);
     }
 
@@ -152,7 +152,7 @@ public class App implements ApplicationListener {
      * 
      * @return generated map
      */
-    private boolean[][][] createMap() {
+    private int[][][] createMap() {
         return GeneratorFactory.getInstace(GeneratorType.GENERIC).buildLayered(36, 50);
         // return Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT, MAZE_BLOCKS_COUNT) : Assets.map;
         //return MazeBuilder.getLayeredMaze(36, 9);

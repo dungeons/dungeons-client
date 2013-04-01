@@ -34,6 +34,10 @@ public final class Assets {
             result = atlas.findRegions(name);
             cachedTextures.put(name, result);
         }
-        return result.get(index);
+        if (result.size > index) {
+            return result.get(index);
+        } else {
+            throw new IllegalArgumentException("Texture [" + name + "_" + index + "] is not available.");
+        }
     }
 }

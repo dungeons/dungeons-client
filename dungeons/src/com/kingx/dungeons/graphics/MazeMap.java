@@ -7,10 +7,10 @@ import com.kingx.dungeons.geom.Point.Int;
 
 public class MazeMap {
 
-    private final boolean[][][] footprints;
+    private final int[][][] footprints;
     private int walls = -1;
 
-    public MazeMap(boolean[][][] map) {
+    public MazeMap(int[][][] map) {
         this.footprints = map;
         walls = this.getWalls();
     }
@@ -26,7 +26,7 @@ public class MazeMap {
             for (int i = 0; i < footprints.length; i++) {
                 for (int j = 0; j < footprints[i].length; j++) {
                     for (int k = 0; k < footprints[i][j].length; k++) {
-                        if (!footprints[i][j][k]) {
+                        if (footprints[i][j][k] != 0) {
                             counter++;
                         }
                     }
@@ -48,7 +48,7 @@ public class MazeMap {
         do {
             p.x = App.rand.nextInt(footprints[App.getCurrentView()].length);
             p.y = App.rand.nextInt(footprints[App.getCurrentView()][p.x].length);
-        } while (!footprints[0][p.x][p.y]);
+        } while (footprints[0][p.x][p.y] != 0);
 
         return p;
     }
@@ -63,7 +63,7 @@ public class MazeMap {
         do {
             p.x = App.rand.nextInt(footprints[App.getCurrentView()].length);
             p.y = App.rand.nextInt(footprints[App.getCurrentView()][p.x].length);
-        } while (!footprints[0][p.x][p.y] || p.equals(start));
+        } while (footprints[0][p.x][p.y] != 0 || p.equals(start));
         return p;
     }
 
@@ -75,24 +75,24 @@ public class MazeMap {
     public Point.Int getRandomBlock(int maxx, int maxy) {
         Point.Int p = new Point.Int();
         do {
-            boolean[][] current = footprints[App.getCurrentView()];
+            int[][] current = footprints[App.getCurrentView()];
             p.x = App.rand.nextInt(Math.min(maxx, current.length));
             maxy = Math.min(maxy, current[p.x].length);
             p.y = current[p.x].length - maxy + App.rand.nextInt(maxy);
             System.out.println(current[p.x].length);
-        } while (!footprints[0][p.x][p.y]);
+        } while (footprints[0][p.x][p.y] != 0);
         return p;
     }
 
-    public boolean[][] getFootprint() {
+    public int[][] getFootprint() {
         return getFootprint(App.getCurrentView());
     }
 
-    public boolean[][] getNextFootprint() {
+    public int[][] getNextFootprint() {
         return getFootprint((App.getCurrentView() + 1) % footprints.length);
     }
 
-    public boolean[][] getFootprint(int i) {
+    public int[][] getFootprint(int i) {
         return footprints[i];
     }
 
