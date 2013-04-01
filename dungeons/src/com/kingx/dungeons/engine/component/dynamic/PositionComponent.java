@@ -12,7 +12,7 @@ public class PositionComponent extends AbstractComponent {
     }
 
     public PositionComponent(Vector3 vector) {
-        this.inWorld = vector;
+        this.inWorld = vector.cpy();
     }
 
     public float getX() {

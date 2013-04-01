@@ -74,7 +74,6 @@ public final class CubeFactory {
                                 z = -maze.getFootprint(i).length + j;
                                 break;
                         }
-                        System.out.println(x * App.UNIT);
                         cubes[j][k] = makeCube(x * App.UNIT, y * App.UNIT, z * App.UNIT, maze.getFootprint(i)[j][k]);
                     }
                 }
@@ -91,7 +90,6 @@ public final class CubeFactory {
             int last = current.length - 1;
 
             for (int k = 0; k < current[last].length; k++) {
-                System.out.println("Assigning " + next[0][k] + "to" + current[last][k]);
                 current[last][k] = next[0][k];
                 //next[0][k] = current[last][k];
             }

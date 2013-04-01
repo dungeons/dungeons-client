@@ -15,8 +15,8 @@ public class GenericGenerator extends AbstractGenerator {
     public int[][] build(int width, int height) {
         maze = new int[width][height];
 
-        chances.add(new Chance(50, 0));
-        chances.add(new Chance(10, 2));
+        chances.add(new Chance(10, 0));
+        chances.add(new Chance(50, 2));
         Collections.sort(chances);
 
         for (int i = 0; i < maze.length; i++) {

@@ -4,6 +4,7 @@ public class GravityComponent extends AbstractComponent {
     public float mass;
     public MoveComponent move;
     private boolean falling = false;
+    private boolean jumping = false;
 
     public GravityComponent(float mass, MoveComponent move) {
         this.mass = mass;
@@ -30,6 +31,14 @@ public class GravityComponent extends AbstractComponent {
 
     public void setFalling(boolean falling) {
         this.falling = falling;
+    }
+
+    public boolean isJumping() {
+        return jumping;
+    }
+
+    public void setJumping(boolean jumping) {
+        this.jumping = jumping;
     }
 
 }

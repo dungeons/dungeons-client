@@ -33,7 +33,7 @@ public class CollisionSystem extends EntityProcessingSystem {
         collision.setRight(Collision.resolveCollisionRight(position, size));
         collision.setLeft(Collision.resolveCollisionLeft(position, size));
 
-        System.out.println(collision);
+        //System.out.println(collision);
     }
 
 }
