@@ -35,7 +35,9 @@ public class GravitySystem extends EntityProcessingSystem {
         if (gravity.isFalling()) {
             resolveMove(position, gravity);
         } else {
-            gravity.move.vector.y = 0;
+            if (gravity.move.vector.y > 0) {
+                gravity.move.vector.y = 0;
+            }
         }
     }
 
