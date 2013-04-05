@@ -37,6 +37,8 @@ public class OfflineServer extends AbstractServer {
     public void updateInternal(float delta) {
         world.setDelta(delta);
         world.process();
+
+        App.getTweenManager().update(delta);
     }
 
     private void processInput(ClientCommand c) {

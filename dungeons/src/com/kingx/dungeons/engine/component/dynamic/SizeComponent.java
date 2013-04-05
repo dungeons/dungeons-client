@@ -9,6 +9,10 @@ public class SizeComponent extends AbstractComponent {
         this.vector = new Vector3(size, size, 0);
     }
 
+    public SizeComponent(float height, float width) {
+        this.vector = new Vector3(height, width, 0);
+    }
+
     @Override
     public void setComponent(int id, int value) {
         vector.x = value / AbstractComponent.INT_TO_FLOAT;

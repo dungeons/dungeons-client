@@ -112,7 +112,7 @@ public class CubeRenderer implements Disposable {
      * projection will be pixel perfect with respect to the screen resolution.
      */
     public CubeRenderer() {
-        this(5000);
+        this(10000);
     }
 
     /**

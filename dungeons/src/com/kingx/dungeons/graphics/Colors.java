@@ -20,6 +20,9 @@ public class Colors {
     public static final Color DEBUG_ZOMBIE_SEARCH = new Color(0, 0, 1f, 1f);
     public static final Color DEBUG_ZOMBIE_SEE = new Color(0, 1, 0, 1f);
     public static final Color DEBUG_ZOMBIE_ATTACK = new Color(1, 0, 0, 1f);
+    public static final Color SKY = Color.BLACK;
+    public static final Color SHADOW_BOTTOM = new Color(0.5f, 0.7f, 0.16f, 1f);
+    public static final Color WORLD_BOTTOM = new Color(0.085f, 0.117f, 0.051f, 1f);
 
     public static Color random() {
         float r = App.rand.nextFloat();
@@ -27,5 +30,18 @@ public class Colors {
         float b = App.rand.nextFloat();
         float a = App.rand.nextFloat();
         return new Color(r, g, b, a);
+    }
+
+    public static Color interpolate(Color a, Color b, float stage, float gradient) {
+        Color result = new Color();
+        result.r = interpolateChannel(a.r, b.r, stage, gradient);
+        result.g = interpolateChannel(a.g, b.g, stage, gradient);
+        result.b = interpolateChannel(a.b, b.b, stage, gradient);
+        result.a = interpolateChannel(a.a, b.a, stage, gradient);
+        return result;
+    }
+
+    public static float interpolateChannel(float a, float b, float stage, float gradient) {
+        return a + ((b - a) * stage / gradient);
     }
 }

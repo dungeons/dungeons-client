@@ -416,7 +416,7 @@ public class Collision {
         }
 
         if (point.y < 0 || point.y >= footprint[0].length) {
-            return false;
+            return true;
         }
 
         return footprint[point.x][point.y] == 0;

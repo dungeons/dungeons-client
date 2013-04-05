@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
@@ -111,6 +112,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowProjectShader.setUniformf("u_worldWidth", CubeRegion.getWidth());
         shadowProjectShader.setUniformf("u_minBound", CubeRegion.min);
         shadowProjectShader.setUniformf("u_maxBound", CubeRegion.max);
+        shadowProjectShader.setUniformf("u_tint", Colors.interpolate(Colors.SHADOW_BOTTOM, Color.WHITE, App.getProgress(), 1));
         poly.render(shadowProjectShader, GL20.GL_TRIANGLES);
         batchRender.end();
 
@@ -119,6 +121,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
         shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
 
+        batchRender2.draw(cubeRegions.get(App.getLastView()));
         batchRender2.draw(cubeRegions.get(App.getCurrentView()));
         batchRender2.end();
 

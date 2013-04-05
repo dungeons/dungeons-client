@@ -5,12 +5,12 @@ import com.kingx.dungeons.App;
 import com.kingx.dungeons.geom.Point;
 import com.kingx.dungeons.geom.Point.Int;
 
-public class MazeMap {
+public class Terrain {
 
     private final int[][][] footprints;
     private int walls = -1;
 
-    public MazeMap(int[][][] map) {
+    public Terrain(int[][][] map) {
         this.footprints = map;
         walls = this.getWalls();
     }

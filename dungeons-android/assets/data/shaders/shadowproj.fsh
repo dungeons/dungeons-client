@@ -27,6 +27,8 @@ uniform float u_worldWidth;
 uniform vec3 u_minBound;
 uniform vec3 u_maxBound;
 
+uniform vec4 u_tint;
+
 // Varying variables.
 varying vec4 vWorldVertex;
 varying vec4 vPosition[4];
@@ -109,9 +111,9 @@ void main ()
         }
         
 	    if(u_forceShadow || shadow){
-	  		gl_FragColor = u_ground_color * texture2D(u_texture,v_texCoord);
+	  		gl_FragColor = u_ground_color * texture2D(u_texture,v_texCoord) * u_tint ;
         }else{
-	 		gl_FragColor = vec4(r,g,b,1.0) * texture2D(u_texture,v_texCoord);
+	 		gl_FragColor = vec4(r,g,b,1.0) * texture2D(u_texture,v_texCoord) * u_tint ;
         }
         
 }

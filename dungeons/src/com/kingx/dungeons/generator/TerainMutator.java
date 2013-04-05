@@ -11,7 +11,6 @@ public abstract class TerainMutator {
     }
 
     protected void convert(int x, int y, int type) {
-        System.out.println(x + ":" + y);
         if (isBounds(x, y)) {
             terain[x][y] = type;
         }

@@ -32,7 +32,6 @@ public class MovementSystem extends EntityProcessingSystem {
         SpeedComponent speed = speedMapper.get(e);
         MoveComponent move = inputMapper.get(e);
 
-        System.out.println(move.getRotatedVector());
         Vector3 result = position.get().add(move.getRotatedVector().mul(speed.getCurrent() * world.delta));
         position.set(result);
 

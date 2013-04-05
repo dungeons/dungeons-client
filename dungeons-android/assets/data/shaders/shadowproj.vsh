@@ -1,5 +1,7 @@
 // Vertex shader for rendering the scene with shadows.
-
+#ifdef GL_ES
+  precision mediump float;
+#endif
 // Attributes.
 attribute vec3 a_position;
 attribute vec2 a_texCoord0;

@@ -207,7 +207,6 @@ public class SpriteRenderer {
             throw new IllegalStateException("you have to call SpriteBatch.end() first");
         renderCalls = 0;
 
-        Gdx.gl.glDepthMask(false);
         if (Gdx.graphics.isGL20Available()) {
             if (customShader != null)
                 customShader.begin();
@@ -216,6 +215,7 @@ public class SpriteRenderer {
         } else {
             Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
         }
+        Gdx.gl.glEnable(GL10.GL_CULL_FACE);
         setupMatrices();
 
         idx = 0;
@@ -231,10 +231,10 @@ public class SpriteRenderer {
         short j = 0;
         for (int i = 0; i < indices.length; i += 6, j += 4) {
             indices[i + 0] = (short) (j + 0);
-            indices[i + 1] = (short) (j + 1);
-            indices[i + 2] = (short) (j + 3);
-            indices[i + 3] = (short) (j + 3);
-            indices[i + 4] = (short) (j + 1);
+            indices[i + 1] = (short) (j + 3);
+            indices[i + 2] = (short) (j + 1);
+            indices[i + 3] = (short) (j + 1);
+            indices[i + 4] = (short) (j + 3);
             indices[i + 5] = (short) (j + 2);
         }
 

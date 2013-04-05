@@ -34,3 +34,8 @@ v 0.0.1d8
 v 0.0.1d9
 - Map is distributed to 4 regions that makes up a cuboid.
 - Player can dig cubes around him.
+
+v 0.0.1d10
+- Village texture added.
+- Input for touch devices added.
+- Rotation tween is triggered when switching regions.

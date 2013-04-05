@@ -43,7 +43,7 @@ public final class GroundFactory {
     private final ArrayList<Short> indices = new ArrayList<Short>();
     private int vertsOffset = 0;
 
-    public GroundFactory(MazeMap maze, float mazeWallSize) {
+    public GroundFactory(Terrain maze, float mazeWallSize) {
         WALL_SIZE = mazeWallSize;
         for (int i = 0; i < maze.getFootprints(); i++) {
             for (int j = 1; j < maze.getFootprint(i).length; j++) {
@@ -115,11 +115,11 @@ public final class GroundFactory {
         }
 
         indices.add((short) (vertsOffset + 0));
-        indices.add((short) (vertsOffset + 1));
         indices.add((short) (vertsOffset + 3));
+        indices.add((short) (vertsOffset + 1));
 
-        indices.add((short) (vertsOffset + 3));
         indices.add((short) (vertsOffset + 1));
+        indices.add((short) (vertsOffset + 3));
         indices.add((short) (vertsOffset + 2));
 
         vertsOffset += VERTS_PER_QUAD;

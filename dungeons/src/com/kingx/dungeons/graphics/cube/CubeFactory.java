@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.graphics.Colors;
-import com.kingx.dungeons.graphics.MazeMap;
+import com.kingx.dungeons.graphics.Terrain;
 
 public final class CubeFactory {
 
@@ -41,7 +41,7 @@ public final class CubeFactory {
     private Cube[][] cubes;
     private final ArrayList<CubeRegion> regions;
 
-    public CubeFactory(MazeMap maze) {
+    public CubeFactory(Terrain maze) {
 
         regions = new ArrayList<CubeRegion>();
         for (int i = 0; i < maze.getFootprints(); i++) {

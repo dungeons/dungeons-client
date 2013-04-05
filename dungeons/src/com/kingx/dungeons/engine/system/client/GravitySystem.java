@@ -41,13 +41,11 @@ public class GravitySystem extends EntityProcessingSystem {
             gravity.setFalling(true);
             resolveMove(position, gravity);
         } else if (collision.getUp() != null) {
-            System.out.println("coliding up");
             if (gravity.move.vector.y > 0) {
                 gravity.move.vector.y = 0;
                 gravity.setFalling(false);
             }
         } else if (gravity.isFalling() && gravity.move.vector.y < 0) {
-            System.out.println("resest.");
             gravity.setFalling(false);
             gravity.move.vector.y = Gdx.input.isKeyPressed(Keys.S) ? -1 : 0;
         }
@@ -64,8 +62,6 @@ public class GravitySystem extends EntityProcessingSystem {
      *            size of entity
      */
     protected void resolveMove(PositionComponent position, GravityComponent gravity) {
-
-        System.out.println("resolve.");
         gravity.move.vector.y -= gravity.mass * this.world.getDelta();
     }
 

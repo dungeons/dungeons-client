@@ -1,7 +1,6 @@
 package com.kingx.dungeons.engine.system;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.Vector3;
 import com.kingx.artemis.Aspect;
 import com.kingx.artemis.ComponentMapper;
 import com.kingx.artemis.Entity;
@@ -39,7 +38,7 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
     private final SpriteRenderer sr = new SpriteRenderer();
 
     public RenderGeometrySystem(FollowCameraComponent camera) {
-        super(Aspect.getAspectForAll(PositionComponent.class, MoveComponent.class, TextureComponent.class));
+        super(Aspect.getAspectForAll(PositionComponent.class, TextureComponent.class));
         this.camera = camera;
     }
 
@@ -74,34 +73,33 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
           }*/
 
         TextureRegion currentTexture = null;
+        String name;
 
         if (healthMapper.has(e)) {
             HealthComponent health = healthMapper.get(e);
-            String name = health.getCurrent() < health.getMax() / 2 ? tc.getDamaged() : tc.getHealty();
+            name = health.getCurrent() < health.getMax() / 2 ? tc.getDamaged() : tc.getHealty();
 
-            if (moveMapper.has(e)) {
-                MoveComponent moveComponent = moveMapper.get(e);
-                currentTexture = getRightTexture(moveComponent.vector, name);
-            } else {
-                currentTexture = Assets.getTexture(name, 0);
-            }
-
+        } else {
+            name = tc.getHealty();
         }
+
+        float rotation = 0;
+        if (moveMapper.has(e)) {
+            rotation = moveMapper.get(e).getRotation();
+        }
+        currentTexture = getRightTexture(rotation, name);
 
         if (currentTexture != null) {
             currentTexture.getTexture().bind();
-            sr.draw(currentTexture, pc.get(), sc.get(), move.getRotation());
+            sr.draw(currentTexture, pc.get(), sc.get(), rotation);
 
         }
     }
 
-    public static TextureRegion getRightTexture(Vector3 vector, String name) {
-        int ang = (int) Math.toDegrees(Math.atan2(vector.y, vector.x)) + 90 + 22;
-        if (ang < 0) {
+    public static TextureRegion getRightTexture(float rotation, String name) {
+        int ang = (int) rotation % 360;
+        if (ang < 0)
             ang += 360;
-        } else if (ang > 360) {
-            ang -= 360;
-        }
         ang = (int) (ang / 360f * 8);
         return Assets.getTexture(name, ang);
     }

@@ -8,6 +8,7 @@ public class FollowCameraComponent extends Component {
     public float height;
     public float angle;
     public float arbitratyAngle;
+    public float lastAngle;
 
     public FollowCameraComponent(Camera camera, float height, float angle) {
         this.camera = camera;
