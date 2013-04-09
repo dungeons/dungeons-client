@@ -18,18 +18,21 @@ public class CubeManager {
 
     public void removeCube(Int point) {
 
-        int current = App.getCurrentView();
-
-        CubeRegion region = cubeRegions.get(current);
-        region.removeCube(point);
-
         int[][] footprint = App.getMap().getFootprint();
-        point = point.cpy();
+
+        if (point.x == 0) {
+            this.getCubeRegions().get(App.getPrevView()).removeCube(footprint.length, point.y);
+        } else if (point.x == footprint.length) {
+            this.getCubeRegions().get(App.getNextView()).removeCube(0, point.y);
+        }
+        this.getCubeRegions().get(App.getCurrentView()).removeCube(point.x, point.y);
+
         if (point.x == footprint.length) {
             footprint = App.getMap().getNextFootprint();
-            point.x = 0;
-        }
-        footprint[point.x][point.y] = 0;
+            footprint[0][point.y] = 0;
+        } else {
+            footprint[point.x][point.y] = 0;
 
+        }
     }
 }
