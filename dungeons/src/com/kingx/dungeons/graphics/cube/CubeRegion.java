@@ -80,4 +80,25 @@ public class CubeRegion {
         cubes[point.x][point.y] = null;
     }
 
+    public void removeCube(int x, int y) {
+        cubes[x][y] = null;
+    }
+
+    @Override
+    public String toString() {
+        String output = "";
+        for (Cube[] temp : cubes) {
+            for (Cube cube : temp) {
+                output += cube != null ? "X" : "O";
+            }
+            output += "\t";
+
+            for (Cube cube : temp) {
+                output += String.format("%1$12s", cube != null ? cube.hashCode() : "[null]");
+            }
+            output += "\n";
+        }
+        return output;
+    }
+
 }

@@ -1,7 +1,5 @@
 package com.kingx.dungeons.engine.system.client;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.kingx.artemis.Aspect;
 import com.kingx.artemis.ComponentMapper;
 import com.kingx.artemis.Entity;
@@ -11,7 +9,6 @@ import com.kingx.dungeons.engine.component.CollisionComponent;
 import com.kingx.dungeons.engine.component.dynamic.GravityComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
-import com.kingx.dungeons.geom.Collision;
 
 public class GravitySystem extends EntityProcessingSystem {
     @Mapper
@@ -34,22 +31,38 @@ public class GravitySystem extends EntityProcessingSystem {
         GravityComponent gravity = gravityMapper.get(e);
         CollisionComponent collision = collisionMapper.get(e);
 
-        PositionComponent copy = new PositionComponent(position.inWorld);
-        copy.inWorld.y -= 0.05f;
-
-        if (Collision.resolveCollisionDown(copy, size) == null) {
+        if (collision.getDown() != null) {
+            gravity.setFalling(false);
+            gravity.move.vector.y = 0;
+        } else {
+            //   if (collision.getStandingOnABlock() == null) {
             gravity.setFalling(true);
             resolveMove(position, gravity);
-        } else if (collision.getUp() != null) {
-            if (gravity.move.vector.y > 0) {
-                gravity.move.vector.y = 0;
-                gravity.setFalling(false);
-            }
-        } else if (gravity.isFalling() && gravity.move.vector.y < 0) {
-            gravity.setFalling(false);
-            gravity.move.vector.y = Gdx.input.isKeyPressed(Keys.S) ? -1 : 0;
+            //   }
         }
 
+        /*if (collision.getStandingOnABlock() == null) {
+            gravity.setFalling(true);
+        }*/
+        /*
+                if (gravity.isFalling()) {
+                    resolveMove(position, gravity);
+                } else {
+                    gravity.move.vector.y = Gdx.input.isKeyPressed(Keys.S) ? -1 : 0;
+
+                }
+                /*
+                System.out.println("Falling");
+                } else if (collision.getUp() != null) {
+                if (gravity.move.vector.y > 0) {
+                    gravity.move.vector.y = 0;
+                    gravity.setFalling(false);
+                }
+                } else if (gravity.isFalling() && gravity.move.vector.y < 0) {
+                gravity.setFalling(false);
+                gravity.move.vector.y = Gdx.input.isKeyPressed(Keys.S) ? -1 : 0;
+                }
+                */
     }
 
     /**

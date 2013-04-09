@@ -9,6 +9,7 @@ public class CollisionComponent extends Component {
     private Int down;
     private Int left;
     private Int right;
+    private Int standingOnABlock;
 
     public Int getUp() {
         return up;
@@ -42,9 +43,17 @@ public class CollisionComponent extends Component {
         this.right = right;
     }
 
+    public Int getStandingOnABlock() {
+        return standingOnABlock;
+    }
+
+    public void setStandingOnABlock(Int standingOnABlock) {
+        this.standingOnABlock = standingOnABlock;
+    }
+
     @Override
     public String toString() {
-        return "CollisionComponent [up=" + up + ", down=" + down + ", left=" + left + ", right=" + right + "]";
+        return "CollisionComponent [up=" + up + ", down=" + down + ", left=" + left + ", right=" + right + ", standingOnABlock=" + standingOnABlock + "]";
     }
 
 }

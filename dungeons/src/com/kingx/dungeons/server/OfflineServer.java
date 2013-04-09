@@ -5,6 +5,7 @@ import java.util.Map;
 import com.badlogic.gdx.Input.Keys;
 import com.kingx.artemis.World;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.engine.component.CollisionComponent;
 import com.kingx.dungeons.engine.component.MiningComponent;
 import com.kingx.dungeons.engine.component.dynamic.GravityComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
@@ -54,6 +55,8 @@ public class OfflineServer extends AbstractServer {
         MoveComponent move = App.getPlayer().getMoveComponent();
         GravityComponent gravity = App.getPlayer().getGravity();
         MiningComponent mining = App.getPlayer().getMining();
+        CollisionComponent collision = App.getPlayer().getCollision();
+
         int mapped = getKey(c.getAction(), move.mapping);
         switch (mapped) {
             case Keys.S:
@@ -68,7 +71,7 @@ public class OfflineServer extends AbstractServer {
                 move.vector.x += c.getValue() == 0 ? -1 : 1;
                 break;
             case Keys.SPACE:
-                if (!gravity.isFalling() && c.getValue() == 1) {
+                if (collision.getStandingOnABlock() != null && c.getValue() == 1) {
                     move.vector.y = 1.5f;
                     gravity.setFalling(true);
                 }

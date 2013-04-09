@@ -111,4 +111,8 @@ public class Wanderer extends ConcreteEntity {
         return mining;
     }
 
+    public CollisionComponent getCollision() {
+        return collision;
+    }
+
 }

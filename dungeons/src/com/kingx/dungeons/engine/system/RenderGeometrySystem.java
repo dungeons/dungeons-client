@@ -85,7 +85,9 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
 
         float rotation = 0;
         if (moveMapper.has(e)) {
-            rotation = moveMapper.get(e).getRotation();
+            System.out.println(move.vector);
+
+            rotation = (float) (Math.atan2(move.vector.y, move.vector.x) / Math.PI * 180);
         }
         currentTexture = getRightTexture(rotation, name);
 

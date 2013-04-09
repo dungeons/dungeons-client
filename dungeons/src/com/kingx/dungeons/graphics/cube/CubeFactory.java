@@ -94,6 +94,10 @@ public final class CubeFactory {
                 //next[0][k] = current[last][k];
             }
         }
+
+        for (CubeRegion region : regions) {
+            System.out.println(region);
+        }
     }
 
     public ArrayList<CubeRegion> getCubeRegions() {

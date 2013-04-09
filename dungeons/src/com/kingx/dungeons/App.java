@@ -59,7 +59,7 @@ public class App implements ApplicationListener {
     private static CubeManager cubeManager;
 
     public static final float UNIT = 1f;
-    public static final float VIEW_DISTANCE = 20f;
+    public static final float VIEW_DISTANCE = 12f;
     public static final float PLAYER_OFFSET = 0.5f;
     public static final float LIGHT_OFFSET = 0.1f;
 
@@ -132,7 +132,7 @@ public class App implements ApplicationListener {
         avatarCamera.getCamera().update();
 
         renderShadowSystem.process();
-        renderGeometrySystem.process();
+        // renderGeometrySystem.process();
 
         if (DEBUG != null && renderShadowSystem.getDepthMap() != null) {
             onScreenRasterRender.begin();
@@ -141,7 +141,6 @@ public class App implements ApplicationListener {
             font.draw(onScreenRasterRender, String.valueOf(App.getCurrentView()), 30, Gdx.graphics.getHeight() - 60);
             onScreenRasterRender.end();
         }
-
         if (ui != null) {
             ui.render();
         }
@@ -313,6 +312,14 @@ public class App implements ApplicationListener {
         return currentView;
     }
 
+    public static int getPrevView() {
+        return (currentView == 0 ? App.getCubeManager().cubeRegions.size() : currentView) - 1;
+    }
+
+    public static int getNextView() {
+        return (currentView + 1) % App.getCubeManager().cubeRegions.size();
+    }
+
     public static int getLastView() {
         return lastView;
     }
@@ -320,6 +327,10 @@ public class App implements ApplicationListener {
     public static void setCurrentView(int cv) {
         lastView = currentView;
         currentView = cv;
+
+        System.out.println(cubeManager.getCubeRegions().get(lastView));
+        System.out.println();
+        System.out.println(cubeManager.getCubeRegions().get(currentView));
     }
 
     // Application cycle events

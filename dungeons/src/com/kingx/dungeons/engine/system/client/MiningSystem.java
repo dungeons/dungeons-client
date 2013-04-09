@@ -25,17 +25,19 @@ public class MiningSystem extends EntityProcessingSystem {
         CollisionComponent collision = collisionMapper.get(e);
 
         if (mining.isMining()) {
-            mining.setMining(false);
             if (collision.getLeft() != null) {
                 App.getCubeManager().removeCube(collision.getLeft());
+                mining.setMining(false);
                 return;
             } else if (collision.getRight() != null) {
                 App.getCubeManager().removeCube(collision.getRight());
+                mining.setMining(false);
                 return;
             }
 
             if (collision.getDown() != null) {
                 App.getCubeManager().removeCube(collision.getDown());
+                mining.setMining(false);
                 return;
             }
         }

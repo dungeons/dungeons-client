@@ -15,7 +15,7 @@ public class GenericGenerator extends AbstractGenerator {
     public int[][] build(int width, int height) {
         terain = new int[width][height];
 
-        chances.add(new Trigger(10, new SpotMutator(terain, 0)));
+        chances.add(new Trigger(5, new SpotMutator(terain, 0)));
         chances.add(new Trigger(50, new SpotMutator(terain, 2)));
         chances.add(new Trigger(100, new MineralCapsle(terain, 0, 1)));
         Collections.sort(chances);
