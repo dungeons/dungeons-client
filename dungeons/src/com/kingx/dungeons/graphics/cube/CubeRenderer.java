@@ -102,8 +102,9 @@ public class CubeRenderer implements Disposable {
     /** the maximum number of sprites rendered in one batch so far **/
     private ShaderProgram customShader = null;
     private int vertexSize;
-    private final int cubeCount;
+    private int cubeCount;
     private final int buffersCount;
+    private int verticesPerQuad;
 
     /**
      * Constructs a new SpriteBatch. Sets the projection matrix to an
@@ -275,7 +276,8 @@ public class CubeRenderer implements Disposable {
     private void reset() {
 
         vertexSize = CubeVertex.size;
-        vertices = new float[cubeCount * Cube.VERTS_PER_QUAD * Cube.QUADS * CubeVertex.size];
+        verticesPerQuad = Cube.VERTS_PER_QUAD * vertexSize;
+        vertices = new float[cubeCount * verticesPerQuad * Cube.QUADS];
 
         short[] indices = new short[cubeCount * Cube.INDICES_PER_QUAD * Cube.QUADS];
         short j = 0;
@@ -388,9 +390,12 @@ public class CubeRenderer implements Disposable {
 
         renderCalls++;
         totalRenderCalls++;
-        int cubesInBatch = idx / vertexSize;
+        int cubesInBatch = idx / verticesPerQuad;
+        System.out.println(idx);
+        System.out.println(verticesPerQuad);
+        System.out.println(cubesInBatch);
         if (cubesInBatch > cubeCount)
-            cubesInBatch = cubeCount;
+            cubeCount = cubesInBatch;
 
         //lastTexture.bind();
 

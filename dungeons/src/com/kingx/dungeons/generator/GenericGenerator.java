@@ -33,6 +33,8 @@ public class GenericGenerator extends AbstractGenerator {
                 }
             }
         }
+		
+        terain[0][terain[0].length - 1] = 0;
 
         return terain;
     }

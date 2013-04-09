@@ -87,9 +87,15 @@ public class CubeRegion {
     @Override
     public String toString() {
         String output = "";
+        int cnt = 0;
         for (Cube[] temp : cubes) {
             for (Cube cube : temp) {
-                output += cube != null ? "X" : "O";
+                if (cube != null) {
+                    output += "X";
+                    cnt++;
+                } else {
+                    output += "O";
+                }
             }
             output += "\t";
 
@@ -98,6 +104,8 @@ public class CubeRegion {
             }
             output += "\n";
         }
+
+        output += "\n total [" + cnt + "]";
         return output;
     }
 

@@ -91,8 +91,7 @@ public final class CubeFactory {
 
             for (int k = 0; k < current[last].length; k++) {
                 current[last][k] = next[0][k];
-                //next[0][k] = current[last][k];
-            }
+           }
         }
 
         for (CubeRegion region : regions) {
