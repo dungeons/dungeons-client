@@ -6,6 +6,10 @@ dungeons-desktop/bin
 dungeons-editor/bin
 dungeons-desktop/assets
 
+# IDE generated files #
+#######################
+dungeons-android/gen
+
 # Logs and databases #
 ######################
 *.log
