@@ -13,7 +13,6 @@ import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.WorldRotateComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
-import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
 import com.kingx.dungeons.geom.Collision;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
 import com.kingx.dungeons.tween.CameraAccessor;
@@ -36,13 +35,9 @@ public class WorldRotateSystem extends EntityProcessingSystem {
     protected void process(Entity e) {
         WorldRotateComponent world = worldMapper.getSafe(e);
         PositionComponent position = world.getPosition();
-        SizeComponent size = world.getSize();
 
         float x = position.getScreenX();
         float boundsOffset = App.UNIT - App.PLAYER_OFFSET;
-        // FIXME making offset smaller it gives player more space and wont trigger collision.
-        //  boundsOffset -= 0.3f;
-
         if (x < CubeRegion.min.x + boundsOffset) {
             rotateLeft(camera, world.getMove());
             Collision.correct(position.get(), App.PLAYER_OFFSET);
@@ -76,7 +71,6 @@ public class WorldRotateSystem extends EntityProcessingSystem {
     }
 
     private void rotateCamera(FollowCameraComponent camera, float angle) {
-
         // We can now create as many interpolations as we need !
         camera.lastAngle += angle;
         Tween.to(camera, CameraAccessor.ROTATION_Y, 1.0f).target(camera.lastAngle).ease(Quad.OUT).start(App.getTweenManager());

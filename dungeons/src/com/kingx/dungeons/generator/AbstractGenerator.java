@@ -20,9 +20,7 @@ public abstract class AbstractGenerator {
         for (int i = 0; i < 4; i++) {
             for (int j = 0; j < output[i].length; j++) {
                 for (int k = 0; k < output[i][j].length; k++) {
-
                     output[i][j][k] = original[i * layerWidth + j][k];
-
                 }
             }
         }

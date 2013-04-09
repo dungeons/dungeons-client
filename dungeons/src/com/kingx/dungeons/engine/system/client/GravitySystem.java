@@ -27,7 +27,6 @@ public class GravitySystem extends EntityProcessingSystem {
     @Override
     protected void process(Entity e) {
         PositionComponent position = postionMapper.get(e);
-        SizeComponent size = sizeMapper.get(e);
         GravityComponent gravity = gravityMapper.get(e);
         CollisionComponent collision = collisionMapper.get(e);
 
@@ -35,34 +34,9 @@ public class GravitySystem extends EntityProcessingSystem {
             gravity.setFalling(false);
             gravity.move.vector.y = 0;
         } else {
-            //   if (collision.getStandingOnABlock() == null) {
             gravity.setFalling(true);
             resolveMove(position, gravity);
-            //   }
         }
-
-        /*if (collision.getStandingOnABlock() == null) {
-            gravity.setFalling(true);
-        }*/
-        /*
-                if (gravity.isFalling()) {
-                    resolveMove(position, gravity);
-                } else {
-                    gravity.move.vector.y = Gdx.input.isKeyPressed(Keys.S) ? -1 : 0;
-
-                }
-                /*
-                System.out.println("Falling");
-                } else if (collision.getUp() != null) {
-                if (gravity.move.vector.y > 0) {
-                    gravity.move.vector.y = 0;
-                    gravity.setFalling(false);
-                }
-                } else if (gravity.isFalling() && gravity.move.vector.y < 0) {
-                gravity.setFalling(false);
-                gravity.move.vector.y = Gdx.input.isKeyPressed(Keys.S) ? -1 : 0;
-                }
-                */
     }
 
     /**

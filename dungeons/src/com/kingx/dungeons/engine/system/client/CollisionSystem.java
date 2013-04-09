@@ -36,8 +36,6 @@ public class CollisionSystem extends EntityProcessingSystem {
         PositionComponent copy = new PositionComponent(position.inWorld);
         copy.inWorld.y -= size.getSize() / 2f;
         collision.setStandingOnABlock(Collision.resolveCollisionDown(copy, size));
-
-        //  System.out.println(collision);
     }
 
 }

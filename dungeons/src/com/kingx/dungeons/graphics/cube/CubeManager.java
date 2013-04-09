@@ -17,7 +17,6 @@ public class CubeManager {
     }
 
     public void removeCube(Int point) {
-
         int[][] footprint = App.getMap().getFootprint();
 
         if (point.x == 0) {
@@ -32,7 +31,6 @@ public class CubeManager {
             footprint[0][point.y] = 0;
         } else {
             footprint[point.x][point.y] = 0;
-
         }
     }
 }

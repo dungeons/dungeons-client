@@ -38,7 +38,6 @@ public class ShadowComponent extends Component {
             light.position.x = position.getX();
             light.position.y = position.getY();
             light.position.z = position.getZ();
-
             Collision.correct(light.position, App.LIGHT_OFFSET);
         }
     }
@@ -46,13 +45,13 @@ public class ShadowComponent extends Component {
     public void rotate(MoveComponent mc) {
         float angle = mc.getRotation();
         float difference = 0;
+
         if (lastAngle != angle) {
             difference = angle - lastAngle;
         }
         lastAngle = angle;
 
         for (int i = 0; i < lights.length; i++) {
-
             if (difference != 0) {
                 Vector3 temp = lights[i].position.cpy();
                 lights[i].translate(temp.cpy().mul(-1));
