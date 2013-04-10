@@ -391,13 +391,8 @@ public class CubeRenderer implements Disposable {
         renderCalls++;
         totalRenderCalls++;
         int cubesInBatch = idx / verticesPerQuad;
-        System.out.println(idx);
-        System.out.println(verticesPerQuad);
-        System.out.println(cubesInBatch);
         if (cubesInBatch > cubeCount)
             cubeCount = cubesInBatch;
-
-        //lastTexture.bind();
 
         mesh.setVertices(vertices, 0, idx);
         mesh.getIndicesBuffer().position(0);

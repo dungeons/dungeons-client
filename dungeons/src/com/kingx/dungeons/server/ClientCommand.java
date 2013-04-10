@@ -1,7 +1,13 @@
 package com.kingx.dungeons.server;
 
-public class ClientCommand {
+import java.io.Serializable;
 
+public class ClientCommand implements Serializable {
+
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6271064802913973327L;
     private final short action;
     private final long timestamp;
     private final int value;

@@ -16,6 +16,10 @@ dungeons-android/gen
 *.sql
 *.sqlite
 
+# Trace files for profiling #
+#############################
+*.trace
+
 # OS generated files #
 ######################
 .DS_Store

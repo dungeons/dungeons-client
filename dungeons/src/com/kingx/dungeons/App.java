@@ -35,6 +35,9 @@ import com.kingx.dungeons.graphics.cube.CubeManager;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
 import com.kingx.dungeons.graphics.ui.Gamepad;
 import com.kingx.dungeons.input.Input;
+import com.kingx.dungeons.input.InputPlayer;
+import com.kingx.dungeons.input.InputRecorder;
+import com.kingx.dungeons.input.RegularInputProcessor;
 import com.kingx.dungeons.server.AbstractServer;
 import com.kingx.dungeons.server.OfflineServer;
 import com.kingx.dungeons.server.OnlineServer;
@@ -69,8 +72,7 @@ public class App implements ApplicationListener {
 
     private final Map<String, Param> params;
     private Clock clock;
-    private GameStateManager state;
-    private Replay replay;
+    private final GameStateManager state;
     private static Input input;
 
     public App(String[] args) {
@@ -79,8 +81,7 @@ public class App implements ApplicationListener {
         NOSLEEP = getParam("-ns", "-nosleep");
         SERVER = getParam("-s", "-server");
 
-        replay = new Replay();
-        state = GameStateManager.getInstance(replay);
+        state = GameStateManager.getInstance();
         rand = new Random(state.getSeed());
     }
 
@@ -104,8 +105,21 @@ public class App implements ApplicationListener {
         Gdx.gl.glDepthFunc(GL10.GL_LESS);
 
         clock = new Clock();
-        input = new Input(replay);
-        Gdx.input.setInputProcessor(input);
+
+        switch (state.getStatus()) {
+            case RECORD:
+                input = new Input(new InputRecorder(state));
+                Gdx.input.setInputProcessor(input);
+                break;
+            case PLAY:
+                input = new Input(new InputRecorder(state));
+                clock.addService(new InputPlayer(state, input));
+                break;
+            default:
+                input = new Input(new RegularInputProcessor());
+                Gdx.input.setInputProcessor(input);
+                break;
+        }
     }
 
     public static boolean INITIALIZED = false;
@@ -179,7 +193,8 @@ public class App implements ApplicationListener {
     }
 
     /**
-     * Generates maze footprint and polygon. Creates maze instance and places it in the game world.
+     * Generates maze footprint and polygon. Creates maze instance and places it
+     * in the game world.
      */
     private void createMaze() {
         terrain = new Terrain(createMap());
@@ -193,7 +208,8 @@ public class App implements ApplicationListener {
     }
 
     /**
-     * If template is available, creates footprint based on that template, otherwise generates random map.
+     * If template is available, creates footprint based on that template,
+     * otherwise generates random map.
      * 
      * @return generated map
      */
@@ -346,6 +362,7 @@ public class App implements ApplicationListener {
 
     @Override
     public void dispose() {
+        state.writeState();
     }
 
     public static Input getInput() {
