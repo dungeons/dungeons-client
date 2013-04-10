@@ -47,7 +47,8 @@ public class App implements ApplicationListener {
     public static Param NOSLEEP;
     public static Param SERVER;
 
-    public static final Random rand = new Random();
+    public static Random rand;
+
     private static TweenManager tweenManager = new TweenManager();
     static {
         Tween.registerAccessor(FollowCameraComponent.class, new CameraAccessor());
@@ -68,6 +69,8 @@ public class App implements ApplicationListener {
 
     private final Map<String, Param> params;
     private Clock clock;
+    private GameStateManager state;
+    private Replay replay;
     private static Input input;
 
     public App(String[] args) {
@@ -75,6 +78,10 @@ public class App implements ApplicationListener {
         DEBUG = getParam("-d", "-debug");
         NOSLEEP = getParam("-ns", "-nosleep");
         SERVER = getParam("-s", "-server");
+
+        replay = new Replay();
+        state = GameStateManager.getInstance(replay);
+        rand = new Random(state.getSeed());
     }
 
     private Param getParam(String... args) {
@@ -97,7 +104,7 @@ public class App implements ApplicationListener {
         Gdx.gl.glDepthFunc(GL10.GL_LESS);
 
         clock = new Clock();
-        input = new Input();
+        input = new Input(replay);
         Gdx.input.setInputProcessor(input);
     }
 
@@ -172,8 +179,7 @@ public class App implements ApplicationListener {
     }
 
     /**
-     * Generates maze footprint and polygon. Creates maze instance and places it
-     * in the game world.
+     * Generates maze footprint and polygon. Creates maze instance and places it in the game world.
      */
     private void createMaze() {
         terrain = new Terrain(createMap());
@@ -187,8 +193,7 @@ public class App implements ApplicationListener {
     }
 
     /**
-     * If template is available, creates footprint based on that template,
-     * otherwise generates random map.
+     * If template is available, creates footprint based on that template, otherwise generates random map.
      * 
      * @return generated map
      */
@@ -327,10 +332,6 @@ public class App implements ApplicationListener {
     public static void setCurrentView(int cv) {
         lastView = currentView;
         currentView = cv;
-
-        System.out.println(cubeManager.getCubeRegions().get(lastView));
-        System.out.println();
-        System.out.println(cubeManager.getCubeRegions().get(currentView));
     }
 
     // Application cycle events

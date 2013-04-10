@@ -4,9 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputAdapter;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.Replay;
 import com.kingx.dungeons.server.ClientCommand;
 
 public class Input extends InputAdapter {
+
+    private Replay replayHandler;
+
+    public Input(Replay replayHandler) {
+        this.replayHandler = replayHandler;
+    }
 
     @Override
     public boolean keyDown(int keycode) {
@@ -30,7 +37,9 @@ public class Input extends InputAdapter {
                     rotateCamera(-0.1f);
                     break;
                 default:
-                    send(new ClientCommand((short) keycode, System.currentTimeMillis(), dir));
+                    ClientCommand command = new ClientCommand((short) keycode, System.currentTimeMillis(), dir);
+                    send(command);
+                    replayHandler.registerInput(command);
             }
         }
 
