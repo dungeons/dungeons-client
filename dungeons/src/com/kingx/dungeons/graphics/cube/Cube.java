@@ -2,30 +2,27 @@ package com.kingx.dungeons.graphics.cube;
 
 import java.util.ArrayList;
 
-
 public class Cube {
 
-    public static final int VERTS_PER_QUAD = 4;
-    public static final int INDICES_PER_QUAD = 6;
     public static final int QUADS = 6;
 
-    private final ArrayList<CubeVertex> verts;
-    private CubeVertex[] vertsArray;
+    private final CubeSide[] sides;
+    private int position = 0;
 
     public Cube() {
-        this.verts = new ArrayList<CubeVertex>();
+        this.sides = new CubeSide[QUADS];
     }
 
-    public CubeVertex[] getVerts() {
-        return vertsArray;
+    public CubeSide[] getSides() {
+        return sides;
     }
 
     public void addVerts(ArrayList<CubeVertex> quad) {
-        verts.addAll(quad);
+        sides[position++] = new CubeSide(quad);
     }
 
-    public void make() {
-        vertsArray = verts.toArray(new CubeVertex[verts.size()]);
+    public void hide(int i) {
+        sides[i].setVisible(false);
     }
 
 }

@@ -33,27 +33,31 @@ public class CubeRegion {
         for (Cube[] temp : cubes) {
             for (Cube cube : temp) {
                 if (cube != null) {
-                    for (CubeVertex vert : cube.getVerts()) {
+                    for (CubeSide side : cube.getSides()) {
+                        if (side != null) {
+                            for (CubeVertex vert : side.getVerts()) {
 
-                        // x coord
-                        if (vert.getPosition()[0] < min.x) {
-                            min.x = vert.getPosition()[0];
-                        } else if (vert.getPosition()[0] > max.x) {
-                            max.x = vert.getPosition()[0];
-                        }
+                                // x coord
+                                if (vert.getPosition()[0] < min.x) {
+                                    min.x = vert.getPosition()[0];
+                                } else if (vert.getPosition()[0] > max.x) {
+                                    max.x = vert.getPosition()[0];
+                                }
 
-                        // y coord
-                        if (vert.getPosition()[1] < min.y) {
-                            min.y = vert.getPosition()[1];
-                        } else if (vert.getPosition()[1] > max.y) {
-                            max.y = vert.getPosition()[1];
-                        }
+                                // y coord
+                                if (vert.getPosition()[1] < min.y) {
+                                    min.y = vert.getPosition()[1];
+                                } else if (vert.getPosition()[1] > max.y) {
+                                    max.y = vert.getPosition()[1];
+                                }
 
-                        // z coord
-                        if (vert.getPosition()[2] < min.z) {
-                            min.z = vert.getPosition()[2];
-                        } else if (vert.getPosition()[2] > max.z) {
-                            max.z = vert.getPosition()[2];
+                                // z coord
+                                if (vert.getPosition()[2] < min.z) {
+                                    min.z = vert.getPosition()[2];
+                                } else if (vert.getPosition()[2] > max.z) {
+                                    max.z = vert.getPosition()[2];
+                                }
+                            }
                         }
                     }
                 }

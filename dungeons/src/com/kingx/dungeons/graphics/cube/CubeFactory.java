@@ -108,8 +108,6 @@ public final class CubeFactory {
             TextureRegion texture = getTexture(type);
             c.addVerts(makeQuad(x, y, z, i, texture));
         }
-
-        c.make();
         return c;
 
     }

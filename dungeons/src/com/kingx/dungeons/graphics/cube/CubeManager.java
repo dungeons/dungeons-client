@@ -14,6 +14,52 @@ public class CubeManager {
 
     public CubeManager(ArrayList<CubeRegion> cubeRegions) {
         this.cubeRegions = cubeRegions;
+        hideInvidibleParts();
+    }
+
+    private void hideInvidibleParts() {
+        Cube[][] cubes;
+        for (int i = 0; i < cubeRegions.size(); i++) {
+            CubeRegion region = cubeRegions.get(i);
+            cubes = region.getCubes();
+            for (int j = 0; j < cubes.length; j++) {
+                for (int k = 0; k < cubes[j].length; k++) {
+                    if (cubes[j][k] != null) {
+                        Cube up = getCubeAt(region, j, k + 1);
+                        Cube down = getCubeAt(region, j, k - 1);
+                        Cube left = getCubeAt(region, j - 1, k);
+                        Cube right = getCubeAt(region, j + 1, k);
+
+                        if (up != null) {
+                            cubes[j][k].hide(2);
+                        }
+
+                        if (down != null) {
+                            cubes[j][k].hide(0);
+                        }
+
+                        if (left != null) {
+                            cubes[j][k].hide(3);
+                        }
+
+                        if (right != null) {
+                            cubes[j][k].hide(1);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private Cube getCubeAt(CubeRegion region, int j, int k) {
+        if (j < 0 || j >= region.getCubes().length) {
+            return null;
+        }
+
+        if (k < 0 || k >= region.getCubes()[j].length) {
+            return null;
+        }
+        return region.getCubes()[j][k];
     }
 
     public void removeCube(Int point) {

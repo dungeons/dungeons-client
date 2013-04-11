@@ -276,10 +276,10 @@ public class CubeRenderer implements Disposable {
     private void reset() {
 
         vertexSize = CubeVertex.size;
-        verticesPerQuad = Cube.VERTS_PER_QUAD * vertexSize;
+        verticesPerQuad = CubeSide.VERTS * vertexSize;
         vertices = new float[cubeCount * verticesPerQuad * Cube.QUADS];
 
-        short[] indices = new short[cubeCount * Cube.INDICES_PER_QUAD * Cube.QUADS];
+        short[] indices = new short[cubeCount * CubeSide.INDICES * Cube.QUADS];
         short j = 0;
         for (int i = 0; i < indices.length; i += 6, j += 4) {
             indices[i + 0] = (short) (j + 0);
@@ -343,8 +343,18 @@ public class CubeRenderer implements Disposable {
     }
 
     public void draw(Cube cube) {
-        CubeVertex[] cubeVerts = cube.getVerts();
-        for (CubeVertex cubeVert : cubeVerts) {
+        CubeSide[] cubeSides = cube.getSides();
+        for (CubeSide side : cubeSides) {
+            if (side.isVisible()) {
+                draw(side);
+            }
+        }
+
+    }
+
+    private void draw(CubeSide side) {
+
+        for (CubeVertex cubeVert : side.getVerts()) {
             if (CubeVertex.isPositionAttribute()) {
                 float[] position = cubeVert.getPosition();
                 vertices[idx++] = position[0];
@@ -390,18 +400,18 @@ public class CubeRenderer implements Disposable {
 
         renderCalls++;
         totalRenderCalls++;
-        int cubesInBatch = idx / verticesPerQuad;
-        if (cubesInBatch > cubeCount)
-            cubeCount = cubesInBatch;
+        int quadsInBatch = idx / verticesPerQuad;
+        if (quadsInBatch / Cube.QUADS > cubeCount)
+            cubeCount = quadsInBatch;
 
         mesh.setVertices(vertices, 0, idx);
         mesh.getIndicesBuffer().position(0);
-        mesh.getIndicesBuffer().limit(cubesInBatch * 6);
+        mesh.getIndicesBuffer().limit(quadsInBatch * CubeSide.INDICES);
 
         if (customShader != null)
-            mesh.render(customShader, GL10.GL_TRIANGLES, 0, cubesInBatch * 6);
+            mesh.render(customShader, GL10.GL_TRIANGLES, 0, quadsInBatch * CubeSide.INDICES);
         else
-            mesh.render(shader, GL10.GL_TRIANGLES, 0, cubesInBatch * 6);
+            mesh.render(shader, GL10.GL_TRIANGLES, 0, quadsInBatch * CubeSide.INDICES);
 
         idx = 0;
         currBufferIdx++;

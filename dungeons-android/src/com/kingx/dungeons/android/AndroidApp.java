@@ -10,8 +10,8 @@ public class AndroidApp extends App {
     private static final int BUFFER = 52428800;
     private int trace = 0;
 
-    public AndroidApp() {
-        super(null);
+    public AndroidApp(String[] args) {
+        super(args);
     }
 
     @Override

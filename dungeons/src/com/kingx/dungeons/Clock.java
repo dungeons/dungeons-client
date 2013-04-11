@@ -11,7 +11,7 @@ public class Clock implements Runnable {
 
     public Clock() {
         if (init) {
-            new Thread(this).start();
+            new Thread(this, "Logic").start();
             init = false;
         }
     }
@@ -23,9 +23,11 @@ public class Clock implements Runnable {
     private final float maxStep = .25f;
     private float accumulator = 0.0f;
     private long clocks;
+    private long initTime;
 
     @Override
     public void run() {
+        initTime = System.currentTimeMillis();
         while (!quit) {
             long newTime = System.nanoTime();
             double frameTime = (double) (newTime - currentTime) / BILLION;
@@ -68,6 +70,10 @@ public class Clock implements Runnable {
 
     public long getClocks() {
         return clocks;
+    }
+
+    public float getFPS() {
+        return clocks / ((System.currentTimeMillis() - initTime) / 1000f);
     }
 
 }

@@ -145,11 +145,16 @@ public class App implements ApplicationListener {
         renderShadowSystem.process();
         // renderGeometrySystem.process();
 
-        if (DEBUG != null && renderShadowSystem.getDepthMap() != null) {
+        if (DEBUG != null) {
             onScreenRasterRender.begin();
-            onScreenRasterRender.draw(renderShadowSystem.getDepthMap(), 0, 0, 100, 100, 1, 0, 0, 1);
+            if (renderShadowSystem.getDepthMap() != null) {
+                onScreenRasterRender.draw(renderShadowSystem.getDepthMap(), 0, 0, 100, 100, 1, 0, 0, 1);
+            }
             font.draw(onScreenRasterRender, App.getPlayer().getPositionComponent().toString(), 30, Gdx.graphics.getHeight() - 30);
             font.draw(onScreenRasterRender, String.valueOf(App.getCurrentView()), 30, Gdx.graphics.getHeight() - 60);
+            font.draw(onScreenRasterRender, "GPU:" + String.valueOf(Gdx.graphics.getFramesPerSecond()), 30, Gdx.graphics.getHeight() - 90);
+            font.draw(onScreenRasterRender, "CPU:" + String.valueOf(Math.round(clock.getFPS())), 30, Gdx.graphics.getHeight() - 120);
+            font.draw(onScreenRasterRender, "Clocks:" + String.valueOf(clock.getClocks()), 30, Gdx.graphics.getHeight() - 150);
             onScreenRasterRender.end();
         }
         if (ui != null) {
@@ -204,7 +209,7 @@ public class App implements ApplicationListener {
      * @return generated map
      */
     private int[][][] createMap() {
-        return GeneratorFactory.getInstace(GeneratorType.GENERIC).buildLayered(36, 50);
+        return GeneratorFactory.getInstace(GeneratorType.GENERIC).buildLayered(36, 10);
         // return Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT, MAZE_BLOCKS_COUNT) : Assets.map;
         //return MazeBuilder.getLayeredMaze(36, 9);
         // return Assets.map;

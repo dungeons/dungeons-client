@@ -14,7 +14,8 @@ public class MainActivity extends AndroidApplication {
         AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
         cfg.useGL20 = true;
 
-        App app = new AndroidApp();
+        String args = "-debug";
+        App app = new AndroidApp(args.split(" "));
         initialize(app, cfg);
     }
 }

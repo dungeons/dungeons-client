@@ -47,7 +47,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
     private CubeRenderer batchRender;
     private CubeRenderer batchRender2;
 
-    private static final int TEXTURE_SIZE = 1024;
+    private static final int TEXTURE_SIZE = 512;
 
     public RenderShadowSystem(FollowCameraComponent camera) {
         super(Aspect.getAspectForAll(PositionComponent.class, ShadowComponent.class));
