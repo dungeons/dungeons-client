@@ -22,6 +22,7 @@ public class Clock implements Runnable {
     private final float delta = .0166f;
     private final float maxStep = .25f;
     private float accumulator = 0.0f;
+    private long clocks;
 
     @Override
     public void run() {
@@ -50,7 +51,9 @@ public class Clock implements Runnable {
                         service.update(delta);
                     }
                     accumulator -= delta;
+                    clocks++;
                 }
+
             }
         }
     }
@@ -61,6 +64,10 @@ public class Clock implements Runnable {
 
     public void removeService(Updateable service) {
         services.remove(service);
+    }
+
+    public long getClocks() {
+        return clocks;
     }
 
 }

@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.kingx.artemis.World;
+import com.kingx.dungeons.GameStateManager.GameStatus;
 import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.concrete.Background;
 import com.kingx.dungeons.engine.concrete.Wanderer;
@@ -35,8 +36,6 @@ import com.kingx.dungeons.graphics.cube.CubeManager;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
 import com.kingx.dungeons.graphics.ui.Gamepad;
 import com.kingx.dungeons.input.Input;
-import com.kingx.dungeons.input.InputPlayer;
-import com.kingx.dungeons.input.InputRecorder;
 import com.kingx.dungeons.input.RegularInputProcessor;
 import com.kingx.dungeons.server.AbstractServer;
 import com.kingx.dungeons.server.OfflineServer;
@@ -49,6 +48,7 @@ public class App implements ApplicationListener {
     public static Param DEBUG;
     public static Param NOSLEEP;
     public static Param SERVER;
+    public static Param REPLAY;
 
     public static Random rand;
 
@@ -71,8 +71,8 @@ public class App implements ApplicationListener {
     private static float progress;
 
     private final Map<String, Param> params;
-    private Clock clock;
-    private final GameStateManager state;
+    private static Clock clock;
+    private GameStateManager state;
     private static Input input;
 
     public App(String[] args) {
@@ -80,9 +80,8 @@ public class App implements ApplicationListener {
         DEBUG = getParam("-d", "-debug");
         NOSLEEP = getParam("-ns", "-nosleep");
         SERVER = getParam("-s", "-server");
+        REPLAY = getParam("-r", "-replay");
 
-        state = GameStateManager.getInstance();
-        rand = new Random(state.getSeed());
     }
 
     private Param getParam(String... args) {
@@ -97,6 +96,14 @@ public class App implements ApplicationListener {
 
     @Override
     public void create() {
+
+        state = REPLAY != null ? GameStateManager.getInstance(GameStatus.REPLAY) : GameStateManager.getInstance(GameStatus.RECORD);
+        rand = new Random(state.getSeed());
+
+        clock = new Clock();
+        input = new Input(new RegularInputProcessor());
+        Gdx.input.setInputProcessor(input);
+
         ShaderProgram.pedantic = false;
         world = new World();
 
@@ -104,22 +111,6 @@ public class App implements ApplicationListener {
         Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
         Gdx.gl.glDepthFunc(GL10.GL_LESS);
 
-        clock = new Clock();
-
-        switch (state.getStatus()) {
-            case RECORD:
-                input = new Input(new InputRecorder(state));
-                Gdx.input.setInputProcessor(input);
-                break;
-            case PLAY:
-                input = new Input(new InputRecorder(state));
-                clock.addService(new InputPlayer(state, input));
-                break;
-            default:
-                input = new Input(new RegularInputProcessor());
-                Gdx.input.setInputProcessor(input);
-                break;
-        }
     }
 
     public static boolean INITIALIZED = false;
@@ -179,7 +170,7 @@ public class App implements ApplicationListener {
 
         onScreenRasterRender = new SpriteBatch();
         onScreenVectorRender = new ShapeRenderer();
-        server = SERVER != null ? new OnlineServer(world) : new OfflineServer(world);
+        server = SERVER != null ? new OnlineServer(world) : new OfflineServer(world, state);
         world.initialize();
 
         clock.addService(server);
@@ -295,6 +286,10 @@ public class App implements ApplicationListener {
 
     public static Gamepad getGamepad() {
         return gamepad;
+    }
+
+    public static Clock getClock() {
+        return clock;
     }
 
     public static CubeManager getCubeManager() {

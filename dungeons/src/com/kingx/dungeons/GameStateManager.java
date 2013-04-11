@@ -6,10 +6,14 @@ import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.kingx.dungeons.server.ClientCommand;
+import com.kingx.dungeons.server.ClockCommand;
 
 public class GameStateManager implements Serializable {
 
@@ -17,24 +21,21 @@ public class GameStateManager implements Serializable {
      * 
      */
     private static final long serialVersionUID = -943946409313587175L;
-    private static final String path = "dungeons/data/map.dng";
+    private static final String path = "dungeons/data/state.dng";
     private final long seed;
-    private final Replay replayHandler;
+    private final List<ClockCommand> inputSequence;
 
-    private final GameStatus status = GameStatus.RECORD;
+    private final GameStatus status;
 
     public enum GameStatus {
-        PLAY,
+        REPLAY,
         RECORD
     }
 
-    public GameStateManager(GameState state) {
-        this(state.seed, new Replay(state.getInputSequence()));
-    }
-
-    public GameStateManager(long seed, Replay replayHandler) {
+    private GameStateManager(GameStatus status, long seed, List<ClockCommand> inputSequence) {
+        this.status = status;
         this.seed = seed;
-        this.replayHandler = replayHandler;
+        this.inputSequence = inputSequence;
     }
 
     public void writeState() {
@@ -44,25 +45,35 @@ public class GameStateManager implements Serializable {
         ObjectOutput out;
         try {
             out = new ObjectOutputStream(file.write(false));
-            out.writeObject(new GameState(seed, replayHandler.getBuffer()));
+            out.writeObject(new GameState(seed, inputSequence));
             out.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public static GameStateManager loadState() {
+    public static GameState loadState() {
         GameState state;
         try {
             state = (GameState) new ObjectInputStream(Gdx.files.external(path).read()).readObject();
         } catch (Exception e) {
             throw new IllegalArgumentException(e);
         }
-        return new GameStateManager(state);
+        return state;
     }
 
-    public static GameStateManager getInstance() {
-        return new GameStateManager(System.nanoTime(), new Replay());
+    public static GameStateManager getInstance(GameStatus status) {
+        GameStateManager instance = null;
+        switch (status) {
+            case RECORD:
+                instance = new GameStateManager(status, System.nanoTime(), new LinkedList<ClockCommand>());
+                break;
+            case REPLAY:
+                GameState state = GameStateManager.loadState();
+                instance = new GameStateManager(status, state.getSeed(), state.getInputSequence());
+                break;
+        }
+        return instance;
     }
 
     public long getSeed() {
@@ -79,9 +90,9 @@ public class GameStateManager implements Serializable {
          */
         private static final long serialVersionUID = 8736577302087657484L;
         private final long seed;
-        private final ArrayList<ClientCommand> inputSequence;
+        private final List<ClockCommand> inputSequence;
 
-        private GameState(long seed, ArrayList<ClientCommand> inputSequence) {
+        private GameState(long seed, List<ClockCommand> inputSequence) {
             this.seed = seed;
             this.inputSequence = inputSequence;
         }
@@ -90,36 +101,30 @@ public class GameStateManager implements Serializable {
             return seed;
         }
 
-        public ArrayList<ClientCommand> getInputSequence() {
+        public List<ClockCommand> getInputSequence() {
             return inputSequence;
         }
 
     }
 
-    private static final class Replay {
-
-        private final ArrayList<ClientCommand> buffer;
-
-        public Replay() {
-            this(new ArrayList<ClientCommand>());
-        }
-
-        public Replay(ArrayList<ClientCommand> inputSequence) {
-            this.buffer = inputSequence;
-        }
-
-        public void registerInput(ClientCommand c) {
-            buffer.add(c);
-        }
-
-        public ArrayList<ClientCommand> getBuffer() {
-            return buffer;
-        }
-
+    public void register(ClockCommand clockCommand) {
+        inputSequence.add(clockCommand);
     }
 
-    public void register(ClientCommand command) {
-        replayHandler.registerInput(command);
+    public List<ClockCommand> getReplay() {
+        return inputSequence;
     }
 
+    public List<ClientCommand> getCommands(long clocks) {
+        ArrayList<ClientCommand> result = new ArrayList<ClientCommand>();
+        Iterator<ClockCommand> iterator = inputSequence.iterator();
+        while (iterator.hasNext()) {
+            ClockCommand cc = iterator.next();
+            if (cc.getTimestamp() == clocks) {
+                result.add(cc);
+                iterator.remove();
+            }
+        }
+        return result;
+    }
 }

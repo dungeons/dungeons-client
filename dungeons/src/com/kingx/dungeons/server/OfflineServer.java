@@ -1,10 +1,13 @@
 package com.kingx.dungeons.server;
 
+import java.util.List;
 import java.util.Map;
 
 import com.badlogic.gdx.Input.Keys;
 import com.kingx.artemis.World;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.GameStateManager;
+import com.kingx.dungeons.GameStateManager.GameStatus;
 import com.kingx.dungeons.engine.component.CollisionComponent;
 import com.kingx.dungeons.engine.component.MiningComponent;
 import com.kingx.dungeons.engine.component.dynamic.GravityComponent;
@@ -19,8 +22,11 @@ import com.kingx.dungeons.input.Touch;
 
 public class OfflineServer extends AbstractServer {
 
-    public OfflineServer(World world) {
+    private final GameStateManager gsm;
+
+    public OfflineServer(World world, GameStateManager gsm) {
         super(world);
+        this.gsm = gsm;
         world.setSystem(new MovementSystem());
         world.setSystem(new CollisionSystem());
         world.setSystem(new GravitySystem());
@@ -31,11 +37,24 @@ public class OfflineServer extends AbstractServer {
 
     @Override
     public void process(ClientCommand c) {
-        processInput(c);
+        if (gsm.getStatus() == GameStatus.RECORD) {
+            processInput(c);
+
+            // replace timestamp with number of clocks game did to this point.
+            ClockCommand clockCommand = new ClockCommand(c);
+            gsm.register(clockCommand);
+        }
     }
 
     @Override
     public void updateInternal(float delta) {
+        if (gsm.getStatus() == GameStatus.REPLAY) {
+            List<ClientCommand> commands = gsm.getCommands(App.getClock().getClocks());
+            for (ClientCommand command : commands) {
+                processInput(command);
+            }
+        }
+
         world.setDelta(delta);
         world.process();
 

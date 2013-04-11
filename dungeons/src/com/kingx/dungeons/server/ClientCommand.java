@@ -3,14 +3,17 @@ package com.kingx.dungeons.server;
 import java.io.Serializable;
 
 public class ClientCommand implements Serializable {
-
     /**
      * 
      */
-    private static final long serialVersionUID = -6271064802913973327L;
+    private static final long serialVersionUID = 8079538732187185325L;
     private final short action;
     private final long timestamp;
     private final int value;
+
+    public ClientCommand(ClientCommand c) {
+        this(c.getAction(), c.getTimestamp(), c.getValue());
+    }
 
     public ClientCommand(short action, long timestamp, int value) {
         this.action = action;
@@ -32,7 +35,7 @@ public class ClientCommand implements Serializable {
 
     @Override
     public String toString() {
-        return "ClientCommand [action=" + action + ", timestamp=" + timestamp + ", value=" + value + "]";
+        return "Command [action=" + action + ", timestamp=" + timestamp + ", value=" + value + "]";
     }
 
 }
