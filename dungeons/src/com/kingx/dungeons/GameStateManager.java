@@ -39,6 +39,8 @@ public class GameStateManager implements Serializable {
     }
 
     public void writeState() {
+        if (status == GameStatus.REPLAY)
+            return;
         // Serialize data object to a file
         final FileHandle file = Gdx.files.external(path);
 
@@ -57,7 +59,8 @@ public class GameStateManager implements Serializable {
         try {
             state = (GameState) new ObjectInputStream(Gdx.files.external(path).read()).readObject();
         } catch (Exception e) {
-            throw new IllegalArgumentException(e);
+            state = null;
+            System.err.println("Replay [" + path + "] was not found.");
         }
         return state;
     }
@@ -70,7 +73,7 @@ public class GameStateManager implements Serializable {
                 break;
             case REPLAY:
                 GameState state = GameStateManager.loadState();
-                instance = new GameStateManager(status, state.getSeed(), state.getInputSequence());
+                instance = state == null ? getInstance(GameStatus.RECORD) : new GameStateManager(status, state.getSeed(), state.getInputSequence());
                 break;
         }
         return instance;

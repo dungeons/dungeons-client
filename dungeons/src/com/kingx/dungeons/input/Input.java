@@ -7,12 +7,6 @@ import com.kingx.dungeons.server.ClientCommand;
 
 public class Input extends InputAdapter {
 
-    private final InputPostProcessor processor;
-
-    public Input(InputPostProcessor processor) {
-        this.processor = processor;
-    }
-
     @Override
     public boolean keyDown(int keycode) {
         System.out.println("Key down: " + keycode);
@@ -28,7 +22,7 @@ public class Input extends InputAdapter {
     private boolean action(int keycode, int dir) {
         System.out.println(App.INITIALIZED);
         if (App.INITIALIZED) {
-            processor.process(new ClientCommand((short) keycode, System.currentTimeMillis(), dir));
+            App.getServer().send(new ClientCommand((short) keycode, System.currentTimeMillis(), dir));
         }
 
         return false;

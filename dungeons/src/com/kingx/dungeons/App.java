@@ -36,7 +36,6 @@ import com.kingx.dungeons.graphics.cube.CubeManager;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
 import com.kingx.dungeons.graphics.ui.Gamepad;
 import com.kingx.dungeons.input.Input;
-import com.kingx.dungeons.input.RegularInputProcessor;
 import com.kingx.dungeons.server.AbstractServer;
 import com.kingx.dungeons.server.OfflineServer;
 import com.kingx.dungeons.server.OnlineServer;
@@ -101,7 +100,7 @@ public class App implements ApplicationListener {
         rand = new Random(state.getSeed());
 
         clock = new Clock();
-        input = new Input(new RegularInputProcessor());
+        input = new Input();
         Gdx.input.setInputProcessor(input);
 
         ShaderProgram.pedantic = false;
