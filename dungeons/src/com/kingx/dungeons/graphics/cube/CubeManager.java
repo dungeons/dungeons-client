@@ -25,52 +25,57 @@ public class CubeManager {
             for (int j = 0; j < cubes.length; j++) {
                 for (int k = 0; k < cubes[j].length; k++) {
                     if (cubes[j][k] != null) {
-                        Cube up = getCubeAt(region, j, k + 1);
-                        Cube down = getCubeAt(region, j, k - 1);
-                        Cube left = getCubeAt(region, j - 1, k);
-                        Cube right = getCubeAt(region, j + 1, k);
+                        checkAdjacentBlocks(region, j, k);
 
-                        if (up != null) {
-                            cubes[j][k].hide(2);
-                        }
-
-                        if (down != null) {
-                            cubes[j][k].hide(0);
-                        }
-
-                        if (left != null) {
-                            cubes[j][k].hide(3);
-                        }
-
-                        if (right != null) {
-                            cubes[j][k].hide(1);
-                        }
                     }
                 }
             }
         }
     }
 
-    private Cube getCubeAt(CubeRegion region, int j, int k) {
-        if (j < 0 || j >= region.getCubes().length) {
-            return null;
+    private void checkAdjacentBlocks(CubeRegion region, int x, int y) {
+        Cube[][] cubes = region.getCubes();
+        Cube up = getCubeAt(region, x, y + 1);
+        Cube down = getCubeAt(region, x, y - 1);
+        Cube left = getCubeAt(region, x - 1, y);
+        Cube right = getCubeAt(region, x + 1, y);
+
+        if (up != null) {
+            cubes[x][y].hide(2);
         }
 
-        if (k < 0 || k >= region.getCubes()[j].length) {
+        if (down != null) {
+            cubes[x][y].hide(0);
+        }
+
+        if (left != null) {
+            cubes[x][y].hide(3);
+        }
+
+        if (right != null) {
+            cubes[x][y].hide(1);
+        }
+    }
+
+    private Cube getCubeAt(CubeRegion region, int x, int y) {
+        if (x < 0 || x >= region.getCubes().length) {
             return null;
         }
-        return region.getCubes()[j][k];
+        if (y < 0 || y >= region.getCubes()[x].length) {
+            return null;
+        }
+        return region.getCubes()[x][y];
     }
 
     public void removeCube(Int point) {
         int[][] footprint = App.getMap().getFootprint();
 
         if (point.x == 0) {
-            this.getCubeRegions().get(App.getPrevView()).removeCube(footprint.length, point.y);
+            removeCube(this.getCubeRegions().get(App.getPrevView()), footprint.length, point.y);
         } else if (point.x == footprint.length) {
-            this.getCubeRegions().get(App.getNextView()).removeCube(0, point.y);
+            removeCube(this.getCubeRegions().get(App.getNextView()), 0, point.y);
         }
-        this.getCubeRegions().get(App.getCurrentView()).removeCube(point.x, point.y);
+        removeCube(this.getCubeRegions().get(App.getCurrentView()), point.x, point.y);
 
         if (point.x == footprint.length) {
             footprint = App.getMap().getNextFootprint();
@@ -78,5 +83,11 @@ public class CubeManager {
         } else {
             footprint[point.x][point.y] = 0;
         }
+    }
+
+    private void removeCube(CubeRegion region, int x, int y) {
+        region.removeCube(x, y);
+        // TODO finish this
+        //checkAdjacentBlocks(region, x, y);
     }
 }
