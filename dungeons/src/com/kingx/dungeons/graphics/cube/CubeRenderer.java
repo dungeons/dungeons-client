@@ -326,27 +326,29 @@ public class CubeRenderer implements Disposable {
 
     }
 
-    public void draw(ArrayList<CubeRegion> regions) {
+    public void draw(ArrayList<CubeRegion> regions, boolean onlyVisible) {
         for (CubeRegion region : regions) {
-            draw(region);
+            draw(region, onlyVisible);
         }
     }
 
-    public void draw(CubeRegion region) {
+    public void draw(CubeRegion region, boolean onlyVisible) {
         for (Cube[] temp : region.getCubes()) {
             for (Cube cube : temp) {
                 if (cube != null) {
-                    draw(cube);
+                    draw(cube, onlyVisible);
                 }
             }
         }
     }
 
-    public void draw(Cube cube) {
-        CubeSide[] cubeSides = cube.getSides();
-        for (CubeSide side : cubeSides) {
-            if (side.isVisible()) {
-                draw(side);
+    public void draw(Cube cube, boolean onlyVisible) {
+        if (!onlyVisible || cube.isVisible()) {
+            CubeSide[] cubeSides = cube.getSides();
+            for (CubeSide side : cubeSides) {
+                if (side.isVisible()) {
+                    draw(side);
+                }
             }
         }
 

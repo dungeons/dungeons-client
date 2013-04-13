@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.geom.Point.Int;
+import com.kingx.dungeons.graphics.cube.Cube.CubeSideType;
 
 public class CubeManager {
     public ArrayList<CubeRegion> cubeRegions;
@@ -24,9 +25,8 @@ public class CubeManager {
             cubes = region.getCubes();
             for (int j = 0; j < cubes.length; j++) {
                 for (int k = 0; k < cubes[j].length; k++) {
-                    if (cubes[j][k] != null) {
+                    if (App.getMap().getFootprint(i, j, k) != 0) {
                         checkAdjacentBlocks(region, j, k);
-
                     }
                 }
             }
@@ -34,26 +34,22 @@ public class CubeManager {
     }
 
     private void checkAdjacentBlocks(CubeRegion region, int x, int y) {
-        Cube[][] cubes = region.getCubes();
-        Cube up = getCubeAt(region, x, y + 1);
-        Cube down = getCubeAt(region, x, y - 1);
-        Cube left = getCubeAt(region, x - 1, y);
-        Cube right = getCubeAt(region, x + 1, y);
+        Cube cube = getCubeAt(region, x, y);
+        if (cube != null && cube.isVisible()) {
+            Cube up = getCubeAt(region, x, y + 1);
+            Cube down = getCubeAt(region, x, y - 1);
+            Cube left = getCubeAt(region, x - 1, y);
+            Cube right = getCubeAt(region, x + 1, y);
 
-        if (up != null) {
-            cubes[x][y].hide(2);
-        }
+            // remove bottom
+            cube.setVisibleSide(region.getId(), CubeSideType.BOTTOM, false);
 
-        if (down != null) {
-            cubes[x][y].hide(0);
-        }
+            cube.setVisibleSide(region.getId(), CubeSideType.UP, up == null || !up.isVisible());
+            cube.setVisibleSide(region.getId(), CubeSideType.DOWN, down == null || !down.isVisible());
+            cube.setVisibleSide(region.getId(), CubeSideType.LEFT, left == null || !left.isVisible());
+            cube.setVisibleSide(region.getId(), CubeSideType.RIGHT, right == null || !right.isVisible());
 
-        if (left != null) {
-            cubes[x][y].hide(3);
-        }
-
-        if (right != null) {
-            cubes[x][y].hide(1);
+            cube.setVisibleSide(region.getId(), CubeSideType.TOP, true);
         }
     }
 
@@ -77,17 +73,16 @@ public class CubeManager {
         }
         removeCube(this.getCubeRegions().get(App.getCurrentView()), point.x, point.y);
 
-        if (point.x == footprint.length) {
-            footprint = App.getMap().getNextFootprint();
-            footprint[0][point.y] = 0;
-        } else {
-            footprint[point.x][point.y] = 0;
-        }
+        App.getMap().setFootprint(App.getCurrentView(), point.x, point.y, 0);
+
     }
 
     private void removeCube(CubeRegion region, int x, int y) {
         region.removeCube(x, y);
-        // TODO finish this
-        //checkAdjacentBlocks(region, x, y);
+        for (int i = x - 1; i <= x + 1; i++) {
+            for (int j = y - 1; j <= y + 1; j++) {
+                checkAdjacentBlocks(region, i, j);
+            }
+        }
     }
 }

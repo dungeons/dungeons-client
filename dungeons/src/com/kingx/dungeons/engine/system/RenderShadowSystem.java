@@ -47,7 +47,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
     private CubeRenderer batchRender;
     private CubeRenderer batchRender2;
 
-    private static final int TEXTURE_SIZE = 512;
+    private static final int TEXTURE_SIZE = 1024;
 
     public RenderShadowSystem(FollowCameraComponent camera) {
         super(Aspect.getAspectForAll(PositionComponent.class, ShadowComponent.class));
@@ -66,7 +66,6 @@ public class RenderShadowSystem extends EntityProcessingSystem {
     protected void begin() {
         if (batchRender == null) {
             batchRender = new CubeRenderer();
-            batchRender2 = new CubeRenderer();
         }
     }
 
@@ -113,17 +112,11 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowProjectShader.setUniformf("u_minBound", CubeRegion.min);
         shadowProjectShader.setUniformf("u_maxBound", CubeRegion.max);
         shadowProjectShader.setUniformf("u_tint", Colors.interpolate(Colors.SHADOW_BOTTOM, Color.WHITE, App.getProgress(), 1));
-        poly.render(shadowProjectShader, GL20.GL_TRIANGLES);
+
+        batchRender.draw(cubeRegions.get(App.getLastView()), false);
+        batchRender.draw(cubeRegions.get(App.getCurrentView()), false);
+        batchRender.draw(cubeRegions.get(App.getNextView()), false);
         batchRender.end();
-
-        batchRender2.setShader(shadowProjectShader);
-        batchRender2.begin();
-        shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
-        shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
-
-        batchRender2.draw(cubeRegions.get(App.getLastView()));
-        batchRender2.draw(cubeRegions.get(App.getCurrentView()));
-        batchRender2.end();
 
     }
 
@@ -155,7 +148,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
 
         batchRender.setShader(shadowGeneratorShader);
         batchRender.begin();
-        batchRender.draw(cubeRegions.get(App.getCurrentView()));
+        batchRender.draw(cubeRegions.get(App.getCurrentView()), true);
         batchRender.end();
         shadowGeneratorShader.end();
         return shadowMap.getColorBufferTexture();

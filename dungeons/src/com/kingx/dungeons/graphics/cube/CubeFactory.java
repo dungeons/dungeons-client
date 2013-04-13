@@ -51,35 +51,38 @@ public final class CubeFactory {
 
                     float x = 0, y = 0, z = 0;
 
-                    if (maze.getFootprint(i)[j][k] != 0) {
-                        switch (i) {
-                            case 0:
-                                x = j;
-                                y = k;
-                                z = 0;
-                                break;
-                            case 1:
-                                x = maze.getFootprint(i).length;
-                                y = k;
-                                z = -j;
-                                break;
-                            case 2:
-                                x = maze.getFootprint(i).length - j;
-                                y = k;
-                                z = -maze.getFootprint(i).length;
-                                break;
-                            case 3:
-                                x = 0;
-                                y = k;
-                                z = -maze.getFootprint(i).length + j;
-                                break;
-                        }
-                        cubes[j][k] = makeCube(x * App.UNIT, y * App.UNIT, z * App.UNIT, maze.getFootprint(i)[j][k]);
+                    switch (i) {
+                        case 0:
+                            x = j;
+                            y = k;
+                            z = 0;
+                            break;
+                        case 1:
+                            x = maze.getFootprint(i).length;
+                            y = k;
+                            z = -j;
+                            break;
+                        case 2:
+                            x = maze.getFootprint(i).length - j;
+                            y = k;
+                            z = -maze.getFootprint(i).length;
+                            break;
+                        case 3:
+                            x = 0;
+                            y = k;
+                            z = -maze.getFootprint(i).length + j;
+                            break;
                     }
+                    cubes[j][k] = makeCube(x * App.UNIT, y * App.UNIT, z * App.UNIT, maze.getFootprint(i)[j][k]);
+                    if (j == 0) {
+                        cubes[j][k].setCorner(true);
+                    }
+                    cubes[j][k].setVisible(i, maze.getFootprint(i)[j][k] != 0);
+
                 }
             }
 
-            regions.add(new CubeRegion(cubes));
+            regions.add(new CubeRegion(i, cubes));
 
         }
 
@@ -91,6 +94,7 @@ public final class CubeFactory {
 
             for (int k = 0; k < current[last].length; k++) {
                 current[last][k] = next[0][k];
+                current[last][k].setCorner(true);
             }
         }
     }
@@ -159,7 +163,7 @@ public final class CubeFactory {
             case 2:
                 return Assets.getTexture("diamond", 0);
             default:
-                return null;
+                return Assets.getTexture("wall", App.rand.nextInt(4));
         }
     }
 

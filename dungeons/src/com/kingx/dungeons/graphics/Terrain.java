@@ -89,11 +89,11 @@ public class Terrain {
     }
 
     public int[][] getNextFootprint() {
-        return getFootprint((App.getCurrentView() + 1) % footprints.length);
+        return getFootprint(App.getCurrentView() + 1);
     }
 
     public int[][] getFootprint(int i) {
-        return footprints[i];
+        return footprints[i % footprints.length];
     }
 
     public int getFootprints() {
@@ -116,6 +116,26 @@ public class Terrain {
     public Vector2 getRandomPosition(int maxx, int maxy) {
         Int p = getRandomBlock(maxx, maxy);
         return new Vector2(App.UNIT * (p.x + 0.5f), App.UNIT * (p.y + 0.5f));
+    }
+
+    public int getFootprint(int x, int y, int z) {
+        int[][] footprint = this.getFootprint(x);
+        if (y == footprint.length) {
+            footprint = App.getMap().getFootprint(x + 1);
+            return footprint[0][z];
+        } else {
+            return footprint[y][z];
+        }
+    }
+
+    public void setFootprint(int x, int y, int z, int value) {
+        int[][] footprint = this.getFootprint(x);
+        if (y == footprint.length) {
+            footprint = App.getMap().getFootprint(x + 1);
+            footprint[0][z] = value;
+        } else {
+            footprint[y][z] = value;
+        }
     }
 
 }

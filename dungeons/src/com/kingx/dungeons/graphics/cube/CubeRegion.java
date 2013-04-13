@@ -6,9 +6,12 @@ import com.kingx.dungeons.geom.Point.Int;
 
 public class CubeRegion {
 
+    private final int id;
+
     private Cube[][] cubes;
 
-    public CubeRegion(Cube[][] cubes) {
+    public CubeRegion(int id, Cube[][] cubes) {
+        this.id = id;
         setCubes(cubes);
     }
 
@@ -81,11 +84,11 @@ public class CubeRegion {
     }
 
     public void removeCube(Int point) {
-        cubes[point.x][point.y] = null;
+        cubes[point.x][point.y].setVisible(id, false);
     }
 
     public void removeCube(int x, int y) {
-        cubes[x][y] = null;
+        cubes[x][y].setVisible(id, false);
     }
 
     @Override
@@ -111,6 +114,10 @@ public class CubeRegion {
 
         output += "\n total [" + cnt + "]";
         return output;
+    }
+
+    public int getId() {
+        return id;
     }
 
 }

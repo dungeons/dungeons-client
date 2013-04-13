@@ -61,59 +61,71 @@ void main ()
     vec4 worldPostitoin = vWorldVertex;
 	bool shadow = false;
 	vec3 depth;
-		for(float i = 0.0; i < 4.0; i++){
-			// Change position to position seen from this perspective
-			depth = vPosition[int(i)].xyz /  vPosition[int(i)].w;
-			
-			// interpolates across z buffer so value si within the bound
-			// length(worldPostitoin.xy - v_lightSpacePosition.xy) removers the light circle around player but causes wall flickering.
-			depth.z = length(worldPostitoin.xy) * (LinearDepthConstant);
-			// make sure that shadow is computed within lights area (90° area)
-            // FIXME This is not a sollution, areas are still overlapping
-            float bias = 0.0;
-			bool cond = false;
+	float i = 0.0;
+	float PI = 3.14159265358979323846264;
+	float angle;
+	float offset = -PI/4.0;
 
-			if(i == 0.0){
-                cond = depth.x >= 0.0-bias && depth.x <= 1.0+bias && depth.y >= 0.5-bias;
-            } else if (i == 1.0){
-				cond = depth.y >= 0.0-bias && depth.y <= 1.0+bias && depth.x >= 0.5-bias;
-            } else if (i == 2.0){
-				cond = depth.x >= 0.0-bias && depth.x <= 1.0+bias && depth.y <= 0.5+bias;
-            } else if (i == 3.0){
-				cond = depth.y >= 0.0-bias && depth.y <= 1.0+bias && depth.x <= 0.5+bias;
-			}
-
-			if(cond){
-				depth.x = mod(i, 2.0) * 0.5 + depth.x / 2.0;
-                depth.y = floor(i / 2.0) * 0.5 + depth.y / 2.0;
-				// gets value stored in depth map and compares it to value seen from this perspective
-				float shadowDepth = unpack(texture2D(DepthMap, depth.xy));
-				
-				// values with higher z value (being farther from camera) are in shadow
-				if(depth.z > shadowDepth){
-					shadow = true;
-				}
-			}
+	if(u_side == 0.0){
+			angle = atan(worldPostitoin.y- v_lightSpacePosition.y,worldPostitoin.x - v_lightSpacePosition.x);
+		}else if(u_side == 1.0){
+			angle = atan(worldPostitoin.y- v_lightSpacePosition.y, v_lightSpacePosition.z - worldPostitoin.z);
+		}else if(u_side == 2.0){
+			angle = atan(worldPostitoin.y- v_lightSpacePosition.y,v_lightSpacePosition.x - worldPostitoin.x );
+		}else{
+			angle = atan(worldPostitoin.y- v_lightSpacePosition.y,worldPostitoin.z - v_lightSpacePosition.z);
 		}
-		float distance = length(worldPostitoin.xyz - v_lightSpacePosition.xyz);
-        shadow = distance > u_sight ? true : shadow;
-		distance = clamp(distance,0.0,u_sight);
-		distance/=u_sight;
-		
-		
-		float del = 85.0;
-		float r = round (interpolate(u_source_color.r ,u_ground_color.r, distance, 1.0)*del) / del;
-		float g = round (interpolate(u_source_color.g ,u_ground_color.g, distance, 1.0)*del) / del;
-		float b = round (interpolate(u_source_color.b ,u_ground_color.b, distance, 1.0)*del) / del;
-     
-        if(vWorldVertex.z  >=  u_maxBound.z - 0.01 || vWorldVertex.x  >= u_maxBound.x - 0.01 || vWorldVertex.z  <=  u_minBound.z + 0.01 || vWorldVertex.x  <=  u_minBound.x + 0.01){
-            shadow = true;
-        }
-        
-	    if(u_forceShadow || shadow){
-	  		gl_FragColor = u_ground_color * texture2D(u_texture,v_texCoord) * u_tint ;
-        }else{
-	 		gl_FragColor = vec4(r,g,b,1.0) * texture2D(u_texture,v_texCoord) * u_tint ;
-        }
+
+	if(angle < -PI/2.0+offset){
+		i = 1.0;
+	}else if(angle < offset){
+		i = 2.0;
+	}else if(angle < PI/2.0+offset){
+		i = 3.0;
+	}else if(angle < PI+offset){
+		i = 0.0;
+	}else{
+		i = 1.0;
+	}
+
+	// Change position to position seen from this perspective
+	depth = vPosition[int(i)].xyz /  vPosition[int(i)].w;
+
+
+	// interpolates across z buffer so value si within the bound
+	// length(worldPostitoin.xy - v_lightSpacePosition.xy) removers the light circle around player but causes wall flickering.
+
+	depth.z = length(worldPostitoin.xy) * (LinearDepthConstant);
+	// make sure that shadow is computed within lights area (90° area)
+
+	depth.x = mod(i, 2.0) * 0.5 + depth.x / 2.0;
+	depth.y = floor(i / 2.0) * 0.5 + depth.y / 2.0;
+
+	// gets value stored in depth map and compares it to value seen from this perspective
+	float shadowDepth = unpack(texture2D(DepthMap, depth.xy));
+
+	// values with higher z value (being farther from camera) are in shadow
+	if(depth.z > shadowDepth){
+		shadow = true;
+	}
+
+	float distance = length(worldPostitoin.xyz - v_lightSpacePosition.xyz);
+	shadow = distance > u_sight ? true : shadow;
+	distance = clamp(distance,0.0,u_sight);
+	distance/=u_sight;
+
+	float del = 85.0;
+	float r = round (interpolate(u_source_color.r ,u_ground_color.r, distance, 1.0)*del) / del;
+	float g = round (interpolate(u_source_color.g ,u_ground_color.g, distance, 1.0)*del) / del;
+	float b = round (interpolate(u_source_color.b ,u_ground_color.b, distance, 1.0)*del) / del;
+	if(vWorldVertex.z  >=  u_maxBound.z - 0.01 || vWorldVertex.x  >= u_maxBound.x - 0.01 || vWorldVertex.z  <=  u_minBound.z + 0.01 || vWorldVertex.x  <=  u_minBound.x + 0.01){
+		shadow = true;
+	}
+
+	if(u_forceShadow || shadow){
+		gl_FragColor = u_ground_color * texture2D(u_texture,v_texCoord) * u_tint ;
+	}else{
+		gl_FragColor = vec4(r,g,b,1.0) * texture2D(u_texture,v_texCoord) * u_tint ;
+	}
         
 }
