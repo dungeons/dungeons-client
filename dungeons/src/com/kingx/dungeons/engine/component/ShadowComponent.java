@@ -19,7 +19,7 @@ public class ShadowComponent extends Component {
         lights = new Camera[4];
         int offset = 1;
         for (int i = 0; i < lights.length; i++) {
-            lights[i] = new PerspectiveCamera(90, 512, 512);
+            lights[i] = new PerspectiveCamera(91, 512, 512);
             lights[i].near = 0.0001f;
             lights[i].far = 500;
             lights[i].direction.x = Math.round(Math.cos(Math.PI / 2 * (i + offset)));
