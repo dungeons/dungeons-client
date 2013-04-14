@@ -64,7 +64,6 @@ public class App implements ApplicationListener {
     public static final float UNIT = 1f;
     public static final float VIEW_DISTANCE = 12f;
     public static final float PLAYER_OFFSET = 0.5f;
-    public static final float LIGHT_OFFSET = 0.1f;
 
     private static boolean wireframe;
     private static float progress;
@@ -209,7 +208,7 @@ public class App implements ApplicationListener {
      * @return generated map
      */
     private int[][][] createMap() {
-        return GeneratorFactory.getInstace(GeneratorType.GENERIC).buildLayered(36, 10);
+        return GeneratorFactory.getInstace(GeneratorType.GENERIC).buildLayered(36, 50);
         // return Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT, MAZE_BLOCKS_COUNT) : Assets.map;
         //return MazeBuilder.getLayeredMaze(36, 9);
         // return Assets.map;

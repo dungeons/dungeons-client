@@ -95,7 +95,7 @@ void main ()
 	// interpolates across z buffer so value si within the bound
 	// length(worldPostitoin.xy - v_lightSpacePosition.xy) removers the light circle around player but causes wall flickering.
 
-	depth.z = length(worldPostitoin.xy) * (LinearDepthConstant);
+	depth.z = length(worldPostitoin.xy) * LinearDepthConstant;
 	// make sure that shadow is computed within lights area (90° area)
 
 	depth.x = mod(i, 2.0) * 0.5 + depth.x / 2.0;

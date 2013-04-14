@@ -47,8 +47,6 @@ public class RenderShadowSystem extends EntityProcessingSystem {
     private CubeRenderer batchRender;
     private CubeRenderer batchRender2;
 
-    private static final int TEXTURE_SIZE = 1024;
-
     public RenderShadowSystem(FollowCameraComponent camera) {
         super(Aspect.getAspectForAll(PositionComponent.class, ShadowComponent.class));
         this.camera = camera;
@@ -58,7 +56,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowGeneratorShader = Shader.getShader("shadowgen");
         shadowProjectShader = Shader.getShader("shadowproj");
 
-        shadowMap = new QuadTextureFrameBuffer(Format.RGBA8888, TEXTURE_SIZE, TEXTURE_SIZE, true);
+        shadowMap = new QuadTextureFrameBuffer(Format.RGBA8888, ShadowComponent.TEXTURE_SIZE, ShadowComponent.TEXTURE_SIZE, true);
 
     }
 

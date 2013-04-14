@@ -42,14 +42,14 @@ public class CubeManager {
             Cube right = getCubeAt(region, x + 1, y);
 
             // remove bottom
-            cube.setVisibleSide(region.getId(), CubeSideType.BOTTOM, false);
+            cube.setVisibleSide(region.getId(), CubeSideType.BACK, false);
 
-            cube.setVisibleSide(region.getId(), CubeSideType.UP, up == null || !up.isVisible());
-            cube.setVisibleSide(region.getId(), CubeSideType.DOWN, down == null || !down.isVisible());
+            cube.setVisibleSide(region.getId(), CubeSideType.TOP, up == null || !up.isVisible());
+            cube.setVisibleSide(region.getId(), CubeSideType.BOTTOM, down == null || !down.isVisible());
             cube.setVisibleSide(region.getId(), CubeSideType.LEFT, left == null || !left.isVisible());
             cube.setVisibleSide(region.getId(), CubeSideType.RIGHT, right == null || !right.isVisible());
 
-            cube.setVisibleSide(region.getId(), CubeSideType.TOP, true);
+            cube.setVisibleSide(region.getId(), CubeSideType.FRONT, true);
         }
     }
 

@@ -13,18 +13,20 @@ public class ShadowComponent extends Component {
 
     private final Camera[] lights;
     private float lastAngle;
+    public static final float LIGHT_OFFSET = 0.1f;
+    public static final int TEXTURE_SIZE = 1024;
 
     public ShadowComponent() {
 
         lights = new Camera[4];
         int offset = 1;
         for (int i = 0; i < lights.length; i++) {
-            lights[i] = new PerspectiveCamera(91, 512, 512);
+            lights[i] = new PerspectiveCamera(91, TEXTURE_SIZE / 2f, TEXTURE_SIZE / 2f);
             lights[i].near = 0.0001f;
             lights[i].far = 500;
             lights[i].direction.x = Math.round(Math.cos(Math.PI / 2 * (i + offset)));
             lights[i].direction.y = Math.round(Math.sin(Math.PI / 2 * (i + offset)));
-            lights[i].direction.z = 0.01f;
+            lights[i].direction.z = LIGHT_OFFSET;
             lights[i].position.z = App.PLAYER_OFFSET * App.UNIT;
         }
     }
@@ -38,7 +40,7 @@ public class ShadowComponent extends Component {
             light.position.x = position.getX();
             light.position.y = position.getY();
             light.position.z = position.getZ();
-            Collision.correct(light.position, App.LIGHT_OFFSET);
+            Collision.correct(light.position, LIGHT_OFFSET);
         }
     }
 

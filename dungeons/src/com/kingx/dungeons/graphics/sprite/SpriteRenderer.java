@@ -25,10 +25,6 @@ public class SpriteRenderer {
     private Mesh mesh;
     private Mesh[] buffers;
 
-    private Texture lastTexture = null;
-    private float invTexWidth = 0;
-    private float invTexHeight = 0;
-
     private int idx = 0;
     private int currBufferIdx = 0;
     private float[] vertices;
@@ -39,7 +35,7 @@ public class SpriteRenderer {
 
     private boolean drawing = false;
 
-    private boolean blendingDisabled = false;
+    private final boolean blendingDisabled = false;
     private int blendSrcFunc = GL11.GL_SRC_ALPHA;
     private int blendDstFunc = GL11.GL_ONE_MINUS_SRC_ALPHA;
 
@@ -219,7 +215,6 @@ public class SpriteRenderer {
         setupMatrices();
 
         idx = 0;
-        lastTexture = null;
         drawing = true;
     }
 
@@ -261,14 +256,12 @@ public class SpriteRenderer {
             throw new IllegalStateException("SpriteBatch.begin must be called before end.");
         if (idx > 0)
             renderMesh();
-        lastTexture = null;
         idx = 0;
         drawing = false;
 
         GLCommon gl = Gdx.gl;
         gl.glDepthMask(true);
-        if (isBlendingEnabled())
-            gl.glDisable(GL10.GL_BLEND);
+        gl.glDisable(GL10.GL_CULL_FACE);
 
         if (Gdx.graphics.isGL20Available()) {
             if (customShader != null)
@@ -289,9 +282,7 @@ public class SpriteRenderer {
             throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
         Texture texture = region.getTexture();
-        if (texture != lastTexture) {
-            switchTexture(texture);
-        } else if (idx == vertices.length) //
+        if (idx == vertices.length) //
             renderMesh();
 
         float width = size.x;
@@ -397,7 +388,6 @@ public class SpriteRenderer {
         if (spritesInBatch > maxSpritesInBatch)
             maxSpritesInBatch = spritesInBatch;
 
-        lastTexture.bind();
         mesh.setVertices(vertices, 0, idx);
         mesh.getIndicesBuffer().position(0);
         mesh.getIndicesBuffer().limit(spritesInBatch * 6);
@@ -424,22 +414,6 @@ public class SpriteRenderer {
         if (currBufferIdx == buffers.length)
             currBufferIdx = 0;
         mesh = buffers[currBufferIdx];
-    }
-
-    /** Disables blending for drawing sprites. */
-    public void disableBlending() {
-        if (blendingDisabled)
-            return;
-        renderMesh();
-        blendingDisabled = true;
-    }
-
-    /** Enables blending for sprites */
-    public void enableBlending() {
-        if (!blendingDisabled)
-            return;
-        renderMesh();
-        blendingDisabled = false;
     }
 
     /**
@@ -534,13 +508,6 @@ public class SpriteRenderer {
                 shader.setUniformi("u_texture", 0);
             }
         }
-    }
-
-    private void switchTexture(Texture texture) {
-        renderMesh();
-        lastTexture = texture;
-        invTexWidth = 1.0f / texture.getWidth();
-        invTexHeight = 1.0f / texture.getHeight();
     }
 
     /**

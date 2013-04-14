@@ -9,6 +9,7 @@ import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.Terrain;
+import com.kingx.dungeons.graphics.cube.Cube.CubeSideType;
 
 public final class CubeFactory {
 
@@ -23,12 +24,12 @@ public final class CubeFactory {
             { 0, pos, pos } // 7/7
     };
 
-    private static final int[][] quads = { { 0, 1, 5, 4 }, // Front
-            { 1, 2, 6, 5 }, // Right
-            { 2, 3, 7, 6 }, // Back
-            { 3, 0, 4, 7 }, // Left
-            { 4, 5, 6, 7 }, // Top
-            { 3, 2, 1, 0 } // Bottom
+    private static final int[][] quads = { { 3, 2, 1, 0 }, // Back
+            { 2, 6, 5, 1 }, // Left
+            { 6, 7, 4, 5 }, // Front
+            { 7, 3, 0, 4 }, // Right
+            { 7, 6, 2, 3 }, // Top
+            { 0, 1, 5, 4 } // Bottom
     };
     private static final float[][] normals = { { 0, -1, 0 }, // Front
             { 1, 0, 0 }, // Right
@@ -109,9 +110,10 @@ public final class CubeFactory {
 
         for (int i = 0; i < quads.length; i++) {
 
-            TextureRegion texture = getTexture(type);
+            TextureRegion texture = getTexture(type, i);
             c.addVerts(makeQuad(x, y, z, i, texture));
         }
+
         return c;
 
     }
@@ -156,15 +158,57 @@ public final class CubeFactory {
         return null;
     }
 
-    private static TextureRegion getTexture(int i) {
-        switch (i) {
-            case 1:
-                return Assets.getTexture("wall", App.rand.nextInt(4));
-            case 2:
-                return Assets.getTexture("diamond", 0);
-            default:
-                return Assets.getTexture("wall", App.rand.nextInt(4));
+    private static TextureRegion getTexture(int i, int face) {
+        switch (CubeSideType.values()[face]) {
+            case BACK:
+            case LEFT:
+            case FRONT:
+            case RIGHT:
+                return getSideTexture(i);
+            case BOTTOM:
+                return getBottomTexture(i);
+            case TOP:
+                return getTopTexture(i);
+
         }
+        return null;
+
+    }
+
+    private static TextureRegion getTopTexture(int i) {
+        switch (i) {
+            case 0:
+                return Assets.getTexture("terrain", 0);
+            case 1:
+                return Assets.getTexture("terrain", 0);
+            case 2:
+                return Assets.getTexture("grass_top", 0);
+        }
+        return null;
+    }
+
+    private static TextureRegion getBottomTexture(int i) {
+        switch (i) {
+            case 0:
+                return Assets.getTexture("terrain", 0);
+            case 1:
+                return Assets.getTexture("terrain", 0);
+            case 2:
+                return Assets.getTexture("terrain", 0);
+        }
+        return null;
+    }
+
+    private static TextureRegion getSideTexture(int i) {
+        switch (i) {
+            case 0:
+                return Assets.getTexture("terrain", 0);
+            case 1:
+                return Assets.getTexture("terrain", 0);
+            case 2:
+                return Assets.getTexture("terrain_grass", 0);
+        }
+        return null;
     }
 
 }
