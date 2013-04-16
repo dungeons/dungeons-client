@@ -1,33 +1,33 @@
 package com.kingx.dungeons.engine.component;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.kingx.artemis.Component;
+import com.kingx.dungeons.graphics.Colors;
 
 public class TextureComponent extends Component {
-    private String healty;
-    private String damaged;
+    private static final float SCALE = 1 / 16f;
     private Color tint;
+    private float rotation;
+    private final float width;
+    private final float height;
+    private final TextureRegion texture;
 
-    public TextureComponent(String healty, String damaged, Color tint) {
-        this.healty = healty;
-        this.damaged = damaged;
+    public TextureComponent(TextureRegion texture) {
+        this(texture, 0);
+    }
+
+    public TextureComponent(TextureRegion texture, float rotation) {
+        this(texture, new Color(Color.WHITE), rotation);
+    }
+
+    public TextureComponent(TextureRegion texture, Color tint, float rotation) {
+        this.texture = texture;
         this.tint = tint;
-    }
+        this.rotation = rotation;
 
-    public String getHealty() {
-        return healty;
-    }
-
-    public void setHealty(String healty) {
-        this.healty = healty;
-    }
-
-    public String getDamaged() {
-        return damaged;
-    }
-
-    public void setDamaged(String damaged) {
-        this.damaged = damaged;
+        this.width = texture.getRegionWidth();
+        this.height = texture.getRegionHeight();
     }
 
     public Color getTint() {
@@ -36,6 +36,34 @@ public class TextureComponent extends Component {
 
     public void setTint(Color tint) {
         this.tint = tint;
+    }
+
+    public float getRotation() {
+        return rotation;
+    }
+
+    public void setRotation(float rotation) {
+        this.rotation = rotation;
+    }
+
+    public float getWidth() {
+        return width * SCALE;
+    }
+
+    public float getHeight() {
+        return height * SCALE;
+    }
+
+    public float getWidthInPixels() {
+        return width;
+    }
+
+    public float getHeightInPixels() {
+        return height;
+    }
+
+    public TextureRegion getTexture() {
+        return texture;
     }
 
 }

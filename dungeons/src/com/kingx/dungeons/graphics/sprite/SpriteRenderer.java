@@ -1,6 +1,7 @@
 package com.kingx.dungeons.graphics.sprite;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL11;
 import com.badlogic.gdx.graphics.GL20;
@@ -14,13 +15,14 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.kingx.dungeons.graphics.Shader;
 
 public class SpriteRenderer {
 
     public static final int VERTS_PER_QUAD = 4;
     public static final int INDICES_PER_QUAD = 6;
     public static final int QUADS = 1;
-    public static final int VERTEX_SIZE = 5;
+    public static final int VERTEX_SIZE = 9;
 
     private Mesh mesh;
     private Mesh[] buffers;
@@ -54,8 +56,10 @@ public class SpriteRenderer {
     /** the maximum number of sprites rendered in one batch so far **/
     public int maxSpritesInBatch = 0;
     private ShaderProgram customShader = null;
-    private final int spriteSize;
+    private int spriteSize;
     private final int buffersCount;
+    private int vertexSize;
+    private int verticesPerQuad;
 
     /**
      * Constructs a new SpriteBatch. Sets the projection matrix to an
@@ -149,7 +153,7 @@ public class SpriteRenderer {
         reset();
 
         if (Gdx.graphics.isGL20Available() && defaultShader == null) {
-            shader = createDefaultShader();
+            shader = Shader.getShader("sprite");
             ownsShader = true;
         } else
             shader = defaultShader;
@@ -211,16 +215,43 @@ public class SpriteRenderer {
         } else {
             Gdx.gl.glEnable(GL10.GL_TEXTURE_2D);
         }
-        Gdx.gl.glEnable(GL10.GL_CULL_FACE);
         setupMatrices();
 
         idx = 0;
         drawing = true;
     }
 
+    /**
+     * Finishes off rendering. Enables depth writes, disables blending and
+     * texturing. Must always be called after a call to {@link #begin()}
+     */
+    public void end() {
+        if (!drawing)
+            throw new IllegalStateException("SpriteBatch.begin must be called before end.");
+        if (idx > 0)
+            renderMesh();
+        idx = 0;
+        drawing = false;
+
+        GLCommon gl = Gdx.gl;
+        if (isBlendingEnabled())
+            gl.glDisable(GL10.GL_BLEND);
+
+        if (Gdx.graphics.isGL20Available()) {
+            if (customShader != null)
+                customShader.end();
+            else
+                shader.end();
+        } else {
+            gl.glDisable(GL10.GL_TEXTURE_2D);
+        }
+    }
+
     private void reset() {
 
-        vertices = new float[spriteSize * SpriteRenderer.VERTS_PER_QUAD * SpriteRenderer.QUADS * SpriteRenderer.VERTEX_SIZE];
+        vertexSize = SpriteRenderer.VERTEX_SIZE;
+        verticesPerQuad = SpriteRenderer.VERTS_PER_QUAD * vertexSize;
+        vertices = new float[spriteSize * verticesPerQuad];
 
         short[] indices = new short[spriteSize * SpriteRenderer.INDICES_PER_QUAD * SpriteRenderer.QUADS];
         short j = 0;
@@ -237,7 +268,7 @@ public class SpriteRenderer {
 
         for (int i = 0; i < buffersCount; i++) {
             this.buffers[i] = new Mesh(VertexDataType.VertexArray, false, vertices.length, indices.length, VertexAttribute.Position(),
-                    VertexAttribute.TexCoords(0));
+                    VertexAttribute.ColorUnpacked(), VertexAttribute.TexCoords(0));
         }
 
         for (int i = 0; i < buffersCount; i++) {
@@ -247,37 +278,15 @@ public class SpriteRenderer {
 
     }
 
-    /**
-     * Finishes off rendering. Enables depth writes, disables blending and
-     * texturing. Must always be called after a call to {@link #begin()}
-     */
-    public void end() {
-        if (!drawing)
-            throw new IllegalStateException("SpriteBatch.begin must be called before end.");
-        if (idx > 0)
-            renderMesh();
-        idx = 0;
-        drawing = false;
-
-        GLCommon gl = Gdx.gl;
-        gl.glDepthMask(true);
-        gl.glDisable(GL10.GL_CULL_FACE);
-
-        if (Gdx.graphics.isGL20Available()) {
-            if (customShader != null)
-                customShader.end();
-            else
-                shader.end();
-        } else {
-            gl.glDisable(GL10.GL_TEXTURE_2D);
-        }
+    public void draw(TextureRegion region, Vector3 position, Vector3 size, float rotation) {
+        this.draw(region, position, size, rotation, Color.WHITE);
     }
 
     /**
      * Draws a rectangle with the bottom left corner at x,y and stretching the
      * region to cover the given width and height.
      */
-    public void draw(TextureRegion region, Vector3 position, Vector3 size, float rotation) {
+    public void draw(TextureRegion region, Vector3 position, Vector3 size, float rotation, Color c) {
         if (!drawing)
             throw new IllegalStateException("SpriteBatch.begin must be called before draw.");
 
@@ -348,24 +357,40 @@ public class SpriteRenderer {
         vertices[idx++] = x0;
         vertices[idx++] = y0;
         vertices[idx++] = z0;
+        vertices[idx++] = c.r;
+        vertices[idx++] = c.g;
+        vertices[idx++] = c.b;
+        vertices[idx++] = c.a;
         vertices[idx++] = u;
         vertices[idx++] = v;
 
         vertices[idx++] = x1;
         vertices[idx++] = y1;
         vertices[idx++] = z1;
+        vertices[idx++] = c.r;
+        vertices[idx++] = c.g;
+        vertices[idx++] = c.b;
+        vertices[idx++] = c.a;
         vertices[idx++] = u;
         vertices[idx++] = v2;
 
         vertices[idx++] = x2;
         vertices[idx++] = y2;
         vertices[idx++] = z2;
+        vertices[idx++] = c.r;
+        vertices[idx++] = c.g;
+        vertices[idx++] = c.b;
+        vertices[idx++] = c.a;
         vertices[idx++] = u2;
         vertices[idx++] = v2;
 
         vertices[idx++] = x3;
         vertices[idx++] = y3;
         vertices[idx++] = z3;
+        vertices[idx++] = c.r;
+        vertices[idx++] = c.g;
+        vertices[idx++] = c.b;
+        vertices[idx++] = c.a;
         vertices[idx++] = u2;
         vertices[idx++] = v;
     }
@@ -384,9 +409,9 @@ public class SpriteRenderer {
 
         renderCalls++;
         totalRenderCalls++;
-        int spritesInBatch = idx / 20;
-        if (spritesInBatch > maxSpritesInBatch)
-            maxSpritesInBatch = spritesInBatch;
+        int spritesInBatch = idx / verticesPerQuad;
+        if (spritesInBatch > spriteSize)
+            spriteSize = spritesInBatch;
 
         mesh.setVertices(vertices, 0, idx);
         mesh.getIndicesBuffer().position(0);

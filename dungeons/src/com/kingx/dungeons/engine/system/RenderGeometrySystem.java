@@ -15,6 +15,7 @@ import com.kingx.dungeons.engine.component.TextureComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
+import com.kingx.dungeons.graphics.Shader;
 import com.kingx.dungeons.graphics.sprite.SpriteRenderer;
 
 public class RenderGeometrySystem extends EntityProcessingSystem {
@@ -50,6 +51,7 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
         playerPosition = positionMapper.getSafe(App.getPlayer().getEntity());
         playerSight = sightMapper.getSafe(App.getPlayer().getEntity());
         sr.begin();
+        sr.setShader(Shader.getShader("sprite"));
         sr.setProjectionMatrix(camera.getCamera().combined);
     }
 
@@ -73,27 +75,28 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
           }*/
 
         TextureRegion currentTexture = null;
-        String name;
+        /* String name;
 
-        if (healthMapper.has(e)) {
-            HealthComponent health = healthMapper.get(e);
-            name = health.getCurrent() < health.getMax() / 2 ? tc.getDamaged() : tc.getHealty();
+         if (healthMapper.has(e)) {
+             HealthComponent health = healthMapper.get(e);
+             name = health.getCurrent() < health.getMax() / 2 ? tc.getDamaged() : tc.getHealty();
 
-        } else {
-            name = tc.getHealty();
-        }
+         } else {
+             name = tc.getHealty();
+         }
 
-        float rotation = 0;
-        if (moveMapper.has(e)) {
-            System.out.println(move.vector);
+         float rotation = 0;
+         if (moveMapper.has(e)) {
+             System.out.println(move.vector);
 
-            rotation = (float) (Math.atan2(move.vector.y, move.vector.x) / Math.PI * 180);
-        }
-        currentTexture = getRightTexture(rotation, name);
-
+             rotation = (float) (Math.atan2(move.vector.y, move.vector.x) / Math.PI * 180);
+         }
+         currentTexture = getRightTexture(rotation, name);
+        */
+        currentTexture = tc.getTexture();
         if (currentTexture != null) {
             currentTexture.getTexture().bind();
-            sr.draw(currentTexture, pc.get(), sc.get(), rotation);
+            sr.draw(currentTexture, pc.get(), sc.get(), 0);
 
         }
     }

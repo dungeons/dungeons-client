@@ -404,10 +404,10 @@ public class Collision {
      * @return {@code true} if point is walkable, {@code false} otherwise
      */
     public static boolean isWalkable(Int point) {
-        int[][] footprint = App.getMap().getFootprint();
+        int[][] footprint = App.getTerrain().getFootprint();
         point = point.cpy();
         if (point.x == footprint.length) {
-            footprint = App.getMap().getNextFootprint();
+            footprint = App.getTerrain().getNextFootprint();
             point.x = 0;
         }
 

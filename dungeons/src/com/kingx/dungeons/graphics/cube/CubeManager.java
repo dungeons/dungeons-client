@@ -7,25 +7,31 @@ import com.kingx.dungeons.geom.Point.Int;
 import com.kingx.dungeons.graphics.cube.Cube.CubeSideType;
 
 public class CubeManager {
-    public ArrayList<CubeRegion> cubeRegions;
+    public ArrayList<CubeRegion> cubeSides;
+    private final CubeRegion cubeTop;
 
-    public ArrayList<CubeRegion> getCubeRegions() {
-        return cubeRegions;
+    public ArrayList<CubeRegion> getSides() {
+        return cubeSides;
     }
 
-    public CubeManager(ArrayList<CubeRegion> cubeRegions) {
-        this.cubeRegions = cubeRegions;
+    public CubeRegion getTop() {
+        return cubeTop;
+    }
+
+    public CubeManager(ArrayList<CubeRegion> cubeSides, CubeRegion cubeTop) {
+        this.cubeSides = cubeSides;
+        this.cubeTop = cubeTop;
         hideInvidibleParts();
     }
 
     private void hideInvidibleParts() {
         Cube[][] cubes;
-        for (int i = 0; i < cubeRegions.size(); i++) {
-            CubeRegion region = cubeRegions.get(i);
+        for (int i = 0; i < cubeSides.size(); i++) {
+            CubeRegion region = cubeSides.get(i);
             cubes = region.getCubes();
             for (int j = 0; j < cubes.length; j++) {
                 for (int k = 0; k < cubes[j].length; k++) {
-                    if (App.getMap().getFootprint(i, j, k) != 0) {
+                    if (App.getTerrain().getFootprint(i, j, k) != 0) {
                         checkAdjacentBlocks(region, j, k);
                     }
                 }
@@ -64,16 +70,16 @@ public class CubeManager {
     }
 
     public void removeCube(Int point) {
-        int[][] footprint = App.getMap().getFootprint();
+        int[][] footprint = App.getTerrain().getFootprint();
 
         if (point.x == 0) {
-            removeCube(this.getCubeRegions().get(App.getPrevView()), footprint.length, point.y);
+            removeCube(this.getSides().get(App.getPrevView()), footprint.length, point.y);
         } else if (point.x == footprint.length) {
-            removeCube(this.getCubeRegions().get(App.getNextView()), 0, point.y);
+            removeCube(this.getSides().get(App.getNextView()), 0, point.y);
         }
-        removeCube(this.getCubeRegions().get(App.getCurrentView()), point.x, point.y);
+        removeCube(this.getSides().get(App.getCurrentView()), point.x, point.y);
 
-        App.getMap().setFootprint(App.getCurrentView(), point.x, point.y, 0);
+        App.getTerrain().setFootprint(App.getCurrentView(), point.x, point.y, 0);
 
     }
 

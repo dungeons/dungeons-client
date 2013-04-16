@@ -27,4 +27,8 @@ public class SizeComponent extends AbstractComponent {
         return vector;
     }
 
+    @Override
+    public String toString() {
+        return "SizeComponent [width=" + vector.x + "height=" + vector.y + "]";
+    }
 }

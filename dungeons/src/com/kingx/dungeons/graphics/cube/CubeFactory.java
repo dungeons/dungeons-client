@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.graphics.Colors;
-import com.kingx.dungeons.graphics.Terrain;
 import com.kingx.dungeons.graphics.cube.Cube.CubeSideType;
 
 public final class CubeFactory {
@@ -39,72 +38,7 @@ public final class CubeFactory {
             { 0, 0, -1 } // Bottom
     };
 
-    private Cube[][] cubes;
-    private final ArrayList<CubeRegion> regions;
-
-    public CubeFactory(Terrain maze) {
-
-        regions = new ArrayList<CubeRegion>();
-        for (int i = 0; i < maze.getFootprints(); i++) {
-            cubes = new Cube[maze.getFootprint(i).length + 1][maze.getFootprint(i)[0].length];
-            for (int j = 0; j < cubes.length - 1; j++) {
-                for (int k = 0; k < cubes[j].length; k++) {
-
-                    float x = 0, y = 0, z = 0;
-
-                    switch (i) {
-                        case 0:
-                            x = j;
-                            y = k;
-                            z = 0;
-                            break;
-                        case 1:
-                            x = maze.getFootprint(i).length;
-                            y = k;
-                            z = -j;
-                            break;
-                        case 2:
-                            x = maze.getFootprint(i).length - j;
-                            y = k;
-                            z = -maze.getFootprint(i).length;
-                            break;
-                        case 3:
-                            x = 0;
-                            y = k;
-                            z = -maze.getFootprint(i).length + j;
-                            break;
-                    }
-                    cubes[j][k] = makeCube(x * App.UNIT, y * App.UNIT, z * App.UNIT, maze.getFootprint(i)[j][k]);
-                    if (j == 0) {
-                        cubes[j][k].setCorner(true);
-                    }
-                    cubes[j][k].setVisible(i, maze.getFootprint(i)[j][k] != 0);
-
-                }
-            }
-
-            regions.add(new CubeRegion(i, cubes));
-
-        }
-
-        for (int i = 0; i < regions.size(); i++) {
-            Cube[][] current = regions.get(i).getCubes();
-            Cube[][] next = regions.get((i + 1) % regions.size()).getCubes();
-
-            int last = current.length - 1;
-
-            for (int k = 0; k < current[last].length; k++) {
-                current[last][k] = next[0][k];
-                current[last][k].setCorner(true);
-            }
-        }
-    }
-
-    public ArrayList<CubeRegion> getCubeRegions() {
-        return regions;
-    }
-
-    private Cube makeCube(float x, float y, float z, int type) {
+    public static Cube makeCube(float x, float y, float z, int type) {
 
         Cube c = new Cube();
 
@@ -118,7 +52,7 @@ public final class CubeFactory {
 
     }
 
-    private ArrayList<CubeVertex> makeQuad(float x, float y, float z, int face, TextureRegion texture) {
+    private static ArrayList<CubeVertex> makeQuad(float x, float y, float z, int face, TextureRegion texture) {
         ArrayList<CubeVertex> quad = new ArrayList<CubeVertex>(6);
         for (int i = 0; i < quads[face].length; i++) {
             quad.add(makeVertex(x, y, z, i, face, texture));
@@ -126,7 +60,7 @@ public final class CubeFactory {
         return quad;
     }
 
-    private CubeVertex makeVertex(float x, float y, float z, int i, int face, TextureRegion texture) {
+    private static CubeVertex makeVertex(float x, float y, float z, int i, int face, TextureRegion texture) {
         // @formatter:off
         CubeVertex cv = new CubeVertex();
         Vector2 cords = getTextureCoordinates(i, texture);

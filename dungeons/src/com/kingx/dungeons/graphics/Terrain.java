@@ -121,7 +121,7 @@ public class Terrain {
     public int getFootprint(int x, int y, int z) {
         int[][] footprint = this.getFootprint(x);
         if (y == footprint.length) {
-            footprint = App.getMap().getFootprint(x + 1);
+            footprint = App.getTerrain().getFootprint(x + 1);
             return footprint[0][z];
         } else {
             return footprint[y][z];
@@ -131,7 +131,7 @@ public class Terrain {
     public void setFootprint(int x, int y, int z, int value) {
         int[][] footprint = this.getFootprint(x);
         if (y == footprint.length) {
-            footprint = App.getMap().getFootprint(x + 1);
+            footprint = App.getTerrain().getFootprint(x + 1);
             footprint[0][z] = value;
         } else {
             footprint[y][z] = value;

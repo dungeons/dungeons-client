@@ -10,6 +10,7 @@ import aurelienribon.tweenengine.TweenManager;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
@@ -19,26 +20,28 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.kingx.artemis.World;
 import com.kingx.dungeons.GameStateManager.GameStatus;
 import com.kingx.dungeons.engine.component.FollowCameraComponent;
-import com.kingx.dungeons.engine.concrete.Background;
+import com.kingx.dungeons.engine.component.TextureComponent;
 import com.kingx.dungeons.engine.concrete.Wanderer;
+import com.kingx.dungeons.engine.system.RenderBackgroundSystem;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
 import com.kingx.dungeons.generator.GeneratorFactory;
 import com.kingx.dungeons.generator.GeneratorType;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.Terrain;
-import com.kingx.dungeons.graphics.cube.CubeFactory;
 import com.kingx.dungeons.graphics.cube.CubeManager;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
+import com.kingx.dungeons.graphics.cube.CubeSideFactory;
+import com.kingx.dungeons.graphics.cube.CubeTopFactory;
 import com.kingx.dungeons.graphics.ui.Gamepad;
 import com.kingx.dungeons.input.Input;
 import com.kingx.dungeons.server.AbstractServer;
 import com.kingx.dungeons.server.OfflineServer;
 import com.kingx.dungeons.server.OnlineServer;
+import com.kingx.dungeons.tween.BackgroundAccessor;
 import com.kingx.dungeons.tween.CameraAccessor;
 
 public class App implements ApplicationListener {
@@ -54,9 +57,11 @@ public class App implements ApplicationListener {
     private static TweenManager tweenManager = new TweenManager();
     static {
         Tween.registerAccessor(FollowCameraComponent.class, new CameraAccessor());
+        Tween.registerAccessor(TextureComponent.class, new BackgroundAccessor());
     }
     private static FollowCameraComponent worldCamera;
     private static FollowCameraComponent avatarCamera;
+    private static FollowCameraComponent backgroundCamera;
 
     private static Terrain terrain;
     private static CubeManager cubeManager;
@@ -117,6 +122,7 @@ public class App implements ApplicationListener {
     private World world;
     private RenderShadowSystem renderShadowSystem;
     private RenderGeometrySystem renderGeometrySystem;
+    private RenderBackgroundSystem renderBackgroundSystem;
     private static Wanderer player;
     private static AbstractServer server;
     private static int currentView;
@@ -124,6 +130,7 @@ public class App implements ApplicationListener {
     BitmapFont font = null;
     private TerrainManager mazeManager;
     private Gamepad ui;
+    private static BackgroundManager backgroundManager;
     private static Gamepad gamepad;
 
     @Override
@@ -140,9 +147,11 @@ public class App implements ApplicationListener {
 
         worldCamera.getCamera().update();
         avatarCamera.getCamera().update();
+        backgroundCamera.getCamera().update();
 
         renderShadowSystem.process();
-        // renderGeometrySystem.process();
+        renderBackgroundSystem.process();
+        renderGeometrySystem.process();
 
         if (DEBUG != null) {
             onScreenRasterRender.begin();
@@ -165,7 +174,7 @@ public class App implements ApplicationListener {
 
     private void init() {
         createMaze();
-        createBackground(0);
+        createBackground();
         createCubes();
         createPlayer();
         // createZombies(50);
@@ -197,8 +206,9 @@ public class App implements ApplicationListener {
 
     private void createCubes() {
 
-        ArrayList<CubeRegion> cubeRegions = new CubeFactory(terrain).getCubeRegions();
-        cubeManager = new CubeManager(cubeRegions);
+        ArrayList<CubeRegion> cubeSides = new CubeSideFactory(terrain).getCubeRegions();
+        CubeRegion cubeTop = new CubeTopFactory(terrain.getWidth() - 2, 1, terrain.getHeight() - 1, -1).getCubeRegions();
+        cubeManager = new CubeManager(cubeSides, cubeTop);
     }
 
     /**
@@ -220,13 +230,15 @@ public class App implements ApplicationListener {
     private void addSystemsToWorld() {
         renderShadowSystem = world.setSystem(new RenderShadowSystem(worldCamera), true);
         renderGeometrySystem = world.setSystem(new RenderGeometrySystem(worldCamera), true);
+        renderBackgroundSystem = world.setSystem(new RenderBackgroundSystem(backgroundCamera), true);
     }
 
-    private void createBackground(float z) {
-
-        int height = terrain.getHeight();
-        Vector3 p = new Vector3(5, height + 2f, z);
-        new Background(world, p, 10, 4f).createEntity().addToWorld();
+    private void createBackground() {
+        backgroundManager = new BackgroundManager(world, terrain.getWidth(), terrain.getHeight());
+        //backgroundManager.addBackground(1, -2, "well");
+        backgroundManager.addBackground(3, -5, "house");
+        //  backgroundManager.addBackground(4, -1, "tree");
+        //  backgroundManager.addBackground(9, -5, "house");
     }
 
     /**
@@ -256,22 +268,29 @@ public class App implements ApplicationListener {
     @Override
     public void resize(int width, int height) {
         if (worldCamera == null) {
-            worldCamera = setUpCamera(width, height);
+            worldCamera = setUpPerspectiveCamera(width, height);
         } else {
             worldCamera.getCamera().viewportWidth = width;
             worldCamera.getCamera().viewportHeight = height;
         }
 
         if (avatarCamera == null) {
-            avatarCamera = setUpCamera(width, height);
+            avatarCamera = setUpPerspectiveCamera(width, height);
         } else {
             avatarCamera.getCamera().viewportWidth = width;
             avatarCamera.getCamera().viewportHeight = height;
         }
+
+        if (backgroundCamera == null) {
+            backgroundCamera = setUpPerspectiveCamera(width, height);
+        } else {
+            backgroundCamera.getCamera().viewportWidth = width;
+            backgroundCamera.getCamera().viewportHeight = height;
+        }
     }
 
-    public FollowCameraComponent setUpCamera(int width, int height) {
-        PerspectiveCamera camera = new PerspectiveCamera(67, width, height);
+    public FollowCameraComponent setUpPerspectiveCamera(int width, int height) {
+        Camera camera = new PerspectiveCamera(67, width, height);
         return new FollowCameraComponent(camera, VIEW_DISTANCE * UNIT, 0);
     }
 
@@ -311,8 +330,12 @@ public class App implements ApplicationListener {
         return player;
     }
 
-    public static Terrain getMap() {
+    public static Terrain getTerrain() {
         return terrain;
+    }
+
+    public static BackgroundManager getBackgroundManager() {
+        return backgroundManager;
     }
 
     public static FollowCameraComponent getWorldCamera() {
@@ -321,6 +344,10 @@ public class App implements ApplicationListener {
 
     public static FollowCameraComponent getAvatarCamera() {
         return avatarCamera;
+    }
+
+    public static FollowCameraComponent getBackgroundCamera() {
+        return backgroundCamera;
     }
 
     public static AbstractServer getServer() {
@@ -332,15 +359,25 @@ public class App implements ApplicationListener {
     }
 
     public static int getPrevView() {
-        return (currentView == 0 ? App.getCubeManager().cubeRegions.size() : currentView) - 1;
+        return (currentView == 0 ? App.getCubeManager().cubeSides.size() : currentView) - 1;
     }
 
     public static int getNextView() {
-        return (currentView + 1) % App.getCubeManager().cubeRegions.size();
+        return (currentView + 1) % App.getCubeManager().cubeSides.size();
     }
 
     public static int getLastView() {
         return lastView;
+    }
+
+    public static int getView(int i) {
+        if (i < 0) {
+            return i + App.getCubeManager().cubeSides.size();
+        } else if (i >= App.getCubeManager().cubeSides.size()) {
+            return i - App.getCubeManager().cubeSides.size();
+        } else {
+            return i;
+        }
     }
 
     public static void setCurrentView(int cv) {

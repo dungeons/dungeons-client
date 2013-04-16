@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -23,7 +22,6 @@ import com.kingx.dungeons.engine.component.SightComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.graphics.Colors;
-import com.kingx.dungeons.graphics.GroundFactory;
 import com.kingx.dungeons.graphics.QuadTextureFrameBuffer;
 import com.kingx.dungeons.graphics.Shader;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
@@ -42,16 +40,12 @@ public class RenderShadowSystem extends EntityProcessingSystem {
     private final ShaderProgram shadowGeneratorShader;
     private final ShaderProgram shadowProjectShader;
     private final QuadTextureFrameBuffer shadowMap;
-    private final Mesh poly;
     private Texture depthMap;
     private CubeRenderer batchRender;
-    private CubeRenderer batchRender2;
 
     public RenderShadowSystem(FollowCameraComponent camera) {
         super(Aspect.getAspectForAll(PositionComponent.class, ShadowComponent.class));
         this.camera = camera;
-
-        poly = new GroundFactory(App.getMap(), App.UNIT).generate();
 
         shadowGeneratorShader = Shader.getShader("shadowgen");
         shadowProjectShader = Shader.getShader("shadowproj");
@@ -77,13 +71,14 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         MoveComponent mc = mm.getSafe(e);
         ShadowComponent sc = sm.getSafe(e);
 
-        ArrayList<CubeRegion> cubeRegions = App.getCubeManager().getCubeRegions();
+        ArrayList<CubeRegion> cubeSides = App.getCubeManager().getSides();
+        CubeRegion cubeTop = App.getCubeManager().getTop();
 
         Camera[] lights = sc.getLights();
         sc.move(pc);
         sc.rotate(mc);
 
-        generateShadowMap(cubeRegions, lights);
+        generateShadowMap(cubeSides, lights);
 
         depthMap.bind();
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
@@ -111,9 +106,10 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowProjectShader.setUniformf("u_maxBound", CubeRegion.max);
         shadowProjectShader.setUniformf("u_tint", Colors.interpolate(Colors.SHADOW_BOTTOM, Color.WHITE, App.getProgress(), 1));
 
-        batchRender.draw(cubeRegions.get(App.getLastView()), false);
-        batchRender.draw(cubeRegions.get(App.getCurrentView()), false);
-        batchRender.draw(cubeRegions.get(App.getNextView()), false);
+        batchRender.draw(cubeSides.get(App.getLastView()), false);
+        batchRender.draw(cubeSides.get(App.getCurrentView()), false);
+        batchRender.draw(cubeSides.get(App.getNextView()), false);
+        batchRender.draw(cubeTop, false);
         batchRender.end();
 
     }
