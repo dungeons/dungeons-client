@@ -5,10 +5,12 @@ import com.kingx.artemis.ComponentMapper;
 import com.kingx.artemis.Entity;
 import com.kingx.artemis.annotations.Mapper;
 import com.kingx.artemis.systems.EntityProcessingSystem;
+import com.kingx.dungeons.App;
 import com.kingx.dungeons.engine.component.CollisionComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
 import com.kingx.dungeons.geom.Collision;
+import com.kingx.dungeons.geom.Point.Int;
 
 public class CollisionSystem extends EntityProcessingSystem {
     @Mapper
@@ -33,9 +35,18 @@ public class CollisionSystem extends EntityProcessingSystem {
         collision.setRight(Collision.resolveCollisionRight(position, size));
         collision.setLeft(Collision.resolveCollisionLeft(position, size));
 
+        collision.setCurrent(getCurrent(position));
+
         PositionComponent copy = new PositionComponent(position.inWorld);
         copy.inWorld.y -= size.getSize() / 2f;
         collision.setStandingOnABlock(Collision.resolveCollisionDown(copy, size));
+    }
+
+    private Int getCurrent(PositionComponent position) {
+        float x = position.getScreenX();
+        float y = position.getY();
+
+        return new Int((int) (x / App.UNIT), (int) (y / App.UNIT));
     }
 
 }

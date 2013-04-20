@@ -324,35 +324,20 @@ public class SpriteRenderer {
         final float v2 = region.getV();
 
         // rotate
-        if (rotation != 0) {
-            final float cos = MathUtils.cosDeg(rotation);
-            final float sin = MathUtils.sinDeg(rotation);
+        final float cos = MathUtils.cosDeg(rotation);
+        final float sin = MathUtils.sinDeg(rotation);
 
-            x0 = x + cos * (width / 2f);
-            z0 = z + sin * (width / 2f);
+        x0 = x - cos * (width / 2f);
+        z0 = z + sin * (width / 2f);
 
-            x1 = x + cos * (width / 2f);
-            z1 = z + sin * (width / 2f);
+        x1 = x - cos * (width / 2f);
+        z1 = z + sin * (width / 2f);
 
-            x2 = x - cos * (width / 2f);
-            z2 = z - sin * (width / 2f);
+        x2 = x + cos * (width / 2f);
+        z2 = z - sin * (width / 2f);
 
-            x3 = x - cos * (width / 2f);
-            z3 = z - sin * (width / 2f);
-            ;
-        } else {
-            x0 = x - width / 2f;
-            z0 = z;
-
-            x1 = x - width / 2f;
-            z1 = z;
-
-            x2 = x + width / 2f;
-            z2 = z;
-
-            x3 = x + width / 2f;
-            z3 = z;
-        }
+        x3 = x + cos * (width / 2f);
+        z3 = z - sin * (width / 2f);
 
         vertices[idx++] = x0;
         vertices[idx++] = y0;

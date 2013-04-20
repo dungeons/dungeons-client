@@ -13,6 +13,7 @@ import com.kingx.dungeons.engine.component.TextureComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
 import com.kingx.dungeons.graphics.sprite.SpriteRenderer;
+import com.kingx.dungeons.utils.ArrayUtils;
 
 public class RenderBackgroundSystem extends EntityProcessingSystem {
     @Mapper
@@ -47,32 +48,33 @@ public class RenderBackgroundSystem extends EntityProcessingSystem {
     @Override
     protected void process(Entity e) {
 
-        //Gdx.gl.glDisable(GL10.GL_DEPTH_TEST);
         BackgroundComponent background = backgroundMapper.get(e);
-
-        int view = App.getCurrentView();
+        SpriteComponent[] sides = background.getSides();
         switch (WorldRotateSystem.getCurrentState()) {
             case IDLE:
-                drawSprite(background.getSides()[view]);
+                int side = App.getCurrentView() * 2;
+                drawSprite(sides[side]);
+                drawSprite(sides[side + 1]);
                 break;
             case TURNING_LEFT:
-                for (int i = view; i <= view + 1; i++) {
-                    drawSprite(background.getSides()[App.getView(i)]);
-                }
-                drawSprite(background.getSides()[App.getView(view)]);
+                side = App.getNextView() * 2;
+                drawSprite(sides[ArrayUtils.overflow(side + 1, sides.length)]);
+                drawSprite(sides[ArrayUtils.overflow(side - 2, sides.length)]);
+                drawSprite(sides[ArrayUtils.overflow(side - 1, sides.length)]);
+                drawSprite(sides[ArrayUtils.overflow(side, sides.length)]);
                 break;
             case TURNING_RIGHT:
-                for (int i = view; i >= view - 1; i--) {
-                    drawSprite(background.getSides()[App.getView(i)]);
-                }
+                side = App.getPrevView() * 2;
+                drawSprite(sides[ArrayUtils.overflow(side, sides.length)]);
+                drawSprite(sides[ArrayUtils.overflow(side + 3, sides.length)]);
+                drawSprite(sides[ArrayUtils.overflow(side + 2, sides.length)]);
+                drawSprite(sides[ArrayUtils.overflow(side + 1, sides.length)]);
                 break;
         }
-        //   Gdx.gl.glEnable(GL10.GL_DEPTH_TEST);
 
     }
 
     private void drawSprite(SpriteComponent sprite) {
-        System.out.println("Drawign: " + sprite);
         TextureComponent t = sprite.getTexture();
         PositionComponent p = sprite.getPositionComponent();
         SizeComponent s = sprite.getSizeComponent();

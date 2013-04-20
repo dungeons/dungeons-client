@@ -14,10 +14,9 @@ public final class CubeTopFactory {
         for (int i = 0; i < cubes.length; i++) {
             for (int j = 0; j < cubes[i].length; j++) {
 
-                cubes[i][j] = CubeFactory.makeCube((x + i) * App.UNIT, y * App.UNIT, (z - j) * App.UNIT, 2);
-                if (i == 0) {
-                    cubes[i][j].setCorner(true);
-                }
+                cubes[i][j] = CubeFactory.makeCube((x + i) * App.UNIT, y * App.UNIT, (z - j) * App.UNIT, 2, 0, 0);
+                cubes[i][j].setVisible(0, false);
+                cubes[i][j].setVisibleSide(0, CubeSideType.BACK, false);
                 cubes[i][j].setVisibleSide(0, CubeSideType.TOP, true);
 
             }

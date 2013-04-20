@@ -10,6 +10,7 @@ public class CollisionComponent extends Component {
     private Int left;
     private Int right;
     private Int standingOnABlock;
+    private Int current;
 
     public Int getUp() {
         return up;
@@ -49,6 +50,14 @@ public class CollisionComponent extends Component {
 
     public void setStandingOnABlock(Int standingOnABlock) {
         this.standingOnABlock = standingOnABlock;
+    }
+
+    public void setCurrent(Int current) {
+        this.current = current;
+    }
+
+    public Int getCurrent() {
+        return current;
     }
 
     @Override

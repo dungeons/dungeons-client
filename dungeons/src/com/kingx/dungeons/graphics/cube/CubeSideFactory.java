@@ -42,7 +42,7 @@ public final class CubeSideFactory {
                             z = -maze.getFootprint(i).length + j;
                             break;
                     }
-                    cubes[j][k] = CubeFactory.makeCube(x * App.UNIT, y * App.UNIT, z * App.UNIT, maze.getFootprint(i)[j][k]);
+                    cubes[j][k] = CubeFactory.makeCube(x * App.UNIT, y * App.UNIT, z * App.UNIT, maze.getFootprint(i)[j][k], j, k);
                     if (j == 0) {
                         cubes[j][k].setCorner(true);
                     }

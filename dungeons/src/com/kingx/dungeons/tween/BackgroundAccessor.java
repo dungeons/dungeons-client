@@ -21,7 +21,6 @@ public class BackgroundAccessor implements TweenAccessor<TextureComponent> {
     public void setValues(TextureComponent target, int tweenType, float[] newValues) {
         switch (tweenType) {
             case FADE:
-                System.out.println("fade + " + target);
                 target.getTint().a = newValues[0];
         }
     }

@@ -21,6 +21,7 @@ import com.kingx.dungeons.engine.component.ShadowComponent;
 import com.kingx.dungeons.engine.component.SightComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
+import com.kingx.dungeons.geom.Point.Int;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.QuadTextureFrameBuffer;
 import com.kingx.dungeons.graphics.Shader;
@@ -106,9 +107,9 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowProjectShader.setUniformf("u_maxBound", CubeRegion.max);
         shadowProjectShader.setUniformf("u_tint", Colors.interpolate(Colors.SHADOW_BOTTOM, Color.WHITE, App.getProgress(), 1));
 
-        batchRender.draw(cubeSides.get(App.getLastView()), false);
+        //   batchRender.draw(cubeSides.get(App.getLastView()), false);
         batchRender.draw(cubeSides.get(App.getCurrentView()), false);
-        batchRender.draw(cubeSides.get(App.getNextView()), false);
+        //   batchRender.draw(cubeSides.get(App.getNextView()), false);
         batchRender.draw(cubeTop, false);
         batchRender.end();
 
@@ -142,7 +143,9 @@ public class RenderShadowSystem extends EntityProcessingSystem {
 
         batchRender.setShader(shadowGeneratorShader);
         batchRender.begin();
-        batchRender.draw(cubeRegions.get(App.getCurrentView()), true);
+
+        Int point = App.getPlayer().getCollision().getCurrent();
+        batchRender.drawSubregion(cubeRegions.get(App.getCurrentView()), true, point.x, point.y, 3);
         batchRender.end();
         shadowGeneratorShader.end();
         return shadowMap.getColorBufferTexture();

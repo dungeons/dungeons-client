@@ -21,7 +21,12 @@ public class Cube {
 
     private boolean corner;
 
-    public Cube() {
+    private final int x;
+    private final int y;
+
+    public Cube(int x, int y) {
+        this.x = x;
+        this.y = y;
         this.sides = new CubeSide[QUADS];
     }
 
@@ -129,6 +134,14 @@ public class Cube {
 
     public void setCorner(boolean corner) {
         this.corner = corner;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 
 }

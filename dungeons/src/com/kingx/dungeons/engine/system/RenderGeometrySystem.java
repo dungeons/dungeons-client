@@ -39,7 +39,7 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
     private final SpriteRenderer sr = new SpriteRenderer();
 
     public RenderGeometrySystem(FollowCameraComponent camera) {
-        super(Aspect.getAspectForAll(PositionComponent.class, TextureComponent.class));
+        super(Aspect.getAspectForAll(PositionComponent.class, MoveComponent.class));
         this.camera = camera;
     }
 

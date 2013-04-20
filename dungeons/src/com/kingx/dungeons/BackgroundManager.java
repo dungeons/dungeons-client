@@ -40,13 +40,18 @@ public class BackgroundManager {
 
     public void hide(int view) {
         for (Background background : backgrounds) {
-            Tween.to(background.getComponent().getTexture(view), BackgroundAccessor.FADE, 1.0f).target(0).ease(Quad.OUT).start(App.getTweenManager());
+            Tween.to(background.getComponent().getTexture(view * 2), BackgroundAccessor.FADE, 1.0f).target(0).ease(Quad.OUT).start(App.getTweenManager());
+            Tween.to(background.getComponent().getTexture(view * 2 + 1), BackgroundAccessor.FADE, 1.0f).target(0).ease(Quad.OUT)
+                    .start(App.getTweenManager());
         }
     }
 
     public void show(int view) {
         for (Background background : backgrounds) {
-            Tween.to(background.getComponent().getTexture(view), BackgroundAccessor.FADE, 1.0f).target(1f).ease(Quad.OUT).start(App.getTweenManager());
+            Tween.to(background.getComponent().getTexture(view * 2), BackgroundAccessor.FADE, 1.0f).target(1f).ease(Quad.OUT)
+                    .start(App.getTweenManager());
+            Tween.to(background.getComponent().getTexture(view * 2 + 1), BackgroundAccessor.FADE, 1.0f).target(1f).ease(Quad.OUT)
+                    .start(App.getTweenManager());
         }
     }
 

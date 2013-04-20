@@ -354,6 +354,20 @@ public class CubeRenderer implements Disposable {
 
     }
 
+    public void drawSubregion(CubeRegion region, boolean onlyVisible, int x, int y, int radius) {
+        for (Cube[] temp : region.getCubes()) {
+            for (Cube cube : temp) {
+                if (cube.getX() >= x - radius && cube.getX() <= x + radius) {
+                    if (cube.getY() >= y - radius && cube.getY() <= y + radius) {
+                        if (cube != null) {
+                            draw(cube, onlyVisible);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private void draw(CubeSide side) {
 
         for (CubeVertex cubeVert : side.getVerts()) {

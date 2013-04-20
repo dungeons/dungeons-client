@@ -1,5 +1,6 @@
 package com.kingx.dungeons;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
@@ -20,14 +21,17 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.kingx.artemis.World;
 import com.kingx.dungeons.GameStateManager.GameStatus;
 import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.TextureComponent;
+import com.kingx.dungeons.engine.concrete.Building;
 import com.kingx.dungeons.engine.concrete.Wanderer;
 import com.kingx.dungeons.engine.system.RenderBackgroundSystem;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
+import com.kingx.dungeons.engine.system.RenderVillageSystem;
 import com.kingx.dungeons.generator.GeneratorFactory;
 import com.kingx.dungeons.generator.GeneratorType;
 import com.kingx.dungeons.graphics.Colors;
@@ -122,6 +126,7 @@ public class App implements ApplicationListener {
     private World world;
     private RenderShadowSystem renderShadowSystem;
     private RenderGeometrySystem renderGeometrySystem;
+    private RenderVillageSystem renderVillageSystem;
     private RenderBackgroundSystem renderBackgroundSystem;
     private static Wanderer player;
     private static AbstractServer server;
@@ -142,6 +147,7 @@ public class App implements ApplicationListener {
             init();
             INITIALIZED = true;
         }
+
         progress = player.getPositionComponent().getY() / terrain.getHeight();
         Color tint = Colors.interpolate(Colors.WORLD_BOTTOM, Colors.SKY, progress, 1);
 
@@ -151,6 +157,7 @@ public class App implements ApplicationListener {
 
         renderShadowSystem.process();
         renderBackgroundSystem.process();
+        renderVillageSystem.process();
         renderGeometrySystem.process();
 
         if (DEBUG != null) {
@@ -168,12 +175,14 @@ public class App implements ApplicationListener {
         if (ui != null) {
             ui.render();
         }
-        Gdx.gl.glClearColor(tint.r, tint.g, tint.b, tint.a);
+
+        Gdx.gl.glClearColor(0.5f, 0.7f, 0.4f, 1);
 
     }
 
     private void init() {
         createMaze();
+        createVillage();
         createBackground();
         createCubes();
         createPlayer();
@@ -191,6 +200,19 @@ public class App implements ApplicationListener {
         if (DEBUG != null || Gdx.app.getType() != ApplicationType.Desktop) {
             ui = new Gamepad(onScreenVectorRender);
             gamepad = ui;
+        }
+
+    }
+
+    private void createVillage() {
+        try {
+            createBuilding(2.5f, 4, "house", 1);
+            createBuilding(5, 3, "house", 1.5f);
+            createBuilding(5, 4.5f, "house", 2.5f);
+            createBuilding(8, 4, "well", 0.7f);
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
         }
 
     }
@@ -230,14 +252,15 @@ public class App implements ApplicationListener {
     private void addSystemsToWorld() {
         renderShadowSystem = world.setSystem(new RenderShadowSystem(worldCamera), true);
         renderGeometrySystem = world.setSystem(new RenderGeometrySystem(worldCamera), true);
+        renderVillageSystem = world.setSystem(new RenderVillageSystem(worldCamera), true);
         renderBackgroundSystem = world.setSystem(new RenderBackgroundSystem(backgroundCamera), true);
     }
 
     private void createBackground() {
         backgroundManager = new BackgroundManager(world, terrain.getWidth(), terrain.getHeight());
-        //backgroundManager.addBackground(1, -2, "well");
-        backgroundManager.addBackground(3, -5, "house");
-        //  backgroundManager.addBackground(4, -1, "tree");
+        // backgroundManager.addBackground(1, -2, "well");
+        //  backgroundManager.addBackground(3, -5, "house");
+        //  backgroundManager.addBackground(4, -1, "well");
         //  backgroundManager.addBackground(9, -5, "house");
     }
 
@@ -249,6 +272,17 @@ public class App implements ApplicationListener {
         Vector2 p = terrain.getRandomPosition(5, 5);
         player = new Wanderer(world, p, 1f, 10f, avatarCamera);
         player.createEntity().addToWorld();
+    }
+
+    /**
+     * Place player in the game
+     * 
+     * @throws IOException
+     */
+    private void createBuilding(float x, float y, String name, float scale) throws IOException {
+
+        Building building = new Building(world, new Vector3(x, 50, -y), name, scale);
+        building.createEntity().addToWorld();
     }
 
     /**

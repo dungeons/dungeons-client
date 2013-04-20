@@ -38,9 +38,9 @@ public final class CubeFactory {
             { 0, 0, -1 } // Bottom
     };
 
-    public static Cube makeCube(float x, float y, float z, int type) {
+    public static Cube makeCube(float x, float y, float z, int type, int xInMap, int yInMap) {
 
-        Cube c = new Cube();
+        Cube c = new Cube(xInMap, yInMap);
 
         for (int i = 0; i < quads.length; i++) {
 
