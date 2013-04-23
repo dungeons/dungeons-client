@@ -47,6 +47,7 @@ import com.kingx.dungeons.server.OfflineServer;
 import com.kingx.dungeons.server.OnlineServer;
 import com.kingx.dungeons.tween.BackgroundAccessor;
 import com.kingx.dungeons.tween.CameraAccessor;
+import com.kingx.dungeons.tween.Vector3Accessor;
 
 public class App implements ApplicationListener {
 
@@ -62,6 +63,7 @@ public class App implements ApplicationListener {
     static {
         Tween.registerAccessor(FollowCameraComponent.class, new CameraAccessor());
         Tween.registerAccessor(TextureComponent.class, new BackgroundAccessor());
+        Tween.registerAccessor(Vector3.class, new Vector3Accessor());
     }
     private static FollowCameraComponent worldCamera;
     private static FollowCameraComponent avatarCamera;
@@ -182,7 +184,7 @@ public class App implements ApplicationListener {
 
     private void init() {
         createMaze();
-        createVillage();
+        // createVillage();
         createBackground();
         createCubes();
         createPlayer();
@@ -218,8 +220,7 @@ public class App implements ApplicationListener {
     }
 
     /**
-     * Generates maze footprint and polygon. Creates maze instance and places it
-     * in the game world.
+     * Generates maze footprint and polygon. Creates maze instance and places it in the game world.
      */
     private void createMaze() {
         terrain = new Terrain(createMap());
@@ -234,8 +235,7 @@ public class App implements ApplicationListener {
     }
 
     /**
-     * If template is available, creates footprint based on that template,
-     * otherwise generates random map.
+     * If template is available, creates footprint based on that template, otherwise generates random map.
      * 
      * @return generated map
      */

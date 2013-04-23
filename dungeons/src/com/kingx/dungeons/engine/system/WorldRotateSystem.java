@@ -26,9 +26,7 @@ public class WorldRotateSystem extends EntityProcessingSystem {
     ComponentMapper<FollowCameraComponent> cameraMapper;
 
     public enum State {
-        TURNING_LEFT,
-        TURNING_RIGHT,
-        IDLE;
+        TURNING_LEFT, TURNING_RIGHT, IDLE;
     }
 
     private static State currentState = State.IDLE;
@@ -55,7 +53,7 @@ public class WorldRotateSystem extends EntityProcessingSystem {
         WorldRotateComponent world = worldMapper.getSafe(e);
         PositionComponent position = world.getPosition();
 
-        float x = position.getScreenX();
+        float x = Collision.worldToScreen(position.inWorld).x;
         float boundsOffset = App.UNIT - App.PLAYER_OFFSET;
         if (x < CubeRegion.min.x + boundsOffset) {
             rotateLeft(camera, world.getMove());
