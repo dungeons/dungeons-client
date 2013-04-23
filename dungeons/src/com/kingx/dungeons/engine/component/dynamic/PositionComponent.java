@@ -1,8 +1,6 @@
 package com.kingx.dungeons.engine.component.dynamic;
 
 import com.badlogic.gdx.math.Vector3;
-import com.kingx.dungeons.App;
-import com.kingx.dungeons.graphics.cube.CubeRegion;
 
 public class PositionComponent extends AbstractComponent {
     public Vector3 inWorld;
@@ -58,34 +56,4 @@ public class PositionComponent extends AbstractComponent {
         return inWorld;
     }
 
-    public float getScreenX() {
-        switch (App.getCurrentView()) {
-            case 0:
-                return getX() + CubeRegion.min.x;
-            case 1:
-                return -getZ() + CubeRegion.max.z;
-            case 2:
-                return CubeRegion.max.x - getX();
-            case 3:
-                return getZ() - CubeRegion.min.z;
-        }
-        return 0;
-    }
-
-    public void setScreenX(float x) {
-        switch (App.getCurrentView()) {
-            case 0:
-                setX(x + CubeRegion.min.x);
-                break;
-            case 1:
-                setZ(-x + CubeRegion.max.z);
-                break;
-            case 2:
-                setX(-x + CubeRegion.max.x);
-                break;
-            case 3:
-                setZ(x + CubeRegion.min.z);
-                break;
-        }
-    }
 }

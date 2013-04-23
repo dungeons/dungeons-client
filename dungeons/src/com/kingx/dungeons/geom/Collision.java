@@ -2,6 +2,7 @@ package com.kingx.dungeons.geom;
 
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Plane;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.kingx.dungeons.App;
@@ -11,10 +12,8 @@ import com.kingx.dungeons.geom.Point.Int;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
 
 /**
- * This class contains method coppied and modified from {@link Intersector}
- * class. Standard methods from there are using public static
- * {@link Vector3#tmp} properties that are accessed from all over the API. When
- * run in parallel thread, synchronization issues arise.
+ * This class contains method coppied and modified from {@link Intersector} class. Standard methods from there are using public static {@link Vector3#tmp}
+ * properties that are accessed from all over the API. When run in parallel thread, synchronization issues arise.
  * 
  * @author xkings
  * 
@@ -34,8 +33,9 @@ public class Collision {
      * </pre>
      */
     public static boolean intersectRayTrianglesBetweenPoints(Ray ray, float[] triangles, Vector3 a, Vector3 b) {
-        if ((triangles.length / 3) % 3 != 0)
+        if ((triangles.length / 3) % 3 != 0) {
             throw new RuntimeException("triangle list size is not a multiple of 3");
+        }
 
         for (int i = 0; i < triangles.length - 6; i += 9) {
             boolean result = intersectRayTriangle(ray, tmp1.set(triangles[i], triangles[i + 1], triangles[i + 2]),
@@ -70,25 +70,28 @@ public class Collision {
      * @param intersection
      *            The vector the intersection point is written to (optional)
      * @return Whether an intersection is present.
-     * @see Intersector#intersectRayPlane(Ray ray, Plane plane, Vector3
-     *      intersection)
+     * @see Intersector#intersectRayPlane(Ray ray, Plane plane, Vector3 intersection)
      */
     public static boolean intersectRayPlane(Ray ray, Plane plane, Vector3 intersection) {
         float denom = ray.direction.dot(plane.getNormal());
         if (denom != 0) {
             float t = -(ray.origin.dot(plane.getNormal()) + plane.getD()) / denom;
-            if (t < 0)
+            if (t < 0) {
                 return false;
+            }
 
-            if (intersection != null)
+            if (intersection != null) {
                 intersection.set(ray.origin).add(tmp(ray.direction).mul(t));
+            }
             return true;
         } else if (plane.testPoint(ray.origin) == Plane.PlaneSide.OnPlane) {
-            if (intersection != null)
+            if (intersection != null) {
                 intersection.set(ray.origin);
+            }
             return true;
-        } else
+        } else {
             return false;
+        }
     }
 
     private static final MyPlane p = new MyPlane(new Vector3(), 0);
@@ -115,13 +118,13 @@ public class Collision {
      * @param intersection
      *            The intersection point (optional)
      * 
-     * @see Intersector#intersectRayTriangle(Ray, Vector3, Vector3, Vector3,
-     *      Vector3)
+     * @see Intersector#intersectRayTriangle(Ray, Vector3, Vector3, Vector3, Vector3)
      */
     public static boolean intersectRayTriangle(Ray ray, Vector3 t1, Vector3 t2, Vector3 t3, Vector3 intersection) {
         p.set(t1, t2, t3);
-        if (!intersectRayPlane(ray, p, i))
+        if (!intersectRayPlane(ray, p, i)) {
             return false;
+        }
 
         v0.set(t3).sub(t1);
         v1.set(t2).sub(t1);
@@ -134,15 +137,17 @@ public class Collision {
         float dot12 = v1.dot(v2);
 
         float denom = dot00 * dot11 - dot01 * dot01;
-        if (denom == 0)
+        if (denom == 0) {
             return false;
+        }
 
         float u = (dot11 * dot02 - dot01 * dot12) / denom;
         float v = (dot00 * dot12 - dot01 * dot02) / denom;
 
         if (u >= 0 && v >= 0 && u + v <= 1) {
-            if (intersection != null)
+            if (intersection != null) {
                 intersection.set(i);
+            }
             return true;
         } else {
             return false;
@@ -159,8 +164,7 @@ public class Collision {
      *            point b
      * @param c
      *            point c
-     * @return {@code true} if point {@code c} is between {@code a} and
-     *         {@code b}, {@code false} otherwise
+     * @return {@code true} if point {@code c} is between {@code a} and {@code b}, {@code false} otherwise
      */
     private static boolean inBetween(Vector3 a, Vector3 b, Vector3 c) {
         float minx = Math.min(a.x, b.x);
@@ -256,20 +260,18 @@ public class Collision {
     }
 
     /**
-     * Checks for collision on given position. If object is entity is colliding,
-     * it is pushed to the other side
+     * Checks for collision on given position. If object is entity is colliding, it is pushed to the other side
      * 
      * @param position
      *            current position of entity
      * @param size
      *            size of entity
-     * @return {@code true} whether there were collision, {@code false}
-     *         otherwise
+     * @return {@code true} whether there were collision, {@code false} otherwise
      */
     public static Int resolveCollisionUp(PositionComponent position, SizeComponent size) {
 
         float halfSize = size.getSize() / 2f;
-        float x = position.getScreenX();
+        float x = worldToScreen(position.inWorld).x;
         float y = position.getY();
 
         float upBound = y + halfSize;
@@ -291,20 +293,18 @@ public class Collision {
     }
 
     /**
-     * Checks for collision on given position. If object is entity is colliding,
-     * it is pushed to the other side
+     * Checks for collision on given position. If object is entity is colliding, it is pushed to the other side
      * 
      * @param position
      *            current position of entity
      * @param size
      *            size of entity
-     * @return {@code true} whether there were collision, {@code false}
-     *         otherwise
+     * @return {@code true} whether there were collision, {@code false} otherwise
      */
     public static Int resolveCollisionDown(PositionComponent position, SizeComponent size) {
 
         float halfSize = size.getSize() / 2f;
-        float x = position.getScreenX();
+        float x = worldToScreen(position.inWorld).x;
         float y = position.getY();
 
         float downBound = y - halfSize;
@@ -326,20 +326,18 @@ public class Collision {
     }
 
     /**
-     * Checks for collision on given position. If object is entity is colliding,
-     * it is pushed to the other side
+     * Checks for collision on given position. If object is entity is colliding, it is pushed to the other side
      * 
      * @param position
      *            current position of entity
      * @param size
      *            size of entity
-     * @return {@code true} whether there were collision, {@code false}
-     *         otherwise
+     * @return {@code true} whether there were collision, {@code false} otherwise
      */
     public static Int resolveCollisionLeft(PositionComponent position, SizeComponent size) {
 
         float halfSize = size.getSize() / 2f;
-        float x = position.getScreenX();
+        float x = worldToScreen(position.inWorld).x;
         float y = position.getY();
 
         float leftBound = x - halfSize;
@@ -352,7 +350,7 @@ public class Collision {
 
             if (!isWalkable(leftPoint)) {
                 x = (leftPoint.x + 1) * App.UNIT + halfSize;
-                position.setScreenX(x);
+                screenToWorld(new Vector2(x, y), position.inWorld);
                 return leftPoint;
             }
 
@@ -361,20 +359,18 @@ public class Collision {
     }
 
     /**
-     * Checks for collision on given position. If object is entity is colliding,
-     * it is pushed to the other side
+     * Checks for collision on given position. If object is entity is colliding, it is pushed to the other side
      * 
      * @param position
      *            current position of entity
      * @param size
      *            size of entity
-     * @return {@code true} whether there were collision, {@code false}
-     *         otherwise
+     * @return {@code true} whether there were collision, {@code false} otherwise
      */
     public static Int resolveCollisionRight(PositionComponent position, SizeComponent size) {
 
         float halfSize = size.getSize() / 2f;
-        float x = position.getScreenX();
+        float x = worldToScreen(position.inWorld).x;
         float y = position.getY();
 
         float rightBound = x + halfSize;
@@ -387,7 +383,7 @@ public class Collision {
 
             if (!isWalkable(rightPoint)) {
                 x = rightPoint.x * App.UNIT - halfSize;
-                position.setScreenX(x);
+                screenToWorld(new Vector2(x, y), position.inWorld);
                 return rightPoint;
             }
 
@@ -421,4 +417,74 @@ public class Collision {
 
         return footprint[point.x][point.y] == 0;
     }
+
+    public static Vector2 worldToScreen(Vector3 world) {
+        Vector2 screen = new Vector2(world.x, world.y);
+        switch (App.getCurrentView()) {
+            case 0:
+                screen.x = world.x + CubeRegion.min.x;
+                screen.y = world.y;
+                break;
+            case 1:
+                screen.x = -world.z + CubeRegion.max.z;
+                screen.y = world.y;
+                break;
+            case 2:
+                screen.x = CubeRegion.max.x - world.x;
+                screen.y = world.y;
+                break;
+            case 3:
+                screen.x = world.z - CubeRegion.min.z;
+                screen.y = world.y;
+                break;
+        }
+        return screen;
+    }
+
+    public static void screenToWorld(Vector2 screen, Vector3 world) {
+        switch (App.getCurrentView()) {
+            case 0:
+                world.x = screen.x + CubeRegion.min.x;
+                world.z = CubeRegion.max.z;
+                break;
+            case 1:
+                world.x = CubeRegion.max.x;
+                world.z = -screen.x + CubeRegion.max.z;
+                break;
+            case 2:
+                world.x = -screen.x + CubeRegion.max.x;
+                world.z = CubeRegion.min.z;
+                break;
+            case 3:
+                world.x = CubeRegion.min.x;
+                world.z = screen.x + CubeRegion.min.z;
+                break;
+        }
+        world.y = screen.y;
+    }
+
+    public static Vector3 screenToWorld(Vector2 screen) {
+        Vector3 result = new Vector3();
+        switch (App.getCurrentView()) {
+            case 0:
+                result.x = screen.x + CubeRegion.min.x;
+                result.z = CubeRegion.max.z;
+                break;
+            case 1:
+                result.x = CubeRegion.max.x;
+                result.z = -screen.x + CubeRegion.max.z;
+                break;
+            case 2:
+                result.x = -screen.x + CubeRegion.max.x;
+                result.z = CubeRegion.min.z;
+                break;
+            case 3:
+                result.x = CubeRegion.min.x;
+                result.z = screen.x + CubeRegion.min.z;
+                break;
+        }
+        result.y = screen.y;
+        return result;
+    }
+
 }

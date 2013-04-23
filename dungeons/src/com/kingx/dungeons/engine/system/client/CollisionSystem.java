@@ -43,7 +43,7 @@ public class CollisionSystem extends EntityProcessingSystem {
     }
 
     private Int getCurrent(PositionComponent position) {
-        float x = position.getScreenX();
+        float x = Collision.worldToScreen(position.inWorld).x;
         float y = position.getY();
 
         return new Int((int) (x / App.UNIT), (int) (y / App.UNIT));

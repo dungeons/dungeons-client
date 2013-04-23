@@ -79,15 +79,19 @@ public class OfflineServer extends AbstractServer {
         int mapped = getKey(c.getAction(), move.mapping);
         switch (mapped) {
             case Keys.S:
-                if (!gravity.isFalling()) {
+                if (!gravity.isFalling() && !mining.isMining()) {
                     move.vector.y = c.getValue() == 0 ? 0 : -1;
                 }
                 break;
             case Keys.A:
-                move.vector.x += c.getValue() == 0 ? 1 : -1;
+                if (!mining.isMining()) {
+                    move.vector.x += c.getValue() == 0 ? 1 : -1;
+                }
                 break;
             case Keys.D:
-                move.vector.x += c.getValue() == 0 ? -1 : 1;
+                if (!mining.isMining()) {
+                    move.vector.x += c.getValue() == 0 ? -1 : 1;
+                }
                 break;
             case Keys.SPACE:
                 if (collision.getStandingOnABlock() != null && c.getValue() == 1) {
