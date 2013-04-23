@@ -71,10 +71,11 @@ public class WorldRotateSystem extends EntityProcessingSystem {
     }
 
     private void updateCamera(FollowCameraComponent camera, PositionComponent position, float angle) {
+        float y = Math.min(position.getY(), App.getTerrain().getHeight() + 0.5f);
         camera.getCamera().position.x = CubeRegion.mean.x + (float) (Math.sin(angle) * camera.getHeight());
-        camera.getCamera().position.y = position.getY();
+        camera.getCamera().position.y = y;
         camera.getCamera().position.z = CubeRegion.mean.z + (float) (Math.cos(angle) * camera.getHeight());
-        camera.getCamera().lookAt(CubeRegion.mean.x, position.getY(), CubeRegion.mean.z);
+        camera.getCamera().lookAt(CubeRegion.mean.x, y, CubeRegion.mean.z);
     }
 
     private void rotateRight(FollowCameraComponent camera, MoveComponent moveComponent) {

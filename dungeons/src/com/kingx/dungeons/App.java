@@ -176,7 +176,7 @@ public class App implements ApplicationListener {
             ui.render();
         }
 
-        Gdx.gl.glClearColor(0.5f, 0.7f, 0.4f, 1);
+        Gdx.gl.glClearColor(tint.r, tint.g, tint.b, 1);
 
     }
 
@@ -206,10 +206,16 @@ public class App implements ApplicationListener {
 
     private void createVillage() {
         try {
-            createBuilding(2.5f, 4, "house", 1);
-            createBuilding(5, 3, "house", 1.5f);
-            createBuilding(5, 4.5f, "house", 2.5f);
-            createBuilding(8, 4, "well", 0.7f);
+            createBuilding(4.8f, 1.2f, "mine", 1f);
+            // createBuilding(8, 4, "well", 0.7f);
+            createBuilding(2.7f, 0.7f, "tree", 0.5f);
+            createBuilding(7.5f, 3, "tree", 1.5f);
+            createBuilding(5, 5.5f, "tree", 2f);
+            createBuilding(5, 3, "tree", 2.5f);
+            createBuilding(2, 6, "tree", 1f);
+            createBuilding(2, 3, "tree", 1f);
+            createBuilding(1.5f, 4.5f, "house", 0.9f);
+            createObject(0, 55, 0, "moon", 1f);
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -240,7 +246,7 @@ public class App implements ApplicationListener {
      * @return generated map
      */
     private int[][][] createMap() {
-        return GeneratorFactory.getInstace(GeneratorType.GENERIC).buildLayered(36, 50);
+        return GeneratorFactory.getInstace(GeneratorType.GENERIC).buildLayered(36, 9);
         // return Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT, MAZE_BLOCKS_COUNT) : Assets.map;
         //return MazeBuilder.getLayeredMaze(36, 9);
         // return Assets.map;
@@ -280,8 +286,12 @@ public class App implements ApplicationListener {
      * @throws IOException
      */
     private void createBuilding(float x, float y, String name, float scale) throws IOException {
+        createObject(x, App.getTerrain().getHeight(), -y, name, scale);
+    }
 
-        Building building = new Building(world, new Vector3(x, 50, -y), name, scale);
+    private void createObject(float x, float y, float z, String name, float scale) throws IOException {
+
+        Building building = new Building(world, new Vector3(x, y, z), name, scale);
         building.createEntity().addToWorld();
     }
 

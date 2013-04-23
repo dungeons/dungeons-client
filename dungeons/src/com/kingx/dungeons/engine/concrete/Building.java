@@ -22,7 +22,6 @@ public class Building extends ConcreteEntity {
 
         Mesh m = MeshFactory.build(name);
         m.scale(scale, scale, scale);
-
         this.position = new PositionComponent(p);
         this.mesh = new MeshComponent(m);
         this.texture = new TextureComponent(Assets.getTexture(name, 0));

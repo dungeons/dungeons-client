@@ -60,6 +60,7 @@ void main ()
 	/// THESE COMMENTS REPRESENT WHAT I THINK THIS CODE DOES. I HAVE NO IDEA WHAT IS CORRECT
     vec4 worldPostitoin = vWorldVertex;
 	bool shadow = false;
+	bool inSight = false;
 	vec3 depth;
 	float i = 0.0;
 	float PI = 3.14159265358979323846264;
@@ -111,8 +112,14 @@ void main ()
 
 	float distance = length(worldPostitoin.xyz - v_lightSpacePosition.xyz);
 	shadow = distance > u_sight ? true : shadow;
+
+	float sightDist = length(worldPostitoin.xyz - v_lightSpacePosition.xyz);
+	inSight = sightDist < u_sight ? v_lightSpacePosition.y >= 50.0 : false;
+
 	distance = clamp(distance,0.0,u_sight);
 	distance/=u_sight;
+
+	float temp = 1-(sightDist/u_sight);
 
 	float del = 85.0;
 	float r = round (interpolate(u_source_color.r ,u_ground_color.r, distance, 1.0)*del) / del;
@@ -122,9 +129,11 @@ void main ()
 		shadow = true;
 	}
 
-	if(u_forceShadow || shadow){
+	if(vWorldVertex.y >= 49.85){
+			gl_FragColor = u_source_color * texture2D(u_texture,v_texCoord) * u_tint * temp ;
+	}else if(u_forceShadow || shadow ){
 		gl_FragColor = u_ground_color * texture2D(u_texture,v_texCoord) * u_tint ;
-	}else{
+	}else {
 		gl_FragColor = vec4(r,g,b,1.0) * texture2D(u_texture,v_texCoord) * u_tint ;
 	}
         

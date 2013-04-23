@@ -15,11 +15,11 @@ public class GenericGenerator extends AbstractGenerator {
     public int[][] build(int width, int height) {
         terain = new int[width][height];
 
-        int gems = 5;
+        int gems = 1;
         int zone = height / gems;
         for (int i = 0; i < gems; i++) {
 
-            //  chances.add(new Trigger(10, new SpotMutator(terain, 6 - i, i * zone, i * (zone + 1))));
+            chances.add(new Trigger(10, new SpotMutator(terain, 6 - i, i * zone, i * (zone + 1))));
         }
         //chances.add(new Trigger(100, new MineralCapsle(terain, 0, 1)));
         Collections.sort(chances);

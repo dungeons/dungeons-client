@@ -107,9 +107,9 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowProjectShader.setUniformf("u_maxBound", CubeRegion.max);
         shadowProjectShader.setUniformf("u_tint", Colors.interpolate(Colors.SHADOW_BOTTOM, Color.WHITE, App.getProgress(), 1));
 
-        //   batchRender.draw(cubeSides.get(App.getLastView()), false);
+        batchRender.draw(cubeSides.get(App.getPrevView()), false);
         batchRender.draw(cubeSides.get(App.getCurrentView()), false);
-        //   batchRender.draw(cubeSides.get(App.getNextView()), false);
+        batchRender.draw(cubeSides.get(App.getNextView()), false);
         batchRender.draw(cubeTop, false);
         batchRender.end();
 
