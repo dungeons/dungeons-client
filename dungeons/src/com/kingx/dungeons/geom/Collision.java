@@ -6,14 +6,17 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.Ray;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.BlockPair;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
 import com.kingx.dungeons.geom.Point.Int;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
 
 /**
- * This class contains method coppied and modified from {@link Intersector} class. Standard methods from there are using public static {@link Vector3#tmp}
- * properties that are accessed from all over the API. When run in parallel thread, synchronization issues arise.
+ * This class contains method coppied and modified from {@link Intersector}
+ * class. Standard methods from there are using public static
+ * {@link Vector3#tmp} properties that are accessed from all over the API. When
+ * run in parallel thread, synchronization issues arise.
  * 
  * @author xkings
  * 
@@ -70,7 +73,8 @@ public class Collision {
      * @param intersection
      *            The vector the intersection point is written to (optional)
      * @return Whether an intersection is present.
-     * @see Intersector#intersectRayPlane(Ray ray, Plane plane, Vector3 intersection)
+     * @see Intersector#intersectRayPlane(Ray ray, Plane plane, Vector3
+     *      intersection)
      */
     public static boolean intersectRayPlane(Ray ray, Plane plane, Vector3 intersection) {
         float denom = ray.direction.dot(plane.getNormal());
@@ -118,7 +122,8 @@ public class Collision {
      * @param intersection
      *            The intersection point (optional)
      * 
-     * @see Intersector#intersectRayTriangle(Ray, Vector3, Vector3, Vector3, Vector3)
+     * @see Intersector#intersectRayTriangle(Ray, Vector3, Vector3, Vector3,
+     *      Vector3)
      */
     public static boolean intersectRayTriangle(Ray ray, Vector3 t1, Vector3 t2, Vector3 t3, Vector3 intersection) {
         p.set(t1, t2, t3);
@@ -164,7 +169,8 @@ public class Collision {
      *            point b
      * @param c
      *            point c
-     * @return {@code true} if point {@code c} is between {@code a} and {@code b}, {@code false} otherwise
+     * @return {@code true} if point {@code c} is between {@code a} and
+     *         {@code b}, {@code false} otherwise
      */
     private static boolean inBetween(Vector3 a, Vector3 b, Vector3 c) {
         float minx = Math.min(a.x, b.x);
@@ -260,13 +266,15 @@ public class Collision {
     }
 
     /**
-     * Checks for collision on given position. If object is entity is colliding, it is pushed to the other side
+     * Checks for collision on given position. If object is entity is colliding,
+     * it is pushed to the other side
      * 
      * @param position
      *            current position of entity
      * @param size
      *            size of entity
-     * @return {@code true} whether there were collision, {@code false} otherwise
+     * @return {@code true} whether there were collision, {@code false}
+     *         otherwise
      */
     public static Int resolveCollisionUp(PositionComponent position, SizeComponent size) {
 
@@ -282,7 +290,7 @@ public class Collision {
         if (clampedValue != upBound) {
             Int upPoint = new Point.Int((int) (x / App.UNIT), (int) (upBound / App.UNIT));
 
-            if (!isWalkable(upPoint)) {
+            if (!isWalkable(upPoint, true)) {
                 y = upPoint.y * App.UNIT - halfSize;
                 position.setY(y);
                 return upPoint;
@@ -293,13 +301,15 @@ public class Collision {
     }
 
     /**
-     * Checks for collision on given position. If object is entity is colliding, it is pushed to the other side
+     * Checks for collision on given position. If object is entity is colliding,
+     * it is pushed to the other side
      * 
      * @param position
      *            current position of entity
      * @param size
      *            size of entity
-     * @return {@code true} whether there were collision, {@code false} otherwise
+     * @return {@code true} whether there were collision, {@code false}
+     *         otherwise
      */
     public static Int resolveCollisionDown(PositionComponent position, SizeComponent size) {
 
@@ -315,7 +325,8 @@ public class Collision {
         if (clampedValue != downBound) {
             Int downPoint = new Point.Int((int) (x / App.UNIT), (int) (downBound / App.UNIT));
 
-            if (!isWalkable(downPoint)) {
+            if (!isWalkable(downPoint, true)) {
+                System.out.println("OMG");
                 y = (downPoint.y + 1) * App.UNIT + halfSize;
                 position.setY(y);
                 return downPoint;
@@ -326,13 +337,15 @@ public class Collision {
     }
 
     /**
-     * Checks for collision on given position. If object is entity is colliding, it is pushed to the other side
+     * Checks for collision on given position. If object is entity is colliding,
+     * it is pushed to the other side
      * 
      * @param position
      *            current position of entity
      * @param size
      *            size of entity
-     * @return {@code true} whether there were collision, {@code false} otherwise
+     * @return {@code true} whether there were collision, {@code false}
+     *         otherwise
      */
     public static Int resolveCollisionLeft(PositionComponent position, SizeComponent size) {
 
@@ -348,7 +361,7 @@ public class Collision {
         if (clampedValue != leftBound) {
             Int leftPoint = new Point.Int((int) (leftBound / App.UNIT), (int) (y / App.UNIT));
 
-            if (!isWalkable(leftPoint)) {
+            if (!isWalkable(leftPoint, true)) {
                 x = (leftPoint.x + 1) * App.UNIT + halfSize;
                 screenToWorld(new Vector2(x, y), position.inWorld);
                 return leftPoint;
@@ -359,13 +372,15 @@ public class Collision {
     }
 
     /**
-     * Checks for collision on given position. If object is entity is colliding, it is pushed to the other side
+     * Checks for collision on given position. If object is entity is colliding,
+     * it is pushed to the other side
      * 
      * @param position
      *            current position of entity
      * @param size
      *            size of entity
-     * @return {@code true} whether there were collision, {@code false} otherwise
+     * @return {@code true} whether there were collision, {@code false}
+     *         otherwise
      */
     public static Int resolveCollisionRight(PositionComponent position, SizeComponent size) {
 
@@ -381,7 +396,7 @@ public class Collision {
         if (clampedValue != rightBound) {
             Int rightPoint = new Point.Int((int) (rightBound / App.UNIT), (int) (y / App.UNIT));
 
-            if (!isWalkable(rightPoint)) {
+            if (!isWalkable(rightPoint, true)) {
                 x = rightPoint.x * App.UNIT - halfSize;
                 screenToWorld(new Vector2(x, y), position.inWorld);
                 return rightPoint;
@@ -399,8 +414,8 @@ public class Collision {
      *            to be checked
      * @return {@code true} if point is walkable, {@code false} otherwise
      */
-    public static boolean isWalkable(Int point) {
-        int[][] footprint = App.getTerrain().getFootprint();
+    public static boolean isWalkable(Int point, boolean offBounds) {
+        BlockPair[][] footprint = App.getTerrain().getFootprint();
         point = point.cpy();
         if (point.x == footprint.length) {
             footprint = App.getTerrain().getNextFootprint();
@@ -408,14 +423,14 @@ public class Collision {
         }
 
         if (point.x < 0 || point.x >= footprint.length + 1) {
-            return true;
+            return offBounds;
         }
 
         if (point.y < 0 || point.y >= footprint[0].length) {
-            return true;
+            return offBounds;
         }
 
-        return footprint[point.x][point.y] == 0;
+        return footprint[point.x][point.y] == null;
     }
 
     public static Vector2 worldToScreen(Vector3 world) {

@@ -43,10 +43,12 @@ public class RenderShadowSystem extends EntityProcessingSystem {
     private final QuadTextureFrameBuffer shadowMap;
     private Texture depthMap;
     private CubeRenderer batchRender;
+    private final ArrayList<CubeRegion> blocks;
 
-    public RenderShadowSystem(FollowCameraComponent camera) {
+    public RenderShadowSystem(FollowCameraComponent camera, ArrayList<CubeRegion> blocks) {
         super(Aspect.getAspectForAll(PositionComponent.class, ShadowComponent.class));
         this.camera = camera;
+        this.blocks = blocks;
 
         shadowGeneratorShader = Shader.getShader("shadowgen");
         shadowProjectShader = Shader.getShader("shadowproj");
@@ -72,18 +74,15 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         MoveComponent mc = mm.getSafe(e);
         ShadowComponent sc = sm.getSafe(e);
 
-        ArrayList<CubeRegion> cubeSides = App.getCubeManager().getSides();
-        CubeRegion cubeTop = App.getCubeManager().getTop();
-
         Camera[] lights = sc.getLights();
         sc.move(pc);
         sc.rotate(mc);
 
-        generateShadowMap(cubeSides, lights);
+        generateShadowMap(blocks, lights);
 
         depthMap.bind();
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
-        Assets.getTexture("wall", 0).getTexture().bind();
+        Assets.getTexture("terrain", 0).getTexture().bind();
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
 
         batchRender.setShader(shadowProjectShader);
@@ -107,10 +106,8 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowProjectShader.setUniformf("u_maxBound", CubeRegion.max);
         shadowProjectShader.setUniformf("u_tint", Colors.interpolate(Colors.SHADOW_BOTTOM, Color.WHITE, App.getProgress(), 1));
 
-        batchRender.draw(cubeSides.get(App.getPrevView()), false);
-        batchRender.draw(cubeSides.get(App.getCurrentView()), false);
-        batchRender.draw(cubeSides.get(App.getNextView()), false);
-        batchRender.draw(cubeTop, false);
+        batchRender.draw(blocks, false);
+
         batchRender.end();
 
     }
@@ -145,7 +142,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         batchRender.begin();
 
         Int point = App.getPlayer().getCollision().getCurrent();
-        batchRender.drawSubregion(cubeRegions.get(App.getCurrentView()), true, point.x, point.y, 3);
+        batchRender.drawSubregion(cubeRegions.get(App.getCurrentView()), true, point.x, point.y, 4);
         batchRender.end();
         shadowGeneratorShader.end();
         return shadowMap.getColorBufferTexture();

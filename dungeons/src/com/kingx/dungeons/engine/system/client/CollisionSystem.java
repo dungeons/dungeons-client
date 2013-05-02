@@ -27,6 +27,8 @@ public class CollisionSystem extends EntityProcessingSystem {
     @Override
     protected void process(Entity e) {
         PositionComponent position = postionMapper.get(e);
+        if (position.isAnimation())
+            return;
         SizeComponent size = sizeMapper.get(e);
         CollisionComponent collision = collisionMapper.get(e);
 
@@ -40,6 +42,7 @@ public class CollisionSystem extends EntityProcessingSystem {
         PositionComponent copy = new PositionComponent(position.inWorld);
         copy.inWorld.y -= size.getSize() / 2f;
         collision.setStandingOnABlock(Collision.resolveCollisionDown(copy, size));
+
     }
 
     private Int getCurrent(PositionComponent position) {

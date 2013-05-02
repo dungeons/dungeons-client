@@ -5,8 +5,8 @@ import java.util.ArrayList;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
+import com.kingx.dungeons.Block;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.cube.Cube.CubeSideType;
 
@@ -38,35 +38,37 @@ public final class CubeFactory {
             { 0, 0, -1 } // Bottom
     };
 
-    public static Cube makeCube(float x, float y, float z, int type, int xInMap, int yInMap) {
+    public static Cube makeCube(int region, float x, float y, float z, float size, Block type, int xInMap, int yInMap) {
 
-        Cube c = new Cube(xInMap, yInMap);
+        Cube c = new Cube(region, xInMap, yInMap, type);
 
         for (int i = 0; i < quads.length; i++) {
 
             TextureRegion texture = getTexture(type, i);
-            c.addVerts(makeQuad(x, y, z, i, texture));
+            c.addVerts(makeQuad(x, y, z, size, i, texture), CubeSideType.values()[i]);
         }
+
+        c.computeBoundaries();
 
         return c;
 
     }
 
-    private static ArrayList<CubeVertex> makeQuad(float x, float y, float z, int face, TextureRegion texture) {
+    private static ArrayList<CubeVertex> makeQuad(float x, float y, float z, float size, int face, TextureRegion texture) {
         ArrayList<CubeVertex> quad = new ArrayList<CubeVertex>(6);
         for (int i = 0; i < quads[face].length; i++) {
-            quad.add(makeVertex(x, y, z, i, face, texture));
+            quad.add(makeVertex(x, y, z, size, i, face, texture));
         }
         return quad;
     }
 
-    private static CubeVertex makeVertex(float x, float y, float z, int i, int face, TextureRegion texture) {
+    private static CubeVertex makeVertex(float x, float y, float z, float size, int i, int face, TextureRegion texture) {
         // @formatter:off
         CubeVertex cv = new CubeVertex();
         Vector2 cords = getTextureCoordinates(i, texture);
-        cv.setPosition(positionOffset[quads[face][i]][0] * App.UNIT + x,  // x position
-                       positionOffset[quads[face][i]][1] * App.UNIT + y,  // y position
-                       positionOffset[quads[face][i]][2] * App.UNIT + z); // z position
+        cv.setPosition(positionOffset[quads[face][i]][0] * size + x,  // x position
+                       positionOffset[quads[face][i]][1] * size + y,  // y position
+                       positionOffset[quads[face][i]][2] * size + z); // z position
         cv.setTexCoords(cords.x, cords.y);
         cv.setNormal(normals[face][0],  // x normal
                      normals[face][1],  // y normal
@@ -79,6 +81,9 @@ public final class CubeFactory {
     }
 
     private static Vector2 getTextureCoordinates(int i, TextureRegion tr) {
+        if (tr == null) {
+            return new Vector2(0, 0);
+        }
         switch (i) {
             case 0:
                 return new Vector2(tr.getU(), tr.getV());
@@ -92,57 +97,8 @@ public final class CubeFactory {
         return null;
     }
 
-    private static TextureRegion getTexture(int i, int face) {
-        switch (CubeSideType.values()[face]) {
-            case BACK:
-            case LEFT:
-            case FRONT:
-            case RIGHT:
-                return getSideTexture(i);
-            case BOTTOM:
-                return getBottomTexture(i);
-            case TOP:
-                return getTopTexture(i);
-
-        }
-        return null;
-
-    }
-
-    private static TextureRegion getTopTexture(int i) {
-        switch (i) {
-            case 0:
-                return Assets.getTexture("terrain", 0);
-            case 1:
-                return Assets.getTexture("terrain", 0);
-            case 2:
-                return Assets.getTexture("grass_top", 0);
-        }
-        return null;
-    }
-
-    private static TextureRegion getBottomTexture(int i) {
-        switch (i) {
-            case 0:
-                return Assets.getTexture("terrain", 0);
-            case 1:
-                return Assets.getTexture("terrain", 0);
-            case 2:
-                return Assets.getTexture("terrain", 0);
-        }
-        return null;
-    }
-
-    private static TextureRegion getSideTexture(int i) {
-        switch (i) {
-            case 0:
-                return Assets.getTexture("terrain", 0);
-            case 1:
-                return Assets.getTexture("terrain", 0);
-            case 2:
-                return Assets.getTexture("terrain_grass", 0);
-        }
-        return null;
+    private static TextureRegion getTexture(Block block, int face) {
+        return block != null ? Assets.getTexture(block.getTextureName(CubeSideType.values()[face].ordinal()), 0) : null;
     }
 
 }

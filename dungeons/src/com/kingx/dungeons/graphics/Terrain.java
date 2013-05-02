@@ -2,15 +2,16 @@ package com.kingx.dungeons.graphics;
 
 import com.badlogic.gdx.math.Vector2;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.BlockPair;
 import com.kingx.dungeons.geom.Point;
 import com.kingx.dungeons.geom.Point.Int;
 
 public class Terrain {
 
-    private final int[][][] footprints;
+    private final BlockPair[][][] footprints;
     private int walls = -1;
 
-    public Terrain(int[][][] map) {
+    public Terrain(BlockPair[][][] map) {
         this.footprints = map;
         walls = this.getWalls();
     }
@@ -26,7 +27,7 @@ public class Terrain {
             for (int i = 0; i < footprints.length; i++) {
                 for (int j = 0; j < footprints[i].length; j++) {
                     for (int k = 0; k < footprints[i][j].length; k++) {
-                        if (footprints[i][j][k] != 0) {
+                        if (footprints[i][j][k] != null) {
                             counter++;
                         }
                     }
@@ -48,7 +49,7 @@ public class Terrain {
         do {
             p.x = App.rand.nextInt(footprints[App.getCurrentView()].length);
             p.y = App.rand.nextInt(footprints[App.getCurrentView()][p.x].length);
-        } while (footprints[0][p.x][p.y] != 0);
+        } while (footprints[0][p.x][p.y] != null);
 
         return p;
     }
@@ -63,7 +64,7 @@ public class Terrain {
         do {
             p.x = App.rand.nextInt(footprints[App.getCurrentView()].length);
             p.y = App.rand.nextInt(footprints[App.getCurrentView()][p.x].length);
-        } while (footprints[0][p.x][p.y] != 0 || p.equals(start));
+        } while (footprints[0][p.x][p.y] != null || p.equals(start));
         return p;
     }
 
@@ -75,24 +76,24 @@ public class Terrain {
     public Point.Int getRandomBlock(int maxx, int maxy) {
         Point.Int p = new Point.Int();
         do {
-            int[][] current = footprints[App.getCurrentView()];
+            BlockPair[][] current = footprints[App.getCurrentView()];
             p.x = App.rand.nextInt(Math.min(maxx, current.length));
             maxy = Math.min(maxy, current[p.x].length);
             p.y = current[p.x].length - maxy + App.rand.nextInt(maxy);
             System.out.println(current[p.x].length);
-        } while (footprints[0][p.x][p.y] != 0);
+        } while (footprints[0][p.x][p.y] != null);
         return p;
     }
 
-    public int[][] getFootprint() {
+    public BlockPair[][] getFootprint() {
         return getFootprint(App.getCurrentView());
     }
 
-    public int[][] getNextFootprint() {
+    public BlockPair[][] getNextFootprint() {
         return getFootprint(App.getCurrentView() + 1);
     }
 
-    public int[][] getFootprint(int i) {
+    public BlockPair[][] getFootprint(int i) {
         return footprints[i % footprints.length];
     }
 
@@ -118,8 +119,8 @@ public class Terrain {
         return new Vector2(App.UNIT * (p.x + 0.5f), App.UNIT * (p.y + 0.5f));
     }
 
-    public int getFootprint(int x, int y, int z) {
-        int[][] footprint = this.getFootprint(x);
+    public BlockPair getFootprint(int x, int y, int z) {
+        BlockPair[][] footprint = this.getFootprint(x);
         if (y == footprint.length) {
             footprint = App.getTerrain().getFootprint(x + 1);
             return footprint[0][z];
@@ -128,8 +129,8 @@ public class Terrain {
         }
     }
 
-    public void setFootprint(int x, int y, int z, int value) {
-        int[][] footprint = this.getFootprint(x);
+    public void setFootprint(int x, int y, int z, BlockPair value) {
+        BlockPair[][] footprint = this.getFootprint(x);
         if (y == footprint.length) {
             footprint = App.getTerrain().getFootprint(x + 1);
             footprint[0][z] = value;

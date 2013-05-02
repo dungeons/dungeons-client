@@ -1,18 +1,14 @@
 package com.kingx.dungeons.generator;
 
-public class SpotMutator extends TerainMutator {
+public class SpotMutator extends Mutator {
 
-    public SpotMutator(int[][] terain, int type, int min, int max) {
-        super(terain, type, min, max);
-    }
-
-    public SpotMutator(int[][] terain, int type) {
-        super(terain, type);
+    public SpotMutator(TerainMutator t) {
+        super(t);
     }
 
     @Override
     public void mutate(int x, int y) {
-        convert(x, y, type);
+        this.mutator.convert(x, y);
     }
 
 }

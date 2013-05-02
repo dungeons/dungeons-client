@@ -15,7 +15,7 @@ varying vec2 v_texCoord;
 void main()
 {
     v_texCoord = a_texCoord0;
-    vec4 objectPos =  vec4(a_position,1);
+    vec4 objectPos = vec4(a_position,1.0);
     objectPos.y += u_positionOffset.y;
     objectPos.x += u_positionOffset.x;
     objectPos.z += u_positionOffset.z;

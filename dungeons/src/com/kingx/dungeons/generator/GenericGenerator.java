@@ -5,28 +5,55 @@ import java.util.Collections;
 import java.util.List;
 
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.Block;
+import com.kingx.dungeons.BlockPair;
 
 public class GenericGenerator extends AbstractGenerator {
-    private int[][] terain;
+    private BlockPair[][] terain;
 
     List<Trigger> chances = new ArrayList<Trigger>();
 
     @Override
-    public int[][] build(int width, int height) {
-        terain = new int[width][height];
+    public BlockPair[][] build(int width, int height) {
+        terain = new BlockPair[width][height];
 
-        int gems = 1;
-        int zone = height / gems;
-        for (int i = 0; i < gems; i++) {
+        Block[] zones = new Block[] { Block.BEDROCK, Block.ROCK, Block.GRAVEL, Block.RED, Block.SAND, Block.DIRT };
+        int zoneSize = height / zones.length;
+        int scatterZoneSize = zoneSize / 4;
 
-            chances.add(new Trigger(10, new SpotMutator(terain, 6 - i, i * zone, i * (zone + 1))));
+        for (int i = 1; i < zones.length; i++) {
+            int min = i * zoneSize - 1;
+            int max = i * zoneSize + scatterZoneSize;
+            System.out.println(min + " : " + max);
+            TerainMutator b1 = new BlockMutator(terain, zones[i - 1], min, max);
+            chances.add(new Trigger(2, new SpotMutator(b1)));
         }
+
+        TerainMutator b1 = new MineralMutator(terain, Block.MINERAL, 10, 49);
+        chances.add(new Trigger(5, new SpotMutator(b1)));
+
+        /*   int gems = 5;
+           int zone = height / gems * 2;
+           for (int i = 0; i < gems; i++) {
+
+               int min = height - (int) (i * (zone / 2f) + zone);
+               int max = height - (int) (i * (zone / 2f));
+               System.out.format("%d %d %d\n", min, max, i);
+               TerainMutator b1 = new BlockMutator(terain, Block.values()[Block.OBSIDIAN.ordinal() + i], min, max);
+               TerainMutator b2 = new BlockMutator(terain, Block.values()[Block.SAND.ordinal() + i], min, max);
+               chances.add(new Trigger(12, new SpotMutator(b1)));
+               chances.add(new Trigger(4, new SpotMutator(b2)));
+
+           }*/
+        //chances.add(new Trigger(10, new SpotMutator(terain, null, 10, 40)));
+        //  chances.add(new Trigger(10, new SpotMutator(terain, 100 + 1, 0, 50)));
         //chances.add(new Trigger(100, new MineralCapsle(terain, 0, 1)));
         Collections.sort(chances);
 
         for (int i = 0; i < terain.length; i++) {
             for (int j = 0; j < terain[i].length; j++) {
-                terain[i][j] = 1;
+                Block block = zones[Math.min(j / zoneSize, zones.length - 1)];
+                terain[i][j] = new BlockPair(block, null);
             }
         }
 
@@ -39,18 +66,26 @@ public class GenericGenerator extends AbstractGenerator {
         }
 
         for (int i = 0; i < terain.length; i++) {
-            terain[i][terain[i].length - 1] = 2;
+            terain[i][terain[i].length - 1] = new BlockPair(Block.GRASS, null);
         }
-        terain[0][terain[0].length - 1] = 0;
+
+        /*
+
+        terain[2][terain[0].length - 1] = Block.STONE;
+        terain[3][terain[0].length - 1] = Block.STONE;
+        terain[5][terain[0].length - 1] = Block.STONE;
+        terain[6][terain[0].length - 1] = Block.STONE;
+        */
+        terain[0][terain[0].length - 1] = null;
 
         return terain;
     }
 
     private static class Trigger implements Comparable<Trigger> {
         private final int chance;
-        private final TerainMutator mutator;
+        private final Mutator mutator;
 
-        public Trigger(int chance, TerainMutator mutator) {
+        public Trigger(int chance, Mutator mutator) {
             this.chance = chance;
             this.mutator = mutator;
         }

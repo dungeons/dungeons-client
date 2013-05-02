@@ -3,14 +3,16 @@ package com.kingx.dungeons.graphics.cube;
 import java.util.ArrayList;
 
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.Block;
+import com.kingx.dungeons.BlockPair;
 import com.kingx.dungeons.graphics.Terrain;
 
-public final class CubeSideFactory {
+public abstract class CubeSideFactory {
 
     private Cube[][] cubes;
     private final ArrayList<CubeRegion> regions;
 
-    public CubeSideFactory(Terrain maze) {
+    public CubeSideFactory(Terrain maze, float size) {
 
         regions = new ArrayList<CubeRegion>();
         for (int i = 0; i < maze.getFootprints(); i++) {
@@ -42,11 +44,11 @@ public final class CubeSideFactory {
                             z = -maze.getFootprint(i).length + j;
                             break;
                     }
-                    cubes[j][k] = CubeFactory.makeCube(x * App.UNIT, y * App.UNIT, z * App.UNIT, maze.getFootprint(i)[j][k], j, k);
+                    cubes[j][k] = CubeFactory.makeCube(i, x * App.UNIT, y * App.UNIT, z * App.UNIT, size, getBlock(maze.getFootprint(i)[j][k]), j, k);
                     if (j == 0) {
                         cubes[j][k].setCorner(true);
                     }
-                    cubes[j][k].setVisible(i, maze.getFootprint(i)[j][k] != 0);
+                    cubes[j][k].setVisible(i, maze.getFootprint(i)[j][k] != null);
 
                 }
             }
@@ -67,6 +69,8 @@ public final class CubeSideFactory {
             }
         }
     }
+
+    protected abstract Block getBlock(BlockPair blockPair);
 
     public ArrayList<CubeRegion> getCubeRegions() {
         return regions;

@@ -1,9 +1,12 @@
 package com.kingx.dungeons.engine.component.dynamic;
 
 import com.badlogic.gdx.math.Vector3;
+import com.kingx.dungeons.App;
 
 public class PositionComponent extends AbstractComponent {
     public Vector3 inWorld;
+    private boolean animation = false;
+    private MovementType type = MovementType.WALK;
 
     public PositionComponent(float x, float y, float z) {
         this.inWorld = new Vector3(x, y, z);
@@ -56,4 +59,28 @@ public class PositionComponent extends AbstractComponent {
         return inWorld;
     }
 
+    public boolean isAnimation() {
+        return animation;
+    }
+
+    public void setAnimation(boolean animation) {
+        this.animation = animation;
+    }
+
+    public enum MovementType {
+        WALK,
+        CLIMB;
+    }
+
+    public void setMovementType(MovementType type) {
+        this.type = type;
+    }
+
+    public MovementType getMovementType() {
+        return this.type;
+    }
+
+    public boolean canClimb() {
+        return this.getY() < App.getTerrain().getHeight();
+    }
 }

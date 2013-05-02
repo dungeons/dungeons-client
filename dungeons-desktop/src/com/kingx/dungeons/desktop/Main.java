@@ -13,7 +13,8 @@ public class Main {
         config.maxHeight = 512;
         config.paddingY = 0;
         config.paddingX = 0;
-        TexturePacker2.process(config, "unprocessed/textures/", "../dungeons-android/assets/data/textures", "packed");
+        TexturePacker2.process(config, "unprocessed/textures/pixel", "../dungeons-android/assets/data/textures/pixel", "packed");
+        TexturePacker2.process(config, "unprocessed/textures/toon", "../dungeons-android/assets/data/textures/toon", "packed");
 
         LwjglApplicationConfiguration cfg = new LwjglApplicationConfiguration();
         cfg.title = "dungeon";

@@ -53,6 +53,7 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
         sr.begin();
         sr.setShader(Shader.getShader("sprite"));
         sr.setProjectionMatrix(camera.getCamera().combined);
+        sr.enableBlending();
     }
 
     /**
@@ -60,6 +61,7 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
      */
     @Override
     protected void end() {
+        sr.disableBlending();
         sr.end();
     }
 

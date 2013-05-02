@@ -3,17 +3,18 @@ package com.kingx.dungeons.generator;
 import java.util.ArrayList;
 
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.BlockPair;
 import com.kingx.dungeons.geom.Point;
 
 public class MazeGenerator extends AbstractGenerator {
 
     private final Point.Int[] ways = new Point.Int[4];
     private final boolean[] flags = new boolean[4];
-    private int[][] maze;
+    private BlockPair[][] maze;
 
     @Override
-    public int[][] build(int width, int height) {
-        maze = new int[width][height];
+    public BlockPair[][] build(int width, int height) {
+        maze = new BlockPair[width][height];
         current = new Point.Int(App.rand.nextInt(width), App.rand.nextInt(height));
         Point.Int temp;
         while (true) {
@@ -31,7 +32,7 @@ public class MazeGenerator extends AbstractGenerator {
 
     private void mark(Point.Int temp) {
         trail.add(new Point.Int(temp));
-        maze[temp.x][temp.y] = 0;
+        maze[temp.x][temp.y] = null;
         current.set(temp);
     }
 
@@ -95,7 +96,7 @@ public class MazeGenerator extends AbstractGenerator {
     }
 
     private boolean isRoad(Point.Int point) {
-        return maze[point.x][point.y] == 0;
+        return maze[point.x][point.y] == null;
     }
 
     private void fillAdajcentBlocks(Point.Int[] blocks, Point.Int p) {

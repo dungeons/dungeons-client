@@ -16,12 +16,8 @@ float interpolate (float a, float b, float stage, float gradient)
 	return a + ((b - a) * stage / gradient);
 }
 
-const vec4 blue =  vec4(0.13,0.2,0.6,1);
 // The entry point for our fragment shader.
 void main()
 {
-
-	    gl_FragColor = texture2D(u_texture,v_texCoord) * ((15-length(v_Position))/10);
-
-
-  }
+	gl_FragColor = texture2D(u_texture,v_texCoord) * ((15.0-length(v_Position))/10.0);
+}

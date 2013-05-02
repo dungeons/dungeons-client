@@ -13,7 +13,6 @@ public class SpriteComponent extends Component {
         positionComponent = new PositionComponent(x, y, z);
         this.texture = texture;
         sizeComponent = new SizeComponent(this.texture.getWidth(), this.texture.getHeight());
-        System.out.println(positionComponent);
     }
 
     public PositionComponent getPositionComponent() {

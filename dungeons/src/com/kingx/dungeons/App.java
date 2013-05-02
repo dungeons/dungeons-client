@@ -30,15 +30,19 @@ import com.kingx.dungeons.engine.concrete.Building;
 import com.kingx.dungeons.engine.concrete.Wanderer;
 import com.kingx.dungeons.engine.system.RenderBackgroundSystem;
 import com.kingx.dungeons.engine.system.RenderGeometrySystem;
+import com.kingx.dungeons.engine.system.RenderMineralSystem;
+import com.kingx.dungeons.engine.system.RenderPlainSystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
 import com.kingx.dungeons.engine.system.RenderVillageSystem;
 import com.kingx.dungeons.generator.GeneratorFactory;
 import com.kingx.dungeons.generator.GeneratorType;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.Terrain;
+import com.kingx.dungeons.graphics.cube.Cube;
+import com.kingx.dungeons.graphics.cube.CubeBlockSideFactory;
 import com.kingx.dungeons.graphics.cube.CubeManager;
+import com.kingx.dungeons.graphics.cube.CubeMineralSideFactory;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
-import com.kingx.dungeons.graphics.cube.CubeSideFactory;
 import com.kingx.dungeons.graphics.cube.CubeTopFactory;
 import com.kingx.dungeons.graphics.ui.Gamepad;
 import com.kingx.dungeons.input.Input;
@@ -47,6 +51,7 @@ import com.kingx.dungeons.server.OfflineServer;
 import com.kingx.dungeons.server.OnlineServer;
 import com.kingx.dungeons.tween.BackgroundAccessor;
 import com.kingx.dungeons.tween.CameraAccessor;
+import com.kingx.dungeons.tween.CubeAccessor;
 import com.kingx.dungeons.tween.Vector3Accessor;
 
 public class App implements ApplicationListener {
@@ -64,6 +69,7 @@ public class App implements ApplicationListener {
         Tween.registerAccessor(FollowCameraComponent.class, new CameraAccessor());
         Tween.registerAccessor(TextureComponent.class, new BackgroundAccessor());
         Tween.registerAccessor(Vector3.class, new Vector3Accessor());
+        Tween.registerAccessor(Cube.class, new CubeAccessor());
     }
     private static FollowCameraComponent worldCamera;
     private static FollowCameraComponent avatarCamera;
@@ -126,7 +132,9 @@ public class App implements ApplicationListener {
     private SpriteBatch onScreenRasterRender;
     private ShapeRenderer onScreenVectorRender;
     private World world;
+    private RenderPlainSystem renderPlainSystem;
     private RenderShadowSystem renderShadowSystem;
+    private RenderMineralSystem renderMineralSystem;
     private RenderGeometrySystem renderGeometrySystem;
     private RenderVillageSystem renderVillageSystem;
     private RenderBackgroundSystem renderBackgroundSystem;
@@ -157,10 +165,12 @@ public class App implements ApplicationListener {
         avatarCamera.getCamera().update();
         backgroundCamera.getCamera().update();
 
-        renderShadowSystem.process();
         renderBackgroundSystem.process();
         renderVillageSystem.process();
+        renderPlainSystem.process();
+        renderShadowSystem.process();
         renderGeometrySystem.process();
+        renderMineralSystem.process();
 
         if (DEBUG != null) {
             onScreenRasterRender.begin();
@@ -184,7 +194,7 @@ public class App implements ApplicationListener {
 
     private void init() {
         createMaze();
-        // createVillage();
+        createVillage();
         createBackground();
         createCubes();
         createPlayer();
@@ -217,7 +227,7 @@ public class App implements ApplicationListener {
             createBuilding(2, 6, "tree", 1f);
             createBuilding(2, 3, "tree", 1f);
             createBuilding(1.5f, 4.5f, "house", 0.9f);
-            createObject(0, 55, 0, "moon", 1f);
+
         } catch (IOException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -226,7 +236,8 @@ public class App implements ApplicationListener {
     }
 
     /**
-     * Generates maze footprint and polygon. Creates maze instance and places it in the game world.
+     * Generates maze footprint and polygon. Creates maze instance and places it
+     * in the game world.
      */
     private void createMaze() {
         terrain = new Terrain(createMap());
@@ -235,18 +246,20 @@ public class App implements ApplicationListener {
 
     private void createCubes() {
 
-        ArrayList<CubeRegion> cubeSides = new CubeSideFactory(terrain).getCubeRegions();
+        ArrayList<CubeRegion> cubeBlockSides = new CubeBlockSideFactory(terrain).getCubeRegions();
+        ArrayList<CubeRegion> cubeMineralSides = new CubeMineralSideFactory(terrain).getCubeRegions();
         CubeRegion cubeTop = new CubeTopFactory(terrain.getWidth() - 2, 1, terrain.getHeight() - 1, -1).getCubeRegions();
-        cubeManager = new CubeManager(cubeSides, cubeTop);
+        cubeManager = new CubeManager(cubeTop, cubeBlockSides, cubeMineralSides);
     }
 
     /**
-     * If template is available, creates footprint based on that template, otherwise generates random map.
+     * If template is available, creates footprint based on that template,
+     * otherwise generates random map.
      * 
      * @return generated map
      */
-    private int[][][] createMap() {
-        return GeneratorFactory.getInstace(GeneratorType.GENERIC).buildLayered(36, 9);
+    private BlockPair[][][] createMap() {
+        return GeneratorFactory.getInstace(GeneratorType.GENERIC).buildLayered(36, 50);
         // return Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT, MAZE_BLOCKS_COUNT) : Assets.map;
         //return MazeBuilder.getLayeredMaze(36, 9);
         // return Assets.map;
@@ -256,7 +269,9 @@ public class App implements ApplicationListener {
      * Register systems to the world and initialize.
      */
     private void addSystemsToWorld() {
-        renderShadowSystem = world.setSystem(new RenderShadowSystem(worldCamera), true);
+        renderPlainSystem = world.setSystem(new RenderPlainSystem(worldCamera, cubeManager.getTop()), true);
+        renderShadowSystem = world.setSystem(new RenderShadowSystem(worldCamera, cubeManager.getBlockSides()), true);
+        renderMineralSystem = world.setSystem(new RenderMineralSystem(worldCamera, cubeManager.getMineralSides()), true);
         renderGeometrySystem = world.setSystem(new RenderGeometrySystem(worldCamera), true);
         renderVillageSystem = world.setSystem(new RenderVillageSystem(worldCamera), true);
         renderBackgroundSystem = world.setSystem(new RenderBackgroundSystem(backgroundCamera), true);
@@ -275,7 +290,7 @@ public class App implements ApplicationListener {
      */
     private void createPlayer() {
 
-        Vector2 p = terrain.getRandomPosition(5, 5);
+        Vector2 p = new Vector2(App.rand.nextInt(10), App.getTerrain().getHeight() + 3);
         player = new Wanderer(world, p, 1f, 10f, avatarCamera);
         player.createEntity().addToWorld();
     }
@@ -403,11 +418,11 @@ public class App implements ApplicationListener {
     }
 
     public static int getPrevView() {
-        return (currentView == 0 ? App.getCubeManager().cubeSides.size() : currentView) - 1;
+        return (currentView == 0 ? App.getCubeManager().cubeRegionPacks.size() : currentView) - 1;
     }
 
     public static int getNextView() {
-        return (currentView + 1) % App.getCubeManager().cubeSides.size();
+        return (currentView + 1) % App.getCubeManager().cubeRegionPacks.size();
     }
 
     public static int getLastView() {
@@ -416,9 +431,9 @@ public class App implements ApplicationListener {
 
     public static int getView(int i) {
         if (i < 0) {
-            return i + App.getCubeManager().cubeSides.size();
-        } else if (i >= App.getCubeManager().cubeSides.size()) {
-            return i - App.getCubeManager().cubeSides.size();
+            return i + App.getCubeManager().cubeRegionPacks.size();
+        } else if (i >= App.getCubeManager().cubeRegionPacks.size()) {
+            return i - App.getCubeManager().cubeRegionPacks.size();
         } else {
             return i;
         }

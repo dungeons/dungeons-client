@@ -6,12 +6,16 @@ import java.util.Map;
 import com.badlogic.gdx.Input.Keys;
 import com.kingx.artemis.World;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.GameStateManager;
 import com.kingx.dungeons.GameStateManager.GameStatus;
 import com.kingx.dungeons.engine.component.CollisionComponent;
 import com.kingx.dungeons.engine.component.MiningComponent;
 import com.kingx.dungeons.engine.component.dynamic.GravityComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
+import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
+import com.kingx.dungeons.engine.component.dynamic.PositionComponent.MovementType;
+import com.kingx.dungeons.engine.system.AnimationSystem;
 import com.kingx.dungeons.engine.system.WorldRotateSystem;
 import com.kingx.dungeons.engine.system.client.CollisionSystem;
 import com.kingx.dungeons.engine.system.client.GravitySystem;
@@ -33,6 +37,7 @@ public class OfflineServer extends AbstractServer {
         // world.setSystem(new ZombieAI());
         world.setSystem(new WorldRotateSystem());
         world.setSystem(new MiningSystem());
+        world.setSystem(new AnimationSystem());
     }
 
     @Override
@@ -71,6 +76,7 @@ public class OfflineServer extends AbstractServer {
     }
 
     private void processKey(ClientCommand c) {
+        PositionComponent position = App.getPlayer().getPositionComponent();
         MoveComponent move = App.getPlayer().getMoveComponent();
         GravityComponent gravity = App.getPlayer().getGravity();
         MiningComponent mining = App.getPlayer().getMining();
@@ -78,29 +84,44 @@ public class OfflineServer extends AbstractServer {
 
         int mapped = getKey(c.getAction(), move.mapping);
         switch (mapped) {
+            case Keys.W:
+                if (position.canClimb()) {
+                    move.vector.y = c.getValue() == 0 ? 0 : 1;
+                    if (c.getValue() == 1) {
+                        position.setMovementType(MovementType.CLIMB);
+                    }
+                }
+                break;
             case Keys.S:
-                if (!gravity.isFalling() && !mining.isMining()) {
+                if (position.canClimb()) {
                     move.vector.y = c.getValue() == 0 ? 0 : -1;
+                    if (c.getValue() == 1) {
+                        position.setMovementType(MovementType.CLIMB);
+                    }
                 }
                 break;
             case Keys.A:
-                if (!mining.isMining()) {
-                    move.vector.x += c.getValue() == 0 ? 1 : -1;
-                }
+                move.vector.x += c.getValue() == 0 ? 1 : -1;
                 break;
             case Keys.D:
-                if (!mining.isMining()) {
-                    move.vector.x += c.getValue() == 0 ? -1 : 1;
-                }
+                move.vector.x += c.getValue() == 0 ? -1 : 1;
                 break;
             case Keys.SPACE:
-                if (collision.getStandingOnABlock() != null && c.getValue() == 1) {
-                    move.vector.y = 1.5f;
-                    gravity.setFalling(true);
+                if ((position.getMovementType() == MovementType.CLIMB || collision.getStandingOnABlock() != null) && c.getValue() == 1) {
+                    if (!position.isAnimation()) {
+                        move.vector.y = 1.5f;
+                        gravity.setFalling(true);
+                        position.setMovementType(MovementType.WALK);
+                    }
                 }
                 break;
             case Keys.E:
                 mining.setMining(c.getValue() != 0);
+                break;
+            case Keys.Q:
+                if (c.getValue() == 0) {
+                    Assets.switchAtlas();
+                }
                 break;
         }
     }

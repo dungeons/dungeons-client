@@ -1,39 +1,21 @@
 package com.kingx.dungeons.generator;
 
-public abstract class TerainMutator {
+import com.kingx.dungeons.BlockPair;
 
-    protected final int[][] terain;
-    protected final int type;
+public abstract class TerainMutator<T> extends TerainMutator2 {
 
-    private int min = 0;
-    private int max = Integer.MAX_VALUE;
+    protected final T type;
 
-    public TerainMutator(int[][] terain, int type) {
-        this.terain = terain;
+    public TerainMutator(BlockPair[][] terain, int min, int max, T type) {
+        super(terain, min, max);
         this.type = type;
     }
 
-    public TerainMutator(int[][] terain, int type, int min, int max) {
-        this.terain = terain;
+    public TerainMutator(BlockPair[][] terain, T type) {
+        super(terain);
         this.type = type;
-        this.min = min;
-        this.max = max;
     }
 
-    protected void convert(int x, int y, int type) {
-        if (isBounds(x, y)) {
-            terain[x][y] = type;
-        }
-    }
+    protected abstract void convert(int x, int y);
 
-    private boolean isBounds(int x, int y) {
-        if (x > 0 && x < terain.length) {
-            if (y > min && y < Math.min(terain[x].length, max)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public abstract void mutate(int x, int y);
 }

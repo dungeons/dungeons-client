@@ -5,9 +5,12 @@ import com.kingx.artemis.ComponentMapper;
 import com.kingx.artemis.Entity;
 import com.kingx.artemis.annotations.Mapper;
 import com.kingx.artemis.systems.EntityProcessingSystem;
+import com.kingx.dungeons.App;
+import com.kingx.dungeons.engine.component.AnimationComponent;
 import com.kingx.dungeons.engine.component.CollisionComponent;
 import com.kingx.dungeons.engine.component.dynamic.GravityComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
+import com.kingx.dungeons.engine.component.dynamic.PositionComponent.MovementType;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
 
 public class GravitySystem extends EntityProcessingSystem {
@@ -19,6 +22,8 @@ public class GravitySystem extends EntityProcessingSystem {
     ComponentMapper<GravityComponent> gravityMapper;
     @Mapper
     ComponentMapper<CollisionComponent> collisionMapper;
+    @Mapper
+    ComponentMapper<AnimationComponent> animationMapper;
 
     public GravitySystem() {
         super(Aspect.getAspectForAll(PositionComponent.class, GravityComponent.class));
@@ -27,13 +32,42 @@ public class GravitySystem extends EntityProcessingSystem {
     @Override
     protected void process(Entity e) {
         PositionComponent position = postionMapper.get(e);
-        GravityComponent gravity = gravityMapper.get(e);
         CollisionComponent collision = collisionMapper.get(e);
+
+        if (position.isAnimation()) {
+            return;
+        } else if (position.getMovementType() == MovementType.CLIMB) {
+            if (position.getY() < App.getTerrain().getHeight()) {
+                if (animationMapper.has(e)) {
+                    if (collision.getDown() != null) {
+                        position.setMovementType(MovementType.WALK);
+                        animationMapper.get(e).play("walk");
+                    } else {
+                        animationMapper.get(e).play("climb");
+                    }
+                }
+                return;
+            } else {
+                position.setMovementType(MovementType.WALK);
+                if (animationMapper.has(e)) {
+                    animationMapper.get(e).play("walk");
+                }
+            }
+        }
+
+        GravityComponent gravity = gravityMapper.get(e);
 
         if (collision.getDown() != null) {
             gravity.setFalling(false);
             gravity.move.vector.y = 0;
+
+            if (animationMapper.has(e)) {
+                animationMapper.get(e).play("walk");
+            }
         } else {
+            if (animationMapper.has(e) && collision.getStandingOnABlock() == null) {
+                animationMapper.get(e).play("jump");
+            }
             gravity.setFalling(true);
             resolveMove(position, gravity);
         }

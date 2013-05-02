@@ -3,7 +3,6 @@ package com.kingx.dungeons.engine.component;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.kingx.artemis.Component;
-import com.kingx.dungeons.graphics.Colors;
 
 public class TextureComponent extends Component {
     private static final float SCALE = 1 / 16f;
@@ -11,7 +10,7 @@ public class TextureComponent extends Component {
     private float rotation;
     private final float width;
     private final float height;
-    private final TextureRegion texture;
+    private TextureRegion texture;
 
     public TextureComponent(TextureRegion texture) {
         this(texture, 0);
@@ -60,6 +59,10 @@ public class TextureComponent extends Component {
 
     public float getHeightInPixels() {
         return height;
+    }
+
+    public void setTexture(TextureRegion texture) {
+        this.texture = texture;
     }
 
     public TextureRegion getTexture() {

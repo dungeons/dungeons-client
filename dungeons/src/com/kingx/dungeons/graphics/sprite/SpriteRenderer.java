@@ -37,7 +37,7 @@ public class SpriteRenderer {
 
     private boolean drawing = false;
 
-    private final boolean blendingDisabled = false;
+    private boolean blendingDisabled = true;
     private int blendSrcFunc = GL11.GL_SRC_ALPHA;
     private int blendDstFunc = GL11.GL_ONE_MINUS_SRC_ALPHA;
 
@@ -234,6 +234,7 @@ public class SpriteRenderer {
         drawing = false;
 
         GLCommon gl = Gdx.gl;
+        gl.glDepthMask(true);
         if (isBlendingEnabled())
             gl.glDisable(GL10.GL_BLEND);
 
@@ -426,21 +427,6 @@ public class SpriteRenderer {
         mesh = buffers[currBufferIdx];
     }
 
-    /**
-     * Sets the blending function to be used when rendering sprites.
-     * 
-     * @param srcFunc
-     *            the source function, e.g. GL11.GL_SRC_ALPHA. If set to -1,
-     *            SpriteBatch won't change the blending function.
-     * @param dstFunc
-     *            the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA
-     */
-    public void setBlendFunction(int srcFunc, int dstFunc) {
-        renderMesh();
-        blendSrcFunc = srcFunc;
-        blendDstFunc = dstFunc;
-    }
-
     /** Disposes all resources associated with this SpriteBatch */
     public void dispose() {
         for (int i = 0; i < buffers.length; i++)
@@ -518,6 +504,37 @@ public class SpriteRenderer {
                 shader.setUniformi("u_texture", 0);
             }
         }
+    }
+
+    /** Disables blending for drawing sprites. */
+    public void disableBlending() {
+        if (blendingDisabled)
+            return;
+        renderMesh();
+        blendingDisabled = true;
+    }
+
+    /** Enables blending for sprites */
+    public void enableBlending() {
+        if (!blendingDisabled)
+            return;
+        renderMesh();
+        blendingDisabled = false;
+    }
+
+    /**
+     * Sets the blending function to be used when rendering sprites.
+     * 
+     * @param srcFunc
+     *            the source function, e.g. GL11.GL_SRC_ALPHA. If set to -1,
+     *            SpriteBatch won't change the blending function.
+     * @param dstFunc
+     *            the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA
+     */
+    public void setBlendFunction(int srcFunc, int dstFunc) {
+        renderMesh();
+        blendSrcFunc = srcFunc;
+        blendDstFunc = dstFunc;
     }
 
     /**

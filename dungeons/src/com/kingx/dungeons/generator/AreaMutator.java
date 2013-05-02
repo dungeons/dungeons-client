@@ -1,18 +1,19 @@
 package com.kingx.dungeons.generator;
 
-public abstract class AreaMutator extends TerainMutator {
+public class AreaMutator extends Mutator {
 
-    protected final int area;
+    private final int area;
 
-    public AreaMutator(int[][] terain, int type, int area) {
-        super(terain, type);
+    public AreaMutator(TerainMutator t, int area) {
+        super(t);
         this.area = area;
     }
 
-    protected void clean(int x, int y) {
+    @Override
+    public void mutate(int x, int y) {
         for (int i = x - area; i < x + area; i++) {
             for (int j = y - area; j < y + area; j++) {
-                convert(i, j, type);
+                this.mutator.convert(i, j);
             }
         }
     }

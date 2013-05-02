@@ -44,7 +44,7 @@ public final class Decoder extends EntitySystem {
     protected void processEntities(ImmutableBag<Entity> entities) {
 
         for (ServerCommand c : buffer) {
-            System.out.println(c);
+            //System.out.println(c);
             /* Entity e = world.getEntity(c.getId());
              if (e == null) {
                  e = world.createEntity(c.getId());

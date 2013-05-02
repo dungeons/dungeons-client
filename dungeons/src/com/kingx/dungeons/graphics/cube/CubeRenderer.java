@@ -20,6 +20,8 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.GL11;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.GLCommon;
 import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.Mesh.VertexDataType;
@@ -27,6 +29,8 @@ import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
+import com.kingx.dungeons.App;
+import com.kingx.dungeons.graphics.cube.Cube.CubeSideType;
 
 /**
  * <p>
@@ -85,10 +89,12 @@ public class CubeRenderer implements Disposable {
 
     private boolean drawing = false;
 
-    private final boolean blendingDisabled = false;
-
     private final ShaderProgram shader;
     private boolean ownsShader;
+
+    private boolean blendingDisabled = true;
+    private int blendSrcFunc = GL11.GL_SRC_ALPHA;
+    private int blendDstFunc = GL11.GL_ONE_MINUS_SRC_ALPHA;
 
     /** number of render calls since last {@link #begin()} **/
     public int renderCalls = 0;
@@ -318,6 +324,8 @@ public class CubeRenderer implements Disposable {
 
         GLCommon gl = Gdx.gl;
         gl.glDepthMask(true);
+        if (isBlendingEnabled())
+            gl.glDisable(GL10.GL_BLEND);
 
         if (customShader != null)
             customShader.end();
@@ -347,7 +355,11 @@ public class CubeRenderer implements Disposable {
             CubeSide[] cubeSides = cube.getSides();
             for (CubeSide side : cubeSides) {
                 if (side.isVisible()) {
-                    draw(side);
+                    if (cube.scale < 1.0f) {
+                        draw(side, cube);
+                    } else {
+                        draw(side);
+                    }
                 }
             }
         }
@@ -402,6 +414,50 @@ public class CubeRenderer implements Disposable {
         }
     }
 
+    private void draw(CubeSide side, Cube cube) {
+        for (CubeVertex cubeVert : side.getVerts()) {
+            float[] position = cubeVert.getPosition();
+            vertices[idx++] = position[0];
+
+            if (side.getType() != cube.getCorrectFace(cube.getRegion(), CubeSideType.BACK) && position[1] > cube.mean.y) {
+                vertices[idx++] = position[1] - App.UNIT + App.UNIT * cube.scale;
+            } else {
+                vertices[idx++] = position[1];
+            }
+            vertices[idx++] = position[2];
+
+            if (CubeVertex.isTexCoordsAttribute()) {
+                float[] texCords = cubeVert.getTexCoords();
+                vertices[idx++] = texCords[0];
+                vertices[idx] = texCords[1];
+                if (position[1] > cube.mean.y) {
+                    if (side.getType() == cube.getCorrectFace(cube.getRegion(), CubeSideType.LEFT)
+                            || side.getType() == cube.getCorrectFace(cube.getRegion(), CubeSideType.RIGHT)
+                            || side.getType() == cube.getCorrectFace(cube.getRegion(), CubeSideType.FRONT)) {
+                        vertices[idx] = texCords[1] + (App.UNIT - cube.scale) * 0.25f;
+                    }
+                }
+                idx++;
+            }
+
+            if (CubeVertex.isNormalAttribute()) {
+                float[] normal = cubeVert.getNormal();
+                vertices[idx++] = normal[0];
+                vertices[idx++] = normal[1];
+                vertices[idx++] = normal[2];
+            }
+
+            if (CubeVertex.isColorAttribute()) {
+                float[] color = cubeVert.getColor();
+                vertices[idx++] = color[0];
+                vertices[idx++] = color[1];
+                vertices[idx++] = color[2];
+                vertices[idx++] = color[3];
+            }
+            // return;
+        }
+    }
+
     /**
      * Causes any pending sprites to be rendered, without ending the
      * SpriteBatch.
@@ -423,6 +479,14 @@ public class CubeRenderer implements Disposable {
         mesh.setVertices(vertices, 0, idx);
         mesh.getIndicesBuffer().position(0);
         mesh.getIndicesBuffer().limit(quadsInBatch * CubeSide.INDICES);
+
+        if (blendingDisabled) {
+            Gdx.gl.glDisable(GL20.GL_BLEND);
+        } else {
+            Gdx.gl.glEnable(GL20.GL_BLEND);
+            if (blendSrcFunc != -1)
+                Gdx.gl.glBlendFunc(blendSrcFunc, blendDstFunc);
+        }
 
         if (customShader != null)
             mesh.render(customShader, GL10.GL_TRIANGLES, 0, quadsInBatch * CubeSide.INDICES);
@@ -488,6 +552,37 @@ public class CubeRenderer implements Disposable {
 
     public ShaderProgram getShader() {
         return shader;
+    }
+
+    /** Disables blending for drawing sprites. */
+    public void disableBlending() {
+        if (blendingDisabled)
+            return;
+        renderMesh();
+        blendingDisabled = true;
+    }
+
+    /** Enables blending for sprites */
+    public void enableBlending() {
+        if (!blendingDisabled)
+            return;
+        renderMesh();
+        blendingDisabled = false;
+    }
+
+    /**
+     * Sets the blending function to be used when rendering sprites.
+     * 
+     * @param srcFunc
+     *            the source function, e.g. GL11.GL_SRC_ALPHA. If set to -1,
+     *            SpriteBatch won't change the blending function.
+     * @param dstFunc
+     *            the destination function, e.g. GL11.GL_ONE_MINUS_SRC_ALPHA
+     */
+    public void setBlendFunction(int srcFunc, int dstFunc) {
+        renderMesh();
+        blendSrcFunc = srcFunc;
+        blendDstFunc = dstFunc;
     }
 
 }

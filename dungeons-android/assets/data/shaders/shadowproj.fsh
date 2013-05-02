@@ -119,7 +119,8 @@ void main ()
 	distance = clamp(distance,0.0,u_sight);
 	distance/=u_sight;
 
-	float temp = 1-(sightDist/u_sight);
+	float temp = 1.0-(sightDist/u_sight);
+	temp = max(0.2,temp);
 
 	float del = 85.0;
 	float r = round (interpolate(u_source_color.r ,u_ground_color.r, distance, 1.0)*del) / del;
@@ -129,7 +130,7 @@ void main ()
 		shadow = true;
 	}
 
-	if(vWorldVertex.y >= 49.85){
+	if(vWorldVertex.y >= 49.81){
 			gl_FragColor = u_source_color * texture2D(u_texture,v_texCoord) * u_tint * temp ;
 	}else if(u_forceShadow || shadow ){
 		gl_FragColor = u_ground_color * texture2D(u_texture,v_texCoord) * u_tint ;
