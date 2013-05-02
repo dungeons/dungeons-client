@@ -23,7 +23,7 @@ public final class CubeTopFactory {
             }
         }
 
-        region = new CubeRegion(0, cubes);
+        region = new CubeRegion(0, cubes, false);
 
     }
 

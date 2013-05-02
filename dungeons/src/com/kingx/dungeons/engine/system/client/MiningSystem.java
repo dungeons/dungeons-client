@@ -1,5 +1,7 @@
 package com.kingx.dungeons.engine.system.client;
 
+import java.util.ArrayList;
+
 import aurelienribon.tweenengine.BaseTween;
 import aurelienribon.tweenengine.Tween;
 import aurelienribon.tweenengine.TweenCallback;
@@ -56,10 +58,20 @@ public class MiningSystem extends EntityProcessingSystem {
 
             if (block != null) {
                 final Int fblock = block;
-                Cube c = App.getCubeManager().getCube(fblock);
-                if (c.getType().getHardness() == 0) {
+                ArrayList<Cube> cubes = App.getCubeManager().getCube(fblock);
+                float time = 0;
+
+                Cube b = cubes.get(0);
+                Cube m = cubes.get(1);
+
+                if (b.getType().getHardness() == 0) {
                     return;
                 }
+
+                float pick = 10;
+                pick = 30;
+                pick = 90;
+                time = Math.max(b.getType().getHardness() / pick, 0.2f);
 
                 position.setAnimation(true);
 
@@ -67,16 +79,20 @@ public class MiningSystem extends EntityProcessingSystem {
                     animationMapper.get(e).play("dig");
                 }
 
-                c.setVisibleSide(c.getRegion(), CubeSideType.BACK, true);
+                for (Cube c : cubes) {
+                    if (c.getType() == null) {
+                        continue;
+                    }
 
-                c.setVisible(false);
+                    c.setVisibleSide(c.getRegion(), CubeSideType.BACK, true);
 
-                float pick = 10;
-                pick = 30;
-                pick = 90;
-                float time = Math.max(c.getType().getHardness() / pick, 0.2f);
-                App.getCubeManager().checkCubeRegion(App.getCurrentView(), c.getX(), c.getY());
-                Tween.to(c, CubeAccessor.SCALE, time).target(0).start(App.getTweenManager());
+                    c.setVisible(false);
+
+                    App.getCubeManager().checkCubeRegion(App.getCurrentView(), c.getX(), c.getY());
+                    Tween.to(c, CubeAccessor.SCALE, time).target(0).start(App.getTweenManager());
+
+                }
+
                 Animation.translateAtoB(position.get(), fblock, time, new TweenCallback() {
 
                     @Override

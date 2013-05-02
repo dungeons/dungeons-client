@@ -82,6 +82,7 @@ public class CubeManager {
 
     public void removeCube(Int point) {
         removeCubeInternal(point, this.getBlockSides());
+        removeCubeInternal(point, this.getMineralSides());
     }
 
     public void removeCubeInternal(Int point, ArrayList<CubeRegion> regionPack) {
@@ -98,16 +99,24 @@ public class CubeManager {
 
     }
 
-    public Cube getCube(Int point) {
+    public ArrayList<Cube> getCube(Int point) {
+        ArrayList<Cube> cubes = new ArrayList<Cube>();
+        cubes.add(getCubeInternal(point, this.getBlockSides()));
+        cubes.add(getCubeInternal(point, this.getMineralSides()));
+        return cubes;
+
+    }
+
+    public Cube getCubeInternal(Int point, ArrayList<CubeRegion> regionPack) {
         BlockPair[][] footprint = App.getTerrain().getFootprint();
 
         if (point.x == 0) {
-            return this.getBlockSides().get(App.getPrevView()).getCubes()[footprint.length][point.y];
+            return regionPack.get(App.getPrevView()).getCubes()[footprint.length][point.y];
         } else if (point.x == footprint.length) {
-            return this.getBlockSides().get(App.getNextView()).getCubes()[0][point.y];
+            return regionPack.get(App.getNextView()).getCubes()[0][point.y];
         }
 
-        return this.getBlockSides().get(App.getCurrentView()).getCubes()[point.x][point.y];
+        return regionPack.get(App.getCurrentView()).getCubes()[point.x][point.y];
 
     }
 

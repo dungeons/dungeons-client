@@ -167,10 +167,10 @@ public class App implements ApplicationListener {
 
         renderBackgroundSystem.process();
         renderVillageSystem.process();
-        renderPlainSystem.process();
         renderShadowSystem.process();
-        renderGeometrySystem.process();
+        renderPlainSystem.process();
         renderMineralSystem.process();
+        renderGeometrySystem.process();
 
         if (DEBUG != null) {
             onScreenRasterRender.begin();

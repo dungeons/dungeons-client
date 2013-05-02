@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.Block;
 import com.kingx.dungeons.graphics.Colors;
@@ -66,9 +67,10 @@ public final class CubeFactory {
         // @formatter:off
         CubeVertex cv = new CubeVertex();
         Vector2 cords = getTextureCoordinates(i, texture);
-        cv.setPosition(positionOffset[quads[face][i]][0] * size + x,  // x position
-                       positionOffset[quads[face][i]][1] * size + y,  // y position
-                       positionOffset[quads[face][i]][2] * size + z); // z position
+        float offset = (App.UNIT-size)/2f;
+        cv.setPosition(positionOffset[quads[face][i]][0] * size + x+offset,  // x position
+                       positionOffset[quads[face][i]][1] * size + y+offset,  // y position
+                       positionOffset[quads[face][i]][2] * size + z+offset); // z position
         cv.setTexCoords(cords.x, cords.y);
         cv.setNormal(normals[face][0],  // x normal
                      normals[face][1],  // y normal

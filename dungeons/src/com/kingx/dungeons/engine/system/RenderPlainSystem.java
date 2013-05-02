@@ -71,7 +71,7 @@ public class RenderPlainSystem extends EntityProcessingSystem {
 
         plainShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
         plainShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
-        plainShader.setUniformi("u_texture", 1);
+        plainShader.setUniformi("u_texture", 0);
         plainShader.setUniformf("u_sight", App.getPlayer().getEntity().getComponent(SightComponent.class).getRadius());
         plainShader.setUniformf("u_side", App.getCurrentView());
         plainShader.setUniformf("u_tint", Colors.interpolate(Colors.SHADOW_BOTTOM, Color.WHITE, App.getProgress(), 1));

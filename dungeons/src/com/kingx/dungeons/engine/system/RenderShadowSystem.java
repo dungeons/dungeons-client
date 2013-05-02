@@ -80,10 +80,10 @@ public class RenderShadowSystem extends EntityProcessingSystem {
 
         generateShadowMap(blocks, lights);
 
-        depthMap.bind();
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
-        Assets.getTexture("terrain", 0).getTexture().bind();
+        depthMap.bind();
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
+        Assets.getTexture("terrain", 0).getTexture().bind();
 
         batchRender.setShader(shadowProjectShader);
         batchRender.begin();
@@ -93,11 +93,11 @@ public class RenderShadowSystem extends EntityProcessingSystem {
             shadowProjectShader.setUniformMatrix("LightSourceProjectionViewMatrix[" + i + "]", lights[i].combined);
         }
         shadowProjectShader.setUniformf("v_lightSpacePosition", lights[0].position);
-        shadowProjectShader.setUniformi("DepthMap", 0);
+        shadowProjectShader.setUniformi("DepthMap", 1);
 
         shadowProjectShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
         shadowProjectShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
-        shadowProjectShader.setUniformi("u_texture", 1);
+        shadowProjectShader.setUniformi("u_texture", 0);
         shadowProjectShader.setUniformf("u_useTextures", 1);
         shadowProjectShader.setUniformf("u_sight", App.getPlayer().getEntity().getComponent(SightComponent.class).getRadius());
         shadowProjectShader.setUniformf("u_side", App.getCurrentView());

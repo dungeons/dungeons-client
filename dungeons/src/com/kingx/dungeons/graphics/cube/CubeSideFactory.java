@@ -12,7 +12,7 @@ public abstract class CubeSideFactory {
     private Cube[][] cubes;
     private final ArrayList<CubeRegion> regions;
 
-    public CubeSideFactory(Terrain maze, float size) {
+    public CubeSideFactory(Terrain maze, float size, boolean computeBoundaries) {
 
         regions = new ArrayList<CubeRegion>();
         for (int i = 0; i < maze.getFootprints(); i++) {
@@ -53,7 +53,7 @@ public abstract class CubeSideFactory {
                 }
             }
 
-            regions.add(new CubeRegion(i, cubes));
+            regions.add(new CubeRegion(i, cubes, computeBoundaries));
 
         }
 

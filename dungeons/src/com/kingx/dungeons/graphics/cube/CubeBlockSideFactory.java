@@ -8,7 +8,7 @@ import com.kingx.dungeons.graphics.Terrain;
 public class CubeBlockSideFactory extends CubeSideFactory {
 
     public CubeBlockSideFactory(Terrain maze) {
-        super(maze, App.UNIT);
+        super(maze, App.UNIT, true);
     }
 
     @Override

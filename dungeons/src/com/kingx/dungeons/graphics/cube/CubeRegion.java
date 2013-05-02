@@ -10,18 +10,19 @@ public class CubeRegion {
 
     private Cube[][] cubes;
 
-    public CubeRegion(int id, Cube[][] cubes) {
+    public CubeRegion(int id, Cube[][] cubes, boolean computeBoundaries) {
         this.id = id;
-        setCubes(cubes);
+        setCubes(cubes, computeBoundaries);
     }
 
     public Cube[][] getCubes() {
         return cubes;
     }
 
-    public void setCubes(Cube[][] cubes) {
+    public void setCubes(Cube[][] cubes, boolean computeBoundaries) {
         this.cubes = cubes;
-        computeBoundaries(cubes);
+        if (computeBoundaries)
+            computeBoundaries(cubes);
     }
 
     public static Vector3 min = new Vector3();
