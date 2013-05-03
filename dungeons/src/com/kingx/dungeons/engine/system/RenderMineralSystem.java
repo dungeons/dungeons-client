@@ -58,7 +58,7 @@ public class RenderMineralSystem extends EntityProcessingSystem {
         shadowProjectShader.setUniformMatrix("u_projTrans", camera.getCamera().combined);
         batchRender.enableBlending();
         batchRender.draw(blocks.get(App.getPrevView()), false);
-        batchRender.draw(blocks.get(App.getCurrentView()), false);
+        batchRender.draw(blocks.get(App.getCurrentView()), true);
         batchRender.draw(blocks.get(App.getNextView()), false);
         batchRender.end();
 

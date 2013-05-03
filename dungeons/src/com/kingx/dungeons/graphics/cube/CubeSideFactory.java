@@ -48,7 +48,7 @@ public abstract class CubeSideFactory {
                     if (j == 0) {
                         cubes[j][k].setCorner(true);
                     }
-                    cubes[j][k].setVisible(i, maze.getFootprint(i)[j][k] != null);
+                    cubes[j][k].setVisible(i, getBlock(maze.getFootprint(i)[j][k]) != null);
 
                 }
             }
