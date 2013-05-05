@@ -2,8 +2,11 @@ package com.kingx.dungeons.graphics.cube;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.kingx.dungeons.Block;
+import com.kingx.dungeons.geom.Collision;
 
 public class Cube {
 
@@ -194,6 +197,32 @@ public class Cube {
 
     public Block getType() {
         return type;
+    }
+
+    public boolean blocksRay(Vector2 a, Vector2 b) {
+
+        Vector2[] points = getCubePoint();
+        Vector2 intersection = new Vector2(-1, -1);
+        for (int i = 0; i < points.length; i++) {
+            Intersector.intersectSegments(a, b, points[i], points[(i + 1) % points.length], intersection);
+            if (intersection.x >= 0 || intersection.y >= 0) {
+                if (Collision.inBetween(a, b, intersection)) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
+    public Vector2[] getCubePoint() {
+        CubeVertex[] vertexes = this.getSides()[CubeSideType.BACK.ordinal()].getVerts();
+        Vector2[] points = new Vector2[vertexes.length];
+        for (int i = 0; i < vertexes.length; i++) {
+            float[] pos = vertexes[i].getPosition();
+            points[i] = new Vector2(pos[0], pos[1]);
+        }
+        return points;
     }
 
 }

@@ -13,6 +13,7 @@ import com.kingx.dungeons.engine.component.FollowCameraComponent;
 import com.kingx.dungeons.engine.component.ShadowComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
+import com.kingx.dungeons.geom.Point.Int;
 import com.kingx.dungeons.graphics.Shader;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
 import com.kingx.dungeons.graphics.cube.CubeRenderer;
@@ -36,7 +37,7 @@ public class RenderMineralSystem extends EntityProcessingSystem {
         this.camera = camera;
         this.blocks = blocks;
 
-        shadowProjectShader = Shader.getShader("mineral");
+        shadowProjectShader = Shader.getShader("sprite");
 
     }
 
@@ -57,7 +58,8 @@ public class RenderMineralSystem extends EntityProcessingSystem {
         batchRender.begin();
         shadowProjectShader.setUniformMatrix("u_projTrans", camera.getCamera().combined);
         batchRender.enableBlending();
-        batchRender.draw(blocks.get(App.getCurrentView()), false);
+        Int point = App.getPlayer().getCollision().getCurrent();
+        batchRender.drawSubregion(blocks.get(App.getCurrentView()), point.x, point.y, 4, false, true);
         batchRender.end();
 
     }

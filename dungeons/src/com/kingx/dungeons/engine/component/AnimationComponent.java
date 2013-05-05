@@ -57,8 +57,6 @@ public class AnimationComponent extends Component {
             }
         }
 
-        System.out.println("Play: " + wholeName);
-
         if (playing != animations.get(wholeName)) {
             playing = animations.get(wholeName);
             if (playing == null) {
@@ -66,7 +64,6 @@ public class AnimationComponent extends Component {
             }
             position = 0;
             texture.setTexture(playing.get(position));
-            System.out.println(wholeName);
         }
     }
 

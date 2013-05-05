@@ -1,6 +1,5 @@
 package com.kingx.dungeons.graphics.cube;
 
-
 public class CubeVertex {
 
     public static int size;
@@ -9,7 +8,8 @@ public class CubeVertex {
     private static boolean normalAttribute;
     private static boolean colorAttribute;
 
-    private final float[] position = new float[3];
+    public static final int POSITION_SIZE = 3;
+    private final float[] position = new float[POSITION_SIZE];
     private final float[] texCoords = new float[2];
     private final float[] normal = new float[3];
     private final float[] color = new float[4];

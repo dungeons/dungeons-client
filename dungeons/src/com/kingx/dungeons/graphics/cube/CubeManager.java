@@ -136,4 +136,8 @@ public class CubeManager {
             }
         }
     }
+
+    public CubeRegion getCurrentRegion() {
+        return this.getBlockSides().get(App.getCurrentView());
+    }
 }

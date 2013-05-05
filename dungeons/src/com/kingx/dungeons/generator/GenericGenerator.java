@@ -77,6 +77,7 @@ public class GenericGenerator extends AbstractGenerator {
         terain[6][terain[0].length - 1] = Block.STONE;
         */
         terain[0][terain[0].length - 1] = null;
+        terain[5][terain[0].length - 5].setSecond(Block.MINERAL);
 
         return terain;
     }

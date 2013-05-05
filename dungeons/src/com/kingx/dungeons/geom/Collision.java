@@ -10,6 +10,7 @@ import com.kingx.dungeons.BlockPair;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.SizeComponent;
 import com.kingx.dungeons.geom.Point.Int;
+import com.kingx.dungeons.graphics.cube.Cube;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
 
 /**
@@ -172,7 +173,15 @@ public class Collision {
      * @return {@code true} if point {@code c} is between {@code a} and
      *         {@code b}, {@code false} otherwise
      */
-    private static boolean inBetween(Vector3 a, Vector3 b, Vector3 c) {
+    public static boolean inBetween(Vector3 a, Vector3 b, Vector3 c) {
+        float minx = Math.min(a.x, b.x);
+        float miny = Math.min(a.y, b.y);
+        float maxx = Math.max(a.x, b.x);
+        float maxy = Math.max(a.y, b.y);
+        return c.x >= minx && c.x <= maxx && c.y >= miny && c.y <= maxy;
+    }
+
+    public static boolean inBetween(Vector2 a, Vector2 b, Vector2 c) {
         float minx = Math.min(a.x, b.x);
         float miny = Math.min(a.y, b.y);
         float maxx = Math.max(a.x, b.x);
@@ -326,7 +335,6 @@ public class Collision {
             Int downPoint = new Point.Int((int) (x / App.UNIT), (int) (downBound / App.UNIT));
 
             if (!isWalkable(downPoint, true)) {
-                System.out.println("OMG");
                 y = (downPoint.y + 1) * App.UNIT + halfSize;
                 position.setY(y);
                 return downPoint;
@@ -500,6 +508,40 @@ public class Collision {
         }
         result.y = screen.y;
         return result;
+    }
+
+    public static boolean isCubeVisible(Cube cube) {
+        Vector2[] points = cube.getCubePoint();
+        Vector2 avatar = Collision.worldToScreen(App.getPlayer().getPositionComponent().inWorld);
+        for (int i = 0; i < points.length; i++) {
+            if (fireLight(cube, avatar, points[i], 4)) {
+                System.out.println("shot");
+                return true;
+            } else {
+                System.out.println("miss");
+            }
+        }
+        return false;
+    }
+
+    private static boolean fireLight(Cube cube, Vector2 from, Vector2 to, int radius) {
+        Int point = App.getPlayer().getCollision().getCurrent();
+        CubeRegion region = App.getCubeManager().getCurrentRegion();
+
+        for (Cube[] temp : region.getCubes()) {
+            for (Cube c : temp) {
+                if (c.getX() >= point.x - radius && c.getX() <= point.x + radius) {
+                    if (c.getY() >= point.y - radius && c.getY() <= point.y + radius) {
+                        if (c != null && cube != c && c.isVisible()) {
+                            if (c.blocksRay(from, to)) {
+                                return false;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return true;
     }
 
 }
