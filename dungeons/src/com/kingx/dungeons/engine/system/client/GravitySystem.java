@@ -67,8 +67,8 @@ public class GravitySystem extends EntityProcessingSystem {
         } else {
             if (animationMapper.has(e) && collision.getStandingOnABlock() == null) {
                 animationMapper.get(e).play("jump");
+                position.setMovementType(MovementType.JUMP);
             }
-            position.setMovementType(MovementType.JUMP);
             resolveMove(position, gravity);
         }
     }

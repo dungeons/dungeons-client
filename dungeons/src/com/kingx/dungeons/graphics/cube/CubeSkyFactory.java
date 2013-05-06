@@ -1,32 +1,37 @@
 package com.kingx.dungeons.graphics.cube;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import com.kingx.dungeons.App;
+import com.badlogic.gdx.graphics.Color;
 
 public class CubeSkyFactory {
 
-    private Cube[][] cubes;
-    private final ArrayList<CubeRegion> regions;
+    private final List<SimpleCube> cubes = new ArrayList<SimpleCube>();
 
-    public CubeSkyFactory(float size) {
-        regions = new ArrayList<CubeRegion>();
+    public CubeSkyFactory(float x, float y, float z, float size, int count, float offset) {
+        /*  for (int i = 0; i < count; i++) {
+              for (int j = 0; j < count; j++) {
+                  for (int k = 0; k < count; k++) {
+                      cubes.add(CubeFactory.makeCube(x + i * offset, y + j * offset, z + k * offset, size, Color.WHITE));
+                  }
+              }
+          }*/
 
-        int count = 10;
-        for (int i = 0; i < count; i++) {
-            cubes = new Cube[count][count];
-            for (int j = 0; j < cubes.length; j++) {
-                for (int k = 0; k < cubes[j].length; k++) {
-                    cubes[j][k] = CubeFactory.makeCube(0, i * App.UNIT, j * App.UNIT, k * App.UNIT, size, null, j, k);
-                }
+        for (int i = 0; i < count * 2; i++) {
+            float height = offset / count;
+            float ang = (float) (Math.PI * 2) / count;
+            for (int j = 0; j < count; j++) {
+                float skew = ang / 2 * i;
+                float offx = (float) (Math.cos(ang * j + skew) * offset);
+                float offz = (float) (Math.sin(ang * j + skew) * offset);
+                cubes.add(CubeFactory.makeCube(x + offx, y + height * i, z + offz, size, Color.WHITE));
             }
         }
-
-        regions.add(new CubeRegion(0, cubes, false));
     }
 
-    public ArrayList<CubeRegion> getCubeRegions() {
-        return regions;
+    public List<SimpleCube> getCubes() {
+        return cubes;
     }
 
 }

@@ -438,7 +438,7 @@ public class Collision {
             return offBounds;
         }
 
-        return footprint[point.x][point.y] == null;
+        return !footprint[point.x][point.y].isVisible();
     }
 
     public static Vector2 worldToScreen(Vector3 world) {
@@ -515,10 +515,8 @@ public class Collision {
         Vector2 avatar = Collision.worldToScreen(App.getPlayer().getPositionComponent().inWorld);
         for (int i = 0; i < points.length; i++) {
             if (fireLight(cube, avatar, points[i], 4)) {
-                System.out.println("shot");
                 return true;
             } else {
-                System.out.println("miss");
             }
         }
         return false;

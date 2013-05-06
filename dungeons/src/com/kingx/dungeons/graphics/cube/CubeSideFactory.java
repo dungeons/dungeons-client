@@ -19,9 +19,7 @@ public abstract class CubeSideFactory {
             cubes = new Cube[maze.getFootprint(i).length + 1][maze.getFootprint(i)[0].length];
             for (int j = 0; j < cubes.length - 1; j++) {
                 for (int k = 0; k < cubes[j].length; k++) {
-
                     float x = 0, y = 0, z = 0;
-
                     switch (i) {
                         case 0:
                             x = j;
@@ -48,7 +46,7 @@ public abstract class CubeSideFactory {
                     if (j == 0) {
                         cubes[j][k].setCorner(true);
                     }
-                    cubes[j][k].setVisible(i, getBlock(maze.getFootprint(i)[j][k]) != null);
+                    cubes[j][k].setVisible(i, maze.getFootprint(i)[j][k].isVisible());
 
                 }
             }
@@ -70,7 +68,11 @@ public abstract class CubeSideFactory {
         }
     }
 
-    protected abstract Block getBlock(BlockPair blockPair);
+    private Block getBlock(BlockPair blockPair) {
+        return blockPair != null ? getBlockInternal(blockPair) : null;
+    }
+
+    protected abstract Block getBlockInternal(BlockPair blockPair);
 
     public ArrayList<CubeRegion> getCubeRegions() {
         return regions;

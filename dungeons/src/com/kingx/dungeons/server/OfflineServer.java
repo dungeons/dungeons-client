@@ -11,7 +11,6 @@ import com.kingx.dungeons.GameStateManager;
 import com.kingx.dungeons.GameStateManager.GameStatus;
 import com.kingx.dungeons.engine.component.CollisionComponent;
 import com.kingx.dungeons.engine.component.MiningComponent;
-import com.kingx.dungeons.engine.component.dynamic.GravityComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent.MovementType;
@@ -78,7 +77,6 @@ public class OfflineServer extends AbstractServer {
     private void processKey(ClientCommand c) {
         PositionComponent position = App.getPlayer().getPositionComponent();
         MoveComponent move = App.getPlayer().getMoveComponent();
-        GravityComponent gravity = App.getPlayer().getGravity();
         MiningComponent mining = App.getPlayer().getMining();
         CollisionComponent collision = App.getPlayer().getCollision();
 
@@ -115,7 +113,10 @@ public class OfflineServer extends AbstractServer {
                 }
                 break;
             case Keys.E:
-                mining.setMining(c.getValue() != 0);
+                System.out.println(position.getMovementType());
+                if (position.getMovementType() == MovementType.WALK) {
+                    mining.setMining(c.getValue() != 0);
+                }
                 break;
             case Keys.Q:
                 if (c.getValue() == 0) {

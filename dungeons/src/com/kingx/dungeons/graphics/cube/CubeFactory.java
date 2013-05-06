@@ -46,7 +46,7 @@ public final class CubeFactory {
         for (int i = 0; i < quads.length; i++) {
 
             TextureRegion texture = getTexture(type, i);
-            c.addVerts(makeQuad(x, y, z, size, i, texture), CubeSideType.values()[i]);
+            c.addVerts(makeQuad(x, y, z, size, i, texture, Colors.random()), CubeSideType.values()[i]);
         }
 
         c.computeBoundaries();
@@ -55,29 +55,44 @@ public final class CubeFactory {
 
     }
 
-    private static ArrayList<CubeVertex> makeQuad(float x, float y, float z, float size, int face, TextureRegion texture) {
+    public static SimpleCube makeCube(float x, float y, float z, float size, Color color) {
+
+        SimpleCube c = new SimpleCube();
+
+        for (int i = 0; i < quads.length; i++) {
+            c.addVerts(makeQuad(x, y, z, size, i, null, color), CubeSideType.values()[i]);
+        }
+        return c;
+
+    }
+
+    private static ArrayList<CubeVertex> makeQuad(float x, float y, float z, float size, int face, TextureRegion texture, Color color) {
         ArrayList<CubeVertex> quad = new ArrayList<CubeVertex>(6);
         for (int i = 0; i < quads[face].length; i++) {
-            quad.add(makeVertex(x, y, z, size, i, face, texture));
+            quad.add(makeVertex(x, y, z, size, i, face, texture, color));
         }
         return quad;
     }
 
-    private static CubeVertex makeVertex(float x, float y, float z, float size, int i, int face, TextureRegion texture) {
+    private static CubeVertex makeVertex(float x, float y, float z, float size, int i, int face, TextureRegion texture, Color color) {
         // @formatter:off
         CubeVertex cv = new CubeVertex();
-        Vector2 cords = getTextureCoordinates(i, texture);
         float offset = (App.UNIT-size)/2f;
         cv.setPosition(positionOffset[quads[face][i]][0] * size + x+offset,  // x position
                        positionOffset[quads[face][i]][1] * size + y+offset,  // y position
                        positionOffset[quads[face][i]][2] * size + z+offset); // z position
+        if(texture != null){
+        Vector2 cords = getTextureCoordinates(i, texture);
         cv.setTexCoords(cords.x, cords.y);
+        }
         cv.setNormal(normals[face][0],  // x normal
                      normals[face][1],  // y normal
                      normals[face][2]); // z normal
 
-        Color c = Colors.random();
-       cv.setColor(c.r, c.g, c.b, c.a);
+
+        if(color != null){
+       cv.setColor(color.r, color.g, color.b, color.a);
+        }
         // @formatter:on
         return cv;
     }

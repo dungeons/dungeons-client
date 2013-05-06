@@ -12,8 +12,8 @@ public class CubeMineralSideFactory extends CubeSideFactory {
     }
 
     @Override
-    protected Block getBlock(BlockPair blockPair) {
-        return blockPair != null ? blockPair.getSecond() : null;
+    protected Block getBlockInternal(BlockPair blockPair) {
+        return blockPair.getSecond();
     }
 
 }

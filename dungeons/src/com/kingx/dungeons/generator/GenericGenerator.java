@@ -29,8 +29,28 @@ public class GenericGenerator extends AbstractGenerator {
             chances.add(new Trigger(2, new SpotMutator(b1)));
         }
 
-        TerainMutator b1 = new MineralMutator(terain, Block.MINERAL, 10, 49);
-        chances.add(new Trigger(5, new SpotMutator(b1)));
+        for (int i = 0; i < terain.length; i++) {
+            for (int j = 0; j < terain[i].length; j++) {
+                Block block = zones[Math.min(j / zoneSize, zones.length - 1)];
+                terain[i][j] = new BlockPair(block, null, true);
+            }
+        }
+
+        zones = new Block[] { Block.DIAMOND, Block.EMERALD, Block.RUBY, Block.MOONSTONE, Block.OBSIDIAN };
+        zoneSize = height / zones.length;
+        scatterZoneSize = zoneSize / 4;
+
+        for (int i = 0; i < zones.length; i++) {
+            int min = i * zoneSize;
+            int max = (i + 1) * zoneSize;
+            System.out.println(min + " : " + max);
+            TerainMutator b1 = new MineralMutator(terain, zones[i], min, max);
+            chances.add(new Trigger(20, new SpotMutator(b1)));
+        }
+
+        CaveMutator c = new CaveMutator(terain, 5, 5, 0, 45);
+
+        chances.add(new Trigger(100, c));
 
         /*   int gems = 5;
            int zone = height / gems * 2;
@@ -52,13 +72,6 @@ public class GenericGenerator extends AbstractGenerator {
 
         for (int i = 0; i < terain.length; i++) {
             for (int j = 0; j < terain[i].length; j++) {
-                Block block = zones[Math.min(j / zoneSize, zones.length - 1)];
-                terain[i][j] = new BlockPair(block, null);
-            }
-        }
-
-        for (int i = 0; i < terain.length; i++) {
-            for (int j = 0; j < terain[i].length; j++) {
                 for (Trigger chance : chances) {
                     chance.initMutator(i, j);
                 }
@@ -66,7 +79,7 @@ public class GenericGenerator extends AbstractGenerator {
         }
 
         for (int i = 0; i < terain.length; i++) {
-            terain[i][terain[i].length - 1] = new BlockPair(Block.GRASS, null);
+            terain[i][terain[i].length - 1] = new BlockPair(Block.GRASS, null, true);
         }
 
         /*
@@ -76,17 +89,16 @@ public class GenericGenerator extends AbstractGenerator {
         terain[5][terain[0].length - 1] = Block.STONE;
         terain[6][terain[0].length - 1] = Block.STONE;
         */
-        terain[0][terain[0].length - 1] = null;
-        terain[5][terain[0].length - 5].setSecond(Block.MINERAL);
+        terain[0][terain[0].length - 1].setVisible(false);
 
         return terain;
     }
 
     private static class Trigger implements Comparable<Trigger> {
         private final int chance;
-        private final Mutator mutator;
+        private final Mutable mutator;
 
-        public Trigger(int chance, Mutator mutator) {
+        public Trigger(int chance, Mutable mutator) {
             this.chance = chance;
             this.mutator = mutator;
         }

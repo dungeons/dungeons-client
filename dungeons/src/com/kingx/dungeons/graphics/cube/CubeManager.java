@@ -95,7 +95,7 @@ public class CubeManager {
         }
         removeCube(regionPack.get(App.getCurrentView()), point.x, point.y);
 
-        App.getTerrain().setFootprint(App.getCurrentView(), point.x, point.y, null);
+        App.getTerrain().getFootprint(App.getCurrentView(), point.x, point.y).setVisible(false);
 
     }
 

@@ -1,6 +1,6 @@
 package com.kingx.dungeons.generator;
 
-public abstract class Mutator {
+public abstract class Mutator implements Mutable {
 
     protected final TerainMutator mutator;
 
@@ -8,5 +8,4 @@ public abstract class Mutator {
         this.mutator = t;
     }
 
-    public abstract void mutate(int x, int y);
 }

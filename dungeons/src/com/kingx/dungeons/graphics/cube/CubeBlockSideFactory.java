@@ -12,8 +12,8 @@ public class CubeBlockSideFactory extends CubeSideFactory {
     }
 
     @Override
-    protected Block getBlock(BlockPair blockPair) {
-        return blockPair != null ? blockPair.getFirst() : null;
+    protected Block getBlockInternal(BlockPair blockPair) {
+        return blockPair.getFirst();
     }
 
 }

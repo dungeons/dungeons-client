@@ -52,7 +52,6 @@ public class RenderVillageSystem extends EntityProcessingSystem {
         if (batchRender == null) {
             batchRender = new CubeRenderer();
         }
-        villageShader.begin();
     }
 
     /**
@@ -60,8 +59,12 @@ public class RenderVillageSystem extends EntityProcessingSystem {
      */
     @Override
     protected void end() {
-        villageShader.end();
 
+        batchRender.setShader(starShader);
+        batchRender.begin();
+        starShader.setUniformMatrix("u_projTrans", camera.camera.combined);
+        batchRender.draw(App.sky);
+        batchRender.end();
     }
 
     @Override
@@ -75,6 +78,7 @@ public class RenderVillageSystem extends EntityProcessingSystem {
         MeshComponent mesh = meshMapper.get(e);
         PositionComponent position = positionMapper.get(e);
 
+        villageShader.begin();
         Vector3 playerPosition = App.getPlayer().getPositionComponent().get();
         villageShader.setUniformMatrix("u_projTrans", camera.camera.combined);
         villageShader.setUniformMatrix("u_viewTrans", camera.camera.view);
@@ -87,10 +91,7 @@ public class RenderVillageSystem extends EntityProcessingSystem {
         villageShader.setUniformf("u_sight", App.getPlayer().getEntity().getComponent(SightComponent.class).getRadius());
         mesh.getMesh().render(villageShader, GL10.GL_TRIANGLES);
 
-        batchRender.setShader(starShader);
-        batchRender.begin();
-        batchRender.draw(App.sky, false);
-        batchRender.end();
+        villageShader.end();
 
     }
 }

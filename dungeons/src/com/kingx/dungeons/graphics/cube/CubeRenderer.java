@@ -17,6 +17,7 @@
 package com.kingx.dungeons.graphics.cube;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
@@ -396,6 +397,19 @@ public class CubeRenderer implements Disposable {
                     }
                 }
             }
+        }
+    }
+
+    public void draw(List<SimpleCube> sky) {
+        for (SimpleCube cube : sky) {
+            draw(cube);
+        }
+    }
+
+    private void draw(SimpleCube cube) {
+        CubeSide[] cubeSides = cube.getSides();
+        for (CubeSide side : cubeSides) {
+            draw(side);
         }
     }
 

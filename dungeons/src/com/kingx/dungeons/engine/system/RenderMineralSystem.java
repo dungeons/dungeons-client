@@ -37,7 +37,7 @@ public class RenderMineralSystem extends EntityProcessingSystem {
         this.camera = camera;
         this.blocks = blocks;
 
-        shadowProjectShader = Shader.getShader("sprite");
+        shadowProjectShader = Shader.getShader("mineral");
 
     }
 
@@ -61,7 +61,6 @@ public class RenderMineralSystem extends EntityProcessingSystem {
         Int point = App.getPlayer().getCollision().getCurrent();
         batchRender.drawSubregion(blocks.get(App.getCurrentView()), point.x, point.y, 4, false, true);
         batchRender.end();
-
     }
 
 }

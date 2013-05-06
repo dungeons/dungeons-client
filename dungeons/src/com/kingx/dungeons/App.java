@@ -2,6 +2,7 @@ package com.kingx.dungeons;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -45,6 +46,7 @@ import com.kingx.dungeons.graphics.cube.CubeMineralSideFactory;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
 import com.kingx.dungeons.graphics.cube.CubeSkyFactory;
 import com.kingx.dungeons.graphics.cube.CubeTopFactory;
+import com.kingx.dungeons.graphics.cube.SimpleCube;
 import com.kingx.dungeons.graphics.ui.Gamepad;
 import com.kingx.dungeons.input.Input;
 import com.kingx.dungeons.server.AbstractServer;
@@ -146,7 +148,7 @@ public class App implements ApplicationListener {
     BitmapFont font = null;
     private TerrainManager mazeManager;
     private Gamepad ui;
-    public static ArrayList<CubeRegion> sky;
+    public static List<SimpleCube> sky;
     private static BackgroundManager backgroundManager;
     private static Gamepad gamepad;
 
@@ -220,24 +222,22 @@ public class App implements ApplicationListener {
     }
 
     private void createSky() {
-        sky = new CubeSkyFactory(0.1f).getCubeRegions();
+
+        sky = new CubeSkyFactory(5, 50, -5, 0.1f, 10, 15f).getCubes();
 
     }
 
     private void createVillage() {
         try {
             createBuilding(4.8f, 1.2f, "mine", 1f);
-            // createBuilding(8, 4, "well", 0.7f);
             createBuilding(2.7f, 0.7f, "tree", 0.5f);
             createBuilding(7.5f, 3, "tree", 1.5f);
             createBuilding(5, 5.5f, "tree", 2f);
             createBuilding(5, 3, "tree", 2.5f);
             createBuilding(2, 6, "tree", 1f);
             createBuilding(2, 3, "tree", 1f);
-            createBuilding(1.5f, 4.5f, "house", 0.9f);
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 

@@ -3,21 +3,23 @@ package com.kingx.dungeons;
 public enum Block {
 
     DIRT(5, "dirt"),
-    MINERAL(5, "mineral"),
     GRASS(5, "dirt_side", "dirt_top", "dirt"),
-
     SAND(5, "sand"),
     RED(15, "red"),
     GRAVEL(45, "gravel"),
     ROCK(135, "rock"),
-    BEDROCK(405, "bedrock");
-    //  STONE(0, "stone_side", "stone_top", "stone");
+    BEDROCK(405, "bedrock"),
+
+    OBSIDIAN(10, "obsidian"),
+    MOONSTONE(30, "moonstone"),
+    EMERALD(90, "emerald"),
+    RUBY(270, "ruby"),
+    DIAMOND(810, "diamond"),
+
+    STONE(0, "stone"),
+    STONE_PAVEMENT(0, "stone_side", "stone_top", "stone");
     /*
-        OBSIDIAN(10, "obsidian"),
-        MOONSTONE(30, "moonstone"),
-        EMERALD(90, "emerald"),
-        RUBY(270, "ruby"),
-        DIAMOND(810, "diamond"),
+        
 
         */
 
