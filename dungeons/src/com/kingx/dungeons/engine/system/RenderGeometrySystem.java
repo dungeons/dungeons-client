@@ -98,8 +98,7 @@ public class RenderGeometrySystem extends EntityProcessingSystem {
         currentTexture = tc.getTexture();
         if (currentTexture != null) {
             currentTexture.getTexture().bind();
-            sr.draw(currentTexture, pc.get(), sc.get(), 0);
-
+            sr.draw(currentTexture, pc.get(), sc.get(), camera.angle);
         }
     }
 

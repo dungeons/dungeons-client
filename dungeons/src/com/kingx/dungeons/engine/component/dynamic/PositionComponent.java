@@ -69,7 +69,8 @@ public class PositionComponent extends AbstractComponent {
 
     public enum MovementType {
         WALK,
-        CLIMB;
+        CLIMB,
+        JUMP;
     }
 
     public void setMovementType(MovementType type) {

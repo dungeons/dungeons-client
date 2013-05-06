@@ -110,8 +110,7 @@ public class OfflineServer extends AbstractServer {
                 if ((position.getMovementType() == MovementType.CLIMB || collision.getStandingOnABlock() != null) && c.getValue() == 1) {
                     if (!position.isAnimation()) {
                         move.vector.y = 1.5f;
-                        gravity.setFalling(true);
-                        position.setMovementType(MovementType.WALK);
+                        position.setMovementType(MovementType.JUMP);
                     }
                 }
                 break;

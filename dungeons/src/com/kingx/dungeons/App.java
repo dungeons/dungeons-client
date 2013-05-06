@@ -43,6 +43,7 @@ import com.kingx.dungeons.graphics.cube.CubeBlockSideFactory;
 import com.kingx.dungeons.graphics.cube.CubeManager;
 import com.kingx.dungeons.graphics.cube.CubeMineralSideFactory;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
+import com.kingx.dungeons.graphics.cube.CubeSkyFactory;
 import com.kingx.dungeons.graphics.cube.CubeTopFactory;
 import com.kingx.dungeons.graphics.ui.Gamepad;
 import com.kingx.dungeons.input.Input;
@@ -145,6 +146,7 @@ public class App implements ApplicationListener {
     BitmapFont font = null;
     private TerrainManager mazeManager;
     private Gamepad ui;
+    public static ArrayList<CubeRegion> sky;
     private static BackgroundManager backgroundManager;
     private static Gamepad gamepad;
 
@@ -198,6 +200,7 @@ public class App implements ApplicationListener {
         createBackground();
         createCubes();
         createPlayer();
+        createSky();
         // createZombies(50);
         addSystemsToWorld();
 
@@ -213,6 +216,11 @@ public class App implements ApplicationListener {
             ui = new Gamepad(onScreenVectorRender);
             gamepad = ui;
         }
+
+    }
+
+    private void createSky() {
+        sky = new CubeSkyFactory(0.1f).getCubeRegions();
 
     }
 
@@ -291,7 +299,7 @@ public class App implements ApplicationListener {
     private void createPlayer() {
 
         Vector2 p = new Vector2(App.rand.nextInt(10), App.getTerrain().getHeight() + 3);
-        player = new Wanderer(world, p, 1f, 10f, avatarCamera);
+        player = new Wanderer(world, p, 1f, 5f, avatarCamera);
         player.createEntity().addToWorld();
     }
 

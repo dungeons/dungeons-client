@@ -18,6 +18,7 @@ import com.kingx.dungeons.engine.component.VillageComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.Shader;
+import com.kingx.dungeons.graphics.cube.CubeRenderer;
 
 public class RenderVillageSystem extends EntityProcessingSystem {
     @Mapper
@@ -31,13 +32,16 @@ public class RenderVillageSystem extends EntityProcessingSystem {
 
     private final FollowCameraComponent camera;
 
-    private final ShaderProgram shader;
+    private final ShaderProgram villageShader;
+    private final ShaderProgram starShader;
     private TextureRegion currentTexture;
+    private CubeRenderer batchRender;
 
     public RenderVillageSystem(FollowCameraComponent camera) {
         super(Aspect.getAspectForAll(VillageComponent.class));
         this.camera = camera;
-        shader = Shader.getShader("house");
+        villageShader = Shader.getShader("house");
+        starShader = Shader.getShader("star");
     }
 
     /**
@@ -45,7 +49,10 @@ public class RenderVillageSystem extends EntityProcessingSystem {
      */
     @Override
     protected void begin() {
-        shader.begin();
+        if (batchRender == null) {
+            batchRender = new CubeRenderer();
+        }
+        villageShader.begin();
     }
 
     /**
@@ -53,7 +60,7 @@ public class RenderVillageSystem extends EntityProcessingSystem {
      */
     @Override
     protected void end() {
-        shader.end();
+        villageShader.end();
 
     }
 
@@ -69,16 +76,21 @@ public class RenderVillageSystem extends EntityProcessingSystem {
         PositionComponent position = positionMapper.get(e);
 
         Vector3 playerPosition = App.getPlayer().getPositionComponent().get();
-        shader.setUniformMatrix("u_projTrans", camera.camera.combined);
-        shader.setUniformMatrix("u_viewTrans", camera.camera.view);
-        shader.setUniformf("u_lightSourcePos", playerPosition);
+        villageShader.setUniformMatrix("u_projTrans", camera.camera.combined);
+        villageShader.setUniformMatrix("u_viewTrans", camera.camera.view);
+        villageShader.setUniformf("u_lightSourcePos", playerPosition);
 
         // Without w argument. Uniform will not be mapped to vec4.
-        shader.setUniformf("u_positionOffset", position.get());
-        shader.setUniformf("u_source_color", Colors.WALL_LIGHT);
-        shader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
-        shader.setUniformf("u_sight", App.getPlayer().getEntity().getComponent(SightComponent.class).getRadius());
-        mesh.getMesh().render(shader, GL10.GL_TRIANGLES);
+        villageShader.setUniformf("u_positionOffset", position.get());
+        villageShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
+        villageShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
+        villageShader.setUniformf("u_sight", App.getPlayer().getEntity().getComponent(SightComponent.class).getRadius());
+        mesh.getMesh().render(villageShader, GL10.GL_TRIANGLES);
+
+        batchRender.setShader(starShader);
+        batchRender.begin();
+        batchRender.draw(App.sky, false);
+        batchRender.end();
 
     }
 }

@@ -26,7 +26,9 @@ public class WorldRotateSystem extends EntityProcessingSystem {
     ComponentMapper<FollowCameraComponent> cameraMapper;
 
     public enum State {
-        TURNING_LEFT, TURNING_RIGHT, IDLE;
+        TURNING_LEFT,
+        TURNING_RIGHT,
+        IDLE;
     }
 
     private static State currentState = State.IDLE;
@@ -97,7 +99,7 @@ public class WorldRotateSystem extends EntityProcessingSystem {
     private void rotateCamera(FollowCameraComponent camera, float angle) {
         // We can now create as many interpolations as we need !
         camera.lastAngle += angle;
-        Tween.to(camera, CameraAccessor.ROTATION_Y, 1.0f).target(camera.lastAngle).ease(Quad.OUT).start(App.getTweenManager())
+        Tween.to(camera, CameraAccessor.ROTATION_Y, 1f).target(camera.lastAngle).ease(Quad.OUT).start(App.getTweenManager())
                 .setCallback(new TweenCallback() {
 
                     @Override

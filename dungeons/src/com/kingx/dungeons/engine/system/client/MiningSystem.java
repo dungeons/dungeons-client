@@ -69,8 +69,8 @@ public class MiningSystem extends EntityProcessingSystem {
                 }
 
                 float pick = 10;
-                pick = 30;
-                pick = 90;
+                // pick = 30;
+                //  pick = 90;
                 time = Math.max(b.getType().getHardness() / pick, 0.2f);
 
                 position.setAnimation(true);

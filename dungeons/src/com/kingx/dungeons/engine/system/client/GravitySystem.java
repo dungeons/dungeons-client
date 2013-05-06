@@ -58,7 +58,7 @@ public class GravitySystem extends EntityProcessingSystem {
         GravityComponent gravity = gravityMapper.get(e);
 
         if (collision.getDown() != null) {
-            gravity.setFalling(false);
+            position.setMovementType(MovementType.WALK);
             gravity.move.vector.y = 0;
 
             if (animationMapper.has(e)) {
@@ -68,7 +68,7 @@ public class GravitySystem extends EntityProcessingSystem {
             if (animationMapper.has(e) && collision.getStandingOnABlock() == null) {
                 animationMapper.get(e).play("jump");
             }
-            gravity.setFalling(true);
+            position.setMovementType(MovementType.JUMP);
             resolveMove(position, gravity);
         }
     }

@@ -12,7 +12,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttribute;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.kingx.dungeons.graphics.Shader;
@@ -325,8 +324,8 @@ public class SpriteRenderer {
         final float v2 = region.getV();
 
         // rotate
-        final float cos = MathUtils.cosDeg(rotation);
-        final float sin = MathUtils.sinDeg(rotation);
+        final float cos = (float) Math.cos(rotation);
+        final float sin = (float) Math.sin(rotation);
 
         x0 = x - cos * (width / 2f);
         z0 = z + sin * (width / 2f);

@@ -42,7 +42,10 @@ public class MovementSystem extends EntityProcessingSystem {
         if (position.getMovementType() == MovementType.WALK) {
             result = position.get().add(move.getRotatedVector().mul(speed.getCurrent() * world.delta));
         } else {
-            result = position.get().add(move.getRotatedVector().mul(speed.getCurrent() * world.delta));
+            Vector3 rotated = move.getRotatedVector();
+            rotated.x /= 2f;
+            rotated.z /= 2f;
+            result = position.get().add(rotated.mul((speed.getCurrent()) * world.delta));
         }
         position.set(result);
 
