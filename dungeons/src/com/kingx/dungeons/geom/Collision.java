@@ -371,7 +371,7 @@ public class Collision {
 
             if (!isWalkable(leftPoint, true)) {
                 x = (leftPoint.x + 1) * App.UNIT + halfSize;
-                screenToWorld(new Vector2(x, y), position.inWorld);
+                screenToWorld(x, y, position.inWorld);
                 return leftPoint;
             }
 
@@ -406,7 +406,7 @@ public class Collision {
 
             if (!isWalkable(rightPoint, true)) {
                 x = rightPoint.x * App.UNIT - halfSize;
-                screenToWorld(new Vector2(x, y), position.inWorld);
+                screenToWorld(x, y, position.inWorld);
                 return rightPoint;
             }
 
@@ -438,11 +438,23 @@ public class Collision {
             return offBounds;
         }
 
-        return !footprint[point.x][point.y].isVisible();
+        return footprint[point.x][point.y].isRemoved();
     }
 
     public static Vector2 worldToScreen(Vector3 world) {
-        Vector2 screen = new Vector2(world.x, world.y);
+        return worldToScreen(App.getCurrentView(), world, new Vector2());
+    }
+
+    public static Vector2 worldToScreen(int view, Vector3 world) {
+        return worldToScreen(view, world, new Vector2());
+    }
+
+    public static Vector2 worldToScreen(Vector3 world, Vector2 screen) {
+        return worldToScreen(App.getCurrentView(), world, screen);
+    }
+
+    public static Vector2 worldToScreen(int view, Vector3 world, Vector2 screen) {
+        screen.set(world.x, world.y);
         switch (App.getCurrentView()) {
             case 0:
                 screen.x = world.x + CubeRegion.min.x;
@@ -464,26 +476,26 @@ public class Collision {
         return screen;
     }
 
-    public static void screenToWorld(Vector2 screen, Vector3 world) {
+    public static void screenToWorld(float x, float y, Vector3 world) {
         switch (App.getCurrentView()) {
             case 0:
-                world.x = screen.x + CubeRegion.min.x;
+                world.x = x + CubeRegion.min.x;
                 world.z = CubeRegion.max.z;
                 break;
             case 1:
                 world.x = CubeRegion.max.x;
-                world.z = -screen.x + CubeRegion.max.z;
+                world.z = -x + CubeRegion.max.z;
                 break;
             case 2:
-                world.x = -screen.x + CubeRegion.max.x;
+                world.x = -x + CubeRegion.max.x;
                 world.z = CubeRegion.min.z;
                 break;
             case 3:
                 world.x = CubeRegion.min.x;
-                world.z = screen.x + CubeRegion.min.z;
+                world.z = x + CubeRegion.min.z;
                 break;
         }
-        world.y = screen.y;
+        world.y = y;
     }
 
     public static Vector3 screenToWorld(Vector2 screen) {
@@ -510,13 +522,29 @@ public class Collision {
         return result;
     }
 
-    public static boolean isCubeVisible(Cube cube) {
-        Vector2[] points = cube.getCubePoint();
-        Vector2 avatar = Collision.worldToScreen(App.getPlayer().getPositionComponent().inWorld);
-        for (int i = 0; i < points.length; i++) {
-            if (fireLight(cube, avatar, points[i], 4)) {
-                return true;
-            } else {
+    public static boolean isCubeVisible(Cube cube, int radius) {
+        Int point = App.getPlayer().getCollision().getCurrent();
+
+        if (point == null) {
+            return false;
+        }
+
+        if (cube != null) {
+            if (App.getCubeManager().isCubeSurrounded(cube)) {
+                return false;
+            }
+            if (cube.getX() >= point.x - radius && cube.getX() <= point.x + radius) {
+                if (cube.getY() >= point.y - radius && cube.getY() <= point.y + radius) {
+
+                    Vector2[] points = cube.getCubePoint();
+                    Vector2 avatar = App.getPlayer().getPositionComponent().getScreen();
+                    for (int i = 0; i < points.length; i++) {
+                        if (fireLight(cube, avatar, points[i], radius)) {
+                            return true;
+                        }
+                    }
+
+                }
             }
         }
         return false;
@@ -528,11 +556,13 @@ public class Collision {
 
         for (Cube[] temp : region.getCubes()) {
             for (Cube c : temp) {
-                if (c.getX() >= point.x - radius && c.getX() <= point.x + radius) {
-                    if (c.getY() >= point.y - radius && c.getY() <= point.y + radius) {
-                        if (c != null && cube != c && c.isVisible()) {
-                            if (c.blocksRay(from, to)) {
-                                return false;
+                if (c != null) {
+                    if (c.getX() >= point.x - radius && c.getX() <= point.x + radius) {
+                        if (c.getY() >= point.y - radius && c.getY() <= point.y + radius) {
+                            if (cube != c && c.isVisible()) {
+                                if (c.blocksRay(from, to)) {
+                                    return false;
+                                }
                             }
                         }
                     }

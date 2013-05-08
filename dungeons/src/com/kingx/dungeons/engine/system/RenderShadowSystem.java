@@ -83,7 +83,7 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
         depthMap.bind();
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-        Assets.getTexture("terrain", 0).getTexture().bind();
+        Assets.getTexture("dirt", 0).getTexture().bind();
 
         batchRender.setShader(shadowProjectShader);
         batchRender.begin();
@@ -106,8 +106,8 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowProjectShader.setUniformf("u_maxBound", CubeRegion.max);
         shadowProjectShader.setUniformf("u_tint", Colors.interpolate(Colors.SHADOW_BOTTOM, Color.WHITE, App.getProgress(), 1));
 
-        batchRender.draw(blocks, false);
-
+        batchRender.draw(blocks.get(App.getCurrentView()), false, false);
+        batchRender.draw(blocks.get(App.getCurrentView()), false, true);
         batchRender.end();
 
     }
@@ -142,7 +142,9 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         batchRender.begin();
 
         Int point = App.getPlayer().getCollision().getCurrent();
-        batchRender.drawSubregion(cubeRegions.get(App.getCurrentView()), point.x, point.y, 4, true, false);
+        if (point != null) {
+            batchRender.drawSubregion(cubeRegions.get(App.getCurrentView()), point.x, point.y, 4, true);
+        }
         batchRender.end();
         shadowGeneratorShader.end();
         return shadowMap.getColorBufferTexture();

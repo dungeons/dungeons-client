@@ -3,13 +3,13 @@ package com.kingx.dungeons.generator;
 import com.kingx.dungeons.Block;
 import com.kingx.dungeons.BlockPair;
 
-public class CaveMutator extends SuperMutator {
+public class GlacierCaveMutator extends SuperMutator {
 
-    public CaveMutator(BlockPair[][] terain, int regionWidth, int regionHeight, int min, int max) {
+    public GlacierCaveMutator(BlockPair[][] terain, int regionWidth, int regionHeight, int min, int max) {
         super(terain, regionWidth, regionHeight, min, max);
     }
 
-    public CaveMutator(BlockPair[][] terain, int regionWidth, int regionHeight) {
+    public GlacierCaveMutator(BlockPair[][] terain, int regionWidth, int regionHeight) {
         super(terain, regionWidth, regionHeight);
     }
 
@@ -18,12 +18,12 @@ public class CaveMutator extends SuperMutator {
 
         int o = 0;
         for (int i = 1; i < terrain.getWidth() - 1; i++) {
-            terrain.setFirst(i, 0, Block.STONE);
+            terrain.setFirst(i, 0, Block.ICE);
         }
         o++;
 
         for (int i = 0; i < terrain.getWidth(); i++) {
-            terrain.setFirst(i, 1, Block.STONE);
+            terrain.setFirst(i, 1, Block.ICE);
         }
 
         for (int i = 2; i < terrain.getWidth() - 2; i++) {
@@ -33,15 +33,14 @@ public class CaveMutator extends SuperMutator {
 
         for (int i = o; i < terrain.getHeight() - 1; i++) {
             for (int j = 0; j < terrain.getWidth(); j++) {
-                terrain.setFirst(j, i, Block.STONE);
+                terrain.setFirst(j, i, Block.ICE);
                 terrain.setRemoved(j, i, true);
             }
             o++;
         }
 
         for (int i = 0; i < terrain.getWidth(); i++) {
-            terrain.setFirst(i, o, Block.STONE_PAVEMENT);
+            terrain.setFirst(i, o, Block.ICE_PATH);
         }
     }
-
 }

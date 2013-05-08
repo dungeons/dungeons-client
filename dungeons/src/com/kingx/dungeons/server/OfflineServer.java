@@ -6,7 +6,6 @@ import java.util.Map;
 import com.badlogic.gdx.Input.Keys;
 import com.kingx.artemis.World;
 import com.kingx.dungeons.App;
-import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.GameStateManager;
 import com.kingx.dungeons.GameStateManager.GameStatus;
 import com.kingx.dungeons.engine.component.CollisionComponent;
@@ -120,7 +119,7 @@ public class OfflineServer extends AbstractServer {
                 break;
             case Keys.Q:
                 if (c.getValue() == 0) {
-                    Assets.switchAtlas();
+                    App.toggleWireframe();
                 }
                 break;
         }

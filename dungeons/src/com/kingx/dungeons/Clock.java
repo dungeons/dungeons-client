@@ -9,9 +9,9 @@ public class Clock implements Runnable {
     private final boolean quit = false;
     private final List<Updateable> services = new LinkedList<Updateable>();
 
-    public Clock() {
+    public Clock(String name) {
         if (init) {
-            new Thread(this, "Logic").start();
+            new Thread(this, name).start();
             init = false;
         }
     }

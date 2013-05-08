@@ -16,7 +16,6 @@
 
 package com.kingx.dungeons.graphics.cube;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
@@ -31,7 +30,6 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
 import com.kingx.dungeons.App;
-import com.kingx.dungeons.geom.Collision;
 import com.kingx.dungeons.graphics.cube.Cube.CubeSideType;
 
 /**
@@ -113,6 +111,13 @@ public class CubeRenderer implements Disposable {
     private int cubeCount;
     private final int buffersCount;
     private int verticesPerQuad;
+    private static int total;
+
+    public static int getTotal() {
+        int temp = total;
+        total = 0;
+        return temp;
+    }
 
     /**
      * Constructs a new SpriteBatch. Sets the projection matrix to an
@@ -121,7 +126,7 @@ public class CubeRenderer implements Disposable {
      * projection will be pixel perfect with respect to the screen resolution.
      */
     public CubeRenderer() {
-        this(10000);
+        this(1000);
     }
 
     /**
@@ -336,15 +341,9 @@ public class CubeRenderer implements Disposable {
 
     }
 
-    public void draw(ArrayList<CubeRegion> regions, boolean onlyVisible, boolean raytrace) {
+    public void draw(List<CubeRegion> regions, boolean onlyVisible, boolean drawHidden) {
         for (CubeRegion region : regions) {
-            draw(region, onlyVisible, raytrace);
-        }
-    }
-
-    public void draw(ArrayList<CubeRegion> regions, boolean onlyVisible) {
-        for (CubeRegion region : regions) {
-            draw(region, onlyVisible);
+            draw(region, onlyVisible, drawHidden);
         }
     }
 
@@ -352,33 +351,34 @@ public class CubeRenderer implements Disposable {
         for (Cube[] temp : region.getCubes()) {
             for (Cube cube : temp) {
                 if (cube != null) {
-                    draw(cube, onlyVisible, false);
+                    draw(cube, onlyVisible);
                 }
             }
         }
     }
 
-    public void draw(CubeRegion region, boolean onlyVisible, boolean raytrace) {
+    public void draw(CubeRegion region, boolean onlyVisible, boolean drawHidden) {
         for (Cube[] temp : region.getCubes()) {
             for (Cube cube : temp) {
                 if (cube != null) {
-                    draw(cube, onlyVisible, raytrace);
+                    draw(cube, onlyVisible, drawHidden);
                 }
             }
         }
     }
 
-    public void draw(Cube cube, boolean onlyVisible, boolean raytrace) {
+    public void draw(Cube cube, boolean onlyVisible, boolean drawHidden) {
         if (cube != null && cube.getType() != null) {
             if (!onlyVisible || cube.isVisible()) {
-                if (!raytrace || Collision.isCubeVisible(cube)) {
+                boolean hidden = App.getCubeManager().getHidden(cube);
+                if (hidden == drawHidden) {
                     CubeSide[] cubeSides = cube.getSides();
                     for (CubeSide side : cubeSides) {
                         if (side.isVisible()) {
                             if (cube.scale < 1.0f) {
-                                draw(side, cube);
+                                draw(side, cube, hidden);
                             } else {
-                                draw(side);
+                                draw(side, hidden);
                             }
                         }
                     }
@@ -388,32 +388,38 @@ public class CubeRenderer implements Disposable {
 
     }
 
-    public void drawSubregion(CubeRegion region, int x, int y, int radius, boolean onlyVisible, boolean raytrace) {
+    public void draw(Cube cube, boolean onlyVisible) {
+        if (cube != null && cube.getType() != null) {
+            if (!onlyVisible || cube.isVisible()) {
+                CubeSide[] cubeSides = cube.getSides();
+                for (CubeSide side : cubeSides) {
+                    if (side.isVisible()) {
+                        if (cube.scale < 1.0f) {
+                            draw(side, cube, false);
+                        } else {
+                            draw(side, false);
+                        }
+                    }
+                }
+
+            }
+        }
+
+    }
+
+    public void drawSubregion(CubeRegion region, int x, int y, int radius, boolean onlyVisible) {
         for (Cube[] temp : region.getCubes()) {
             for (Cube cube : temp) {
                 if (cube.getX() >= x - radius && cube.getX() <= x + radius) {
                     if (cube.getY() >= y - radius && cube.getY() <= y + radius) {
-                        draw(cube, onlyVisible, raytrace);
+                        draw(cube, onlyVisible, false);
                     }
                 }
             }
         }
     }
 
-    public void draw(List<SimpleCube> sky) {
-        for (SimpleCube cube : sky) {
-            draw(cube);
-        }
-    }
-
-    private void draw(SimpleCube cube) {
-        CubeSide[] cubeSides = cube.getSides();
-        for (CubeSide side : cubeSides) {
-            draw(side);
-        }
-    }
-
-    private void draw(CubeSide side) {
+    private void draw(CubeSide side, boolean hidden) {
 
         for (CubeVertex cubeVert : side.getVerts()) {
             if (CubeVertex.isPositionAttribute()) {
@@ -424,7 +430,7 @@ public class CubeRenderer implements Disposable {
             }
 
             if (CubeVertex.isTexCoordsAttribute()) {
-                float[] texCords = cubeVert.getTexCoords();
+                float[] texCords = hidden ? cubeVert.getDefaultTexCoords() : cubeVert.getTexCoords();
                 vertices[idx++] = texCords[0];
                 vertices[idx++] = texCords[1];
             }
@@ -443,11 +449,10 @@ public class CubeRenderer implements Disposable {
                 vertices[idx++] = color[2];
                 vertices[idx++] = color[3];
             }
-            // return;
         }
     }
 
-    private void draw(CubeSide side, Cube cube) {
+    private void draw(CubeSide side, Cube cube, boolean hidden) {
         for (CubeVertex cubeVert : side.getVerts()) {
             float[] position = cubeVert.getPosition();
             vertices[idx++] = position[0];
@@ -460,7 +465,7 @@ public class CubeRenderer implements Disposable {
             vertices[idx++] = position[2];
 
             if (CubeVertex.isTexCoordsAttribute()) {
-                float[] texCords = cubeVert.getTexCoords();
+                float[] texCords = hidden ? cubeVert.getDefaultTexCoords() : cubeVert.getTexCoords();
                 vertices[idx++] = texCords[0];
                 vertices[idx] = texCords[1];
                 if (position[1] > cube.mean.y) {
@@ -513,6 +518,7 @@ public class CubeRenderer implements Disposable {
         mesh.getIndicesBuffer().position(0);
         mesh.getIndicesBuffer().limit(quadsInBatch * CubeSide.INDICES);
 
+        total += idx;
         if (blendingDisabled) {
             Gdx.gl.glDisable(GL20.GL_BLEND);
         } else {
@@ -522,9 +528,9 @@ public class CubeRenderer implements Disposable {
         }
 
         if (customShader != null)
-            mesh.render(customShader, GL10.GL_TRIANGLES, 0, quadsInBatch * CubeSide.INDICES);
+            mesh.render(customShader, App.DEBUG != null && App.isWireframe() ? GL10.GL_LINES : GL10.GL_TRIANGLES, 0, quadsInBatch * CubeSide.INDICES);
         else
-            mesh.render(shader, GL10.GL_TRIANGLES, 0, quadsInBatch * CubeSide.INDICES);
+            mesh.render(shader, App.DEBUG != null && App.isWireframe() ? GL10.GL_LINES : GL10.GL_TRIANGLES, 0, quadsInBatch * CubeSide.INDICES);
 
         idx = 0;
         currBufferIdx++;

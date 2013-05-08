@@ -2,56 +2,43 @@ package com.kingx.dungeons;
 
 public enum Block {
 
-    DIRT(5, "dirt"),
-    GRASS(5, "dirt_side", "dirt_top", "dirt"),
-    SAND(5, "sand"),
-    RED(15, "red"),
-    GRAVEL(45, "gravel"),
-    ROCK(135, "rock"),
-    BEDROCK(405, "bedrock"),
+    DIRT(5, BlockTextures.DIRT, BlockTextures.UNKNOWN),
+    GRASS(5, BlockTextures.GRASS, BlockTextures.UNKNOWN),
+    SAND(5, BlockTextures.SAND, BlockTextures.UNKNOWN),
+    RED(15, BlockTextures.RED, BlockTextures.UNKNOWN),
+    GRAVEL(45, BlockTextures.GRAVEL, BlockTextures.UNKNOWN),
+    ROCK(135, BlockTextures.ROCK, BlockTextures.UNKNOWN),
+    BEDROCK(405, BlockTextures.BEDROCK, BlockTextures.UNKNOWN),
 
-    OBSIDIAN(10, "obsidian"),
-    MOONSTONE(30, "moonstone"),
-    EMERALD(90, "emerald"),
-    RUBY(270, "ruby"),
-    DIAMOND(810, "diamond"),
+    OBSIDIAN(10, BlockTextures.OBSIDIAN, BlockTextures.UNKNOWN),
+    MOONSTONE(30, BlockTextures.MOONSTONE, BlockTextures.UNKNOWN),
+    EMERALD(90, BlockTextures.EMERALD, BlockTextures.UNKNOWN),
+    RUBY(270, BlockTextures.RUBY, BlockTextures.UNKNOWN),
+    DIAMOND(810, BlockTextures.DIAMOND, BlockTextures.UNKNOWN),
 
-    STONE(0, "stone"),
-    STONE_PAVEMENT(0, "stone_side", "stone_top", "stone");
-    /*
-        
+    STONE(0, BlockTextures.STONE, BlockTextures.UNKNOWN),
+    STONE_PAVEMENT(0, BlockTextures.STONE_PAVEMENT, BlockTextures.UNKNOWN),
 
-        */
+    ICE(0, BlockTextures.ICE, BlockTextures.UNKNOWN),
+    ICE_PATH(0, BlockTextures.ICE_PATH, BlockTextures.UNKNOWN);
 
+    public static final Block DEFAULT = DIRT;
     private final int hardness;
     private final String[] textures;
+    private final String[] defaultTextures;
 
-    Block(int hardness, String[] textures) {
+    Block(int hardness, String[] textures, String[] defaultTextures) {
         this.hardness = hardness;
         this.textures = textures;
-    }
-
-    Block(int hardness, String texture) {
-        this.hardness = hardness;
-        this.textures = new String[6];
-        for (int i = 0; i < textures.length; i++) {
-            textures[i] = texture;
-        }
-    }
-
-    Block(int hardness, String sideTexture, String topTexture, String bottomTexture) {
-        this.hardness = hardness;
-        this.textures = new String[6];
-        this.textures[0] = sideTexture;
-        this.textures[1] = sideTexture;
-        this.textures[2] = sideTexture;
-        this.textures[3] = sideTexture;
-        this.textures[4] = topTexture;
-        this.textures[5] = bottomTexture;
+        this.defaultTextures = defaultTextures;
     }
 
     public String getTextureName(int i) {
         return textures[i];
+    }
+
+    public String getDefaultTextureName(int i) {
+        return defaultTextures[i];
     }
 
     public int getHardness() {

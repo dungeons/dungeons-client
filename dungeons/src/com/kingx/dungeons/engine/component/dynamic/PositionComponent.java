@@ -1,10 +1,13 @@
 package com.kingx.dungeons.engine.component.dynamic;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.geom.Collision;
 
 public class PositionComponent extends AbstractComponent {
     public Vector3 inWorld;
+    public Vector2 onScreen = new Vector2();
     private boolean animation = false;
     private MovementType type = MovementType.WALK;
 
@@ -83,5 +86,10 @@ public class PositionComponent extends AbstractComponent {
 
     public boolean canClimb() {
         return this.getY() < App.getTerrain().getHeight();
+    }
+
+    public Vector2 getScreen() {
+        Collision.worldToScreen(inWorld, onScreen);
+        return onScreen;
     }
 }

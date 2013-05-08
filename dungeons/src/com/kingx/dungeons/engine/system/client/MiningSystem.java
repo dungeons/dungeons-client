@@ -69,8 +69,8 @@ public class MiningSystem extends EntityProcessingSystem {
                 }
 
                 float pick = 10;
-                // pick = 30;
-                //  pick = 90;
+                pick = 30;
+                pick = 90;
                 time = Math.max(b.getType().getHardness() / pick, 0.2f);
 
                 position.setAnimation(true);
@@ -79,16 +79,16 @@ public class MiningSystem extends EntityProcessingSystem {
                     animationMapper.get(e).play("dig");
                 }
 
+                final Cube cube = cubes.get(0);
                 for (Cube c : cubes) {
+                    c.setVisibleSide(c.getRegion(), CubeSideType.BACK, true);
+                    c.setVisible(false);
+                    //App.getCubeManager().checkCubeRegion(App.getCurrentView(), fblock.x, fblock.y);
                     if (c.getType() == null) {
                         continue;
                     }
 
-                    c.setVisibleSide(c.getRegion(), CubeSideType.BACK, true);
-
-                    c.setVisible(false);
-
-                    App.getCubeManager().checkCubeRegion(App.getCurrentView(), c.getX(), c.getY());
+                    //App.getCubeManager().checkCubeRegion(App.getCurrentView(), c.getX(), c.getY());
                     Tween.to(c, CubeAccessor.SCALE, time).target(0).start(App.getTweenManager());
 
                 }
@@ -97,9 +97,10 @@ public class MiningSystem extends EntityProcessingSystem {
 
                     @Override
                     public void onEvent(int type, BaseTween<?> source) {
-                        App.getCubeManager().removeCube(fblock);
+                        App.getCubeManager().removeCube(new Int(cube.getX(), cube.getY()));
                         mining.setMining(false);
                         position.setAnimation(false);
+                        cube.scale = 1f;
                     }
                 });
             }

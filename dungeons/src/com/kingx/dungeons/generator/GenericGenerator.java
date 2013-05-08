@@ -32,7 +32,7 @@ public class GenericGenerator extends AbstractGenerator {
         for (int i = 0; i < terain.length; i++) {
             for (int j = 0; j < terain[i].length; j++) {
                 Block block = zones[Math.min(j / zoneSize, zones.length - 1)];
-                terain[i][j] = new BlockPair(block, null, true);
+                terain[i][j] = new BlockPair(block, null, false);
             }
         }
 
@@ -48,9 +48,13 @@ public class GenericGenerator extends AbstractGenerator {
             chances.add(new Trigger(20, new SpotMutator(b1)));
         }
 
-        CaveMutator c = new CaveMutator(terain, 5, 5, 0, 45);
+        /*  CaveMutator c = new CaveMutator(terain, 5, 5, 0, 45);
 
-        chances.add(new Trigger(100, c));
+          chances.add(new Trigger(100, c));*/
+
+        GlacierCaveMutator ca = new GlacierCaveMutator(terain, 4, 4, 0, 45);
+
+        chances.add(new Trigger(100, ca));
 
         /*   int gems = 5;
            int zone = height / gems * 2;
@@ -79,7 +83,7 @@ public class GenericGenerator extends AbstractGenerator {
         }
 
         for (int i = 0; i < terain.length; i++) {
-            terain[i][terain[i].length - 1] = new BlockPair(Block.GRASS, null, true);
+            terain[i][terain[i].length - 1] = new BlockPair(Block.GRASS, null, false);
         }
 
         /*
@@ -89,7 +93,7 @@ public class GenericGenerator extends AbstractGenerator {
         terain[5][terain[0].length - 1] = Block.STONE;
         terain[6][terain[0].length - 1] = Block.STONE;
         */
-        terain[0][terain[0].length - 1].setVisible(false);
+        terain[0][terain[0].length - 1].setRemoved(true);
 
         return terain;
     }

@@ -110,7 +110,7 @@ public class RenderShadowmapSystem extends EntityProcessingSystem {
         batchRender.begin();
 
         Int point = App.getPlayer().getCollision().getCurrent();
-        batchRender.drawSubregion(cubeRegions.get(App.getCurrentView()), point.x, point.y, 4, true, false);
+        batchRender.drawSubregion(cubeRegions.get(App.getCurrentView()), point.x, point.y, 4, true);
         batchRender.end();
         shadowGeneratorShader.end();
         return shadowMap.getColorBufferTexture();

@@ -28,12 +28,12 @@ public class TerrainHolder {
         }
     }
 
-    public void setVisible(int x, int y, boolean visible) {
+    public void setRemoved(int x, int y, boolean removed) {
         x += offx;
         y += offy;
         y = terrain[0].length - 1 - y;
         if (x >= 0 && x < terrain.length && y >= 0 && y < terrain[0].length) {
-            terrain[x][y].setVisible(visible);
+            terrain[x][y].setRemoved(removed);
         }
     }
 

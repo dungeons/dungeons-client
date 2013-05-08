@@ -2,7 +2,6 @@ package com.kingx.dungeons;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -41,15 +40,16 @@ import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.Terrain;
 import com.kingx.dungeons.graphics.cube.Cube;
 import com.kingx.dungeons.graphics.cube.CubeBlockSideFactory;
+import com.kingx.dungeons.graphics.cube.CubeDefaultSideFactory;
 import com.kingx.dungeons.graphics.cube.CubeManager;
 import com.kingx.dungeons.graphics.cube.CubeMineralSideFactory;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
-import com.kingx.dungeons.graphics.cube.CubeSkyFactory;
+import com.kingx.dungeons.graphics.cube.CubeRenderer;
 import com.kingx.dungeons.graphics.cube.CubeTopFactory;
-import com.kingx.dungeons.graphics.cube.SimpleCube;
 import com.kingx.dungeons.graphics.ui.Gamepad;
 import com.kingx.dungeons.input.Input;
 import com.kingx.dungeons.server.AbstractServer;
+import com.kingx.dungeons.server.HeavyComputationServer;
 import com.kingx.dungeons.server.OfflineServer;
 import com.kingx.dungeons.server.OnlineServer;
 import com.kingx.dungeons.tween.BackgroundAccessor;
@@ -89,7 +89,8 @@ public class App implements ApplicationListener {
     private static float progress;
 
     private final Map<String, Param> params;
-    private static Clock clock;
+    private static Clock clock = new Clock("Logic");
+    private static Clock clock1 = new Clock("Heavy Computations");
     private GameStateManager state;
     private static Input input;
 
@@ -118,7 +119,6 @@ public class App implements ApplicationListener {
         state = REPLAY != null ? GameStateManager.getInstance(GameStatus.REPLAY) : GameStateManager.getInstance(GameStatus.RECORD);
         rand = new Random(state.getSeed());
 
-        clock = new Clock();
         input = new Input();
         Gdx.input.setInputProcessor(input);
 
@@ -148,7 +148,6 @@ public class App implements ApplicationListener {
     BitmapFont font = null;
     private TerrainManager mazeManager;
     private Gamepad ui;
-    public static List<SimpleCube> sky;
     private static BackgroundManager backgroundManager;
     private static Gamepad gamepad;
 
@@ -184,15 +183,21 @@ public class App implements ApplicationListener {
             font.draw(onScreenRasterRender, App.getPlayer().getPositionComponent().toString(), 30, Gdx.graphics.getHeight() - 30);
             font.draw(onScreenRasterRender, String.valueOf(App.getCurrentView()), 30, Gdx.graphics.getHeight() - 60);
             font.draw(onScreenRasterRender, "GPU:" + String.valueOf(Gdx.graphics.getFramesPerSecond()), 30, Gdx.graphics.getHeight() - 90);
-            font.draw(onScreenRasterRender, "CPU:" + String.valueOf(Math.round(clock.getFPS())), 30, Gdx.graphics.getHeight() - 120);
-            font.draw(onScreenRasterRender, "Clocks:" + String.valueOf(clock.getClocks()), 30, Gdx.graphics.getHeight() - 150);
+            font.draw(onScreenRasterRender, "CPU0:" + String.valueOf(Math.round(clock.getFPS())), 30, Gdx.graphics.getHeight() - 120);
+            font.draw(onScreenRasterRender, "CPU1:" + String.valueOf(Math.round(clock1.getFPS())), 30, Gdx.graphics.getHeight() - 150);
+            font.draw(onScreenRasterRender, "Clocks:" + String.valueOf(clock.getClocks()), 30, Gdx.graphics.getHeight() - 180);
+            font.draw(onScreenRasterRender, "Vertices:" + String.valueOf(CubeRenderer.getTotal()), 30, Gdx.graphics.getHeight() - 210);
             onScreenRasterRender.end();
         }
         if (ui != null) {
             ui.render();
         }
 
-        Gdx.gl.glClearColor(tint.r, tint.g, tint.b, 1);
+        if (App.isWireframe()) {
+            Gdx.gl.glClearColor(1, 1, 1, 1);
+        } else {
+            Gdx.gl.glClearColor(tint.r, tint.g, tint.b, 1);
+        }
 
     }
 
@@ -208,7 +213,12 @@ public class App implements ApplicationListener {
 
         onScreenRasterRender = new SpriteBatch();
         onScreenVectorRender = new ShapeRenderer();
-        server = SERVER != null ? new OnlineServer(world) : new OfflineServer(world, state);
+        if (SERVER != null) {
+            server = new OnlineServer(world);
+        } else {
+            server = new OfflineServer(world, state);
+            clock1.addService(new HeavyComputationServer(world));
+        }
         world.initialize();
 
         clock.addService(server);
@@ -222,8 +232,6 @@ public class App implements ApplicationListener {
     }
 
     private void createSky() {
-
-        sky = new CubeSkyFactory(5, 50, -5, 0.1f, 10, 15f).getCubes();
 
     }
 
@@ -255,9 +263,10 @@ public class App implements ApplicationListener {
     private void createCubes() {
 
         ArrayList<CubeRegion> cubeBlockSides = new CubeBlockSideFactory(terrain).getCubeRegions();
+        ArrayList<CubeRegion> cubeDefaultSides = new CubeDefaultSideFactory(terrain).getCubeRegions();
         ArrayList<CubeRegion> cubeMineralSides = new CubeMineralSideFactory(terrain).getCubeRegions();
         CubeRegion cubeTop = new CubeTopFactory(terrain.getWidth() - 2, 1, terrain.getHeight() - 1, -1).getCubeRegions();
-        cubeManager = new CubeManager(cubeTop, cubeBlockSides, cubeMineralSides);
+        cubeManager = new CubeManager(cubeTop, cubeBlockSides, cubeMineralSides, cubeDefaultSides);
     }
 
     /**
@@ -267,7 +276,7 @@ public class App implements ApplicationListener {
      * @return generated map
      */
     private BlockPair[][][] createMap() {
-        return GeneratorFactory.getInstace(GeneratorType.GENERIC).buildLayered(36, 50);
+        return GeneratorFactory.getInstace(GeneratorType.GENERIC).buildLayered(36, 20);
         // return Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT, MAZE_BLOCKS_COUNT) : Assets.map;
         //return MazeBuilder.getLayeredMaze(36, 9);
         // return Assets.map;
@@ -297,7 +306,6 @@ public class App implements ApplicationListener {
      * Place player in the game
      */
     private void createPlayer() {
-
         Vector2 p = new Vector2(App.rand.nextInt(10), App.getTerrain().getHeight() + 3);
         player = new Wanderer(world, p, 1f, 5f, avatarCamera);
         player.createEntity().addToWorld();
@@ -426,22 +434,26 @@ public class App implements ApplicationListener {
     }
 
     public static int getPrevView() {
-        return (currentView == 0 ? App.getCubeManager().cubeRegionPacks.size() : currentView) - 1;
+        return (currentView == 0 ? App.getTerrain().getFootprints() : currentView) - 1;
     }
 
     public static int getNextView() {
-        return (currentView + 1) % App.getCubeManager().cubeRegionPacks.size();
+        return (currentView + 1) % App.getTerrain().getFootprints();
     }
 
     public static int getLastView() {
         return lastView;
     }
 
+    public static int getViews() {
+        return App.getTerrain().getFootprints();
+    }
+
     public static int getView(int i) {
         if (i < 0) {
-            return i + App.getCubeManager().cubeRegionPacks.size();
-        } else if (i >= App.getCubeManager().cubeRegionPacks.size()) {
-            return i - App.getCubeManager().cubeRegionPacks.size();
+            return i + App.getTerrain().getFootprints();
+        } else if (i >= App.getTerrain().getFootprints()) {
+            return i - App.getTerrain().getFootprints();
         } else {
             return i;
         }

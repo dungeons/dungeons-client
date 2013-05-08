@@ -45,7 +45,7 @@ public class Wanderer extends ConcreteEntity {
         shader = new ShaderComponent(Shader.getShader("normal"));
         texture = new TextureComponent(Assets.getTexture("miner.walk.middle", 0));
         health = new HealthComponent(100);
-        sight = new SightComponent(5f);
+        sight = new SightComponent(3f);
         gravity = new GravityComponent(3f, moveComponent);
         SizeComponent sizeComponent = new SizeComponent(size);
         worldRotate = new WorldRotateComponent(positionComponent, moveComponent, sizeComponent);

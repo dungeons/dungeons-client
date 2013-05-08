@@ -46,7 +46,8 @@ public final class CubeFactory {
         for (int i = 0; i < quads.length; i++) {
 
             TextureRegion texture = getTexture(type, i);
-            c.addVerts(makeQuad(x, y, z, size, i, texture, Colors.random()), CubeSideType.values()[i]);
+            TextureRegion defaultTexture = getDefaultTexture(type, i);
+            c.addVerts(makeQuad(x, y, z, size, i, texture, defaultTexture, Colors.random()), CubeSideType.values()[i]);
         }
 
         c.computeBoundaries();
@@ -55,26 +56,17 @@ public final class CubeFactory {
 
     }
 
-    public static SimpleCube makeCube(float x, float y, float z, float size, Color color) {
-
-        SimpleCube c = new SimpleCube();
-
-        for (int i = 0; i < quads.length; i++) {
-            c.addVerts(makeQuad(x, y, z, size, i, null, color), CubeSideType.values()[i]);
-        }
-        return c;
-
-    }
-
-    private static ArrayList<CubeVertex> makeQuad(float x, float y, float z, float size, int face, TextureRegion texture, Color color) {
+    private static ArrayList<CubeVertex> makeQuad(float x, float y, float z, float size, int face, TextureRegion texture, TextureRegion defaultTexture,
+            Color color) {
         ArrayList<CubeVertex> quad = new ArrayList<CubeVertex>(6);
         for (int i = 0; i < quads[face].length; i++) {
-            quad.add(makeVertex(x, y, z, size, i, face, texture, color));
+            quad.add(makeVertex(x, y, z, size, i, face, texture, defaultTexture, color));
         }
         return quad;
     }
 
-    private static CubeVertex makeVertex(float x, float y, float z, float size, int i, int face, TextureRegion texture, Color color) {
+    private static CubeVertex makeVertex(float x, float y, float z, float size, int i, int face, TextureRegion texture, TextureRegion defaultTexture,
+            Color color) {
         // @formatter:off
         CubeVertex cv = new CubeVertex();
         float offset = (App.UNIT-size)/2f;
@@ -82,8 +74,10 @@ public final class CubeFactory {
                        positionOffset[quads[face][i]][1] * size + y+offset,  // y position
                        positionOffset[quads[face][i]][2] * size + z+offset); // z position
         if(texture != null){
-        Vector2 cords = getTextureCoordinates(i, texture);
-        cv.setTexCoords(cords.x, cords.y);
+            Vector2 cords = getTextureCoordinates(i, texture);
+            cv.setTexCoords(cords.x, cords.y);
+            cords = getTextureCoordinates(i, defaultTexture);
+            cv.setDefaultTexCoords(cords.x, cords.y);
         }
         cv.setNormal(normals[face][0],  // x normal
                      normals[face][1],  // y normal
@@ -116,6 +110,10 @@ public final class CubeFactory {
 
     private static TextureRegion getTexture(Block block, int face) {
         return block != null ? Assets.getTexture(block.getTextureName(CubeSideType.values()[face].ordinal()), 0) : null;
+    }
+
+    private static TextureRegion getDefaultTexture(Block block, int face) {
+        return block != null ? Assets.getTexture(block.getDefaultTextureName(CubeSideType.values()[face].ordinal()), 0) : null;
     }
 
 }

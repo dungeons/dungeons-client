@@ -4,12 +4,12 @@ public class BlockPair {
 
     private Block first;
     private Block second;
-    private boolean visible = true;
+    private boolean removed = false;
 
-    public BlockPair(Block first, Block second, boolean visible) {
+    public BlockPair(Block first, Block second, boolean removed) {
         this.first = first;
         this.second = second;
-        this.visible = visible;
+        this.removed = removed;
     }
 
     public Block getFirst() {
@@ -28,12 +28,12 @@ public class BlockPair {
         this.second = second;
     }
 
-    public boolean isVisible() {
-        return visible;
+    public boolean isRemoved() {
+        return removed;
     }
 
-    public void setVisible(boolean visible) {
-        this.visible = visible;
+    public void setRemoved(boolean removed) {
+        this.removed = removed;
     }
 
 }

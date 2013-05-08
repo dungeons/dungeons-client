@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.kingx.dungeons.App;
 import com.kingx.dungeons.Block;
 import com.kingx.dungeons.geom.Collision;
 
@@ -24,6 +25,7 @@ public class Cube {
     private final CubeSide[] sides;
     private int position = 0;
     private boolean visible = false;
+    private boolean hidden = false;
 
     public boolean corner;
 
@@ -199,10 +201,12 @@ public class Cube {
         return type;
     }
 
+    private static final Vector2 intersection = new Vector2(-1, -1);
+
     public boolean blocksRay(Vector2 a, Vector2 b) {
 
         Vector2[] points = getCubePoint();
-        Vector2 intersection = new Vector2(-1, -1);
+        intersection.set(-1, -1);
         for (int i = 0; i < points.length; i++) {
             Intersector.intersectSegments(a, b, points[i], points[(i + 1) % points.length], intersection);
             if (intersection.x >= 0 || intersection.y >= 0) {
@@ -215,14 +219,43 @@ public class Cube {
         return false;
     }
 
+    private boolean first = true;
+    private Vector2[][] points;
+
     public Vector2[] getCubePoint() {
-        CubeVertex[] vertexes = this.getSides()[CubeSideType.BACK.ordinal()].getVerts();
-        Vector2[] points = new Vector2[vertexes.length];
-        for (int i = 0; i < vertexes.length; i++) {
-            float[] pos = vertexes[i].getPosition();
-            points[i] = new Vector2(pos[0], pos[1]);
+        if (first) {
+
+            points = new Vector2[App.getViews()][9];
+            for (int i = 0; i < App.getViews(); i++) {
+                CubeSideType face = this.getCorrectFace(i, CubeSideType.BACK);
+                CubeSide side = this.getSides()[face.ordinal()];
+                Vector3[] nine = side.getNinePoints();
+
+                for (int j = 0; j < nine.length; j++) {
+                    points[i][j] = Collision.worldToScreen(i, nine[j]);
+                }
+
+            }
+            first = false;
         }
-        return points;
+        return points[App.getCurrentView()];
+    }
+
+    public boolean isHidden() {
+        return hidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        if (this.hidden != hidden) {
+            this.hidden = hidden;
+            change();
+        } else {
+            this.hidden = hidden;
+        }
+    }
+
+    private void change() {
+        App.getCubeManager().checkCubeRegion(this);
     }
 
 }

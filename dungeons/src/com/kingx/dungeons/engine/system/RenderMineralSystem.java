@@ -31,6 +31,7 @@ public class RenderMineralSystem extends EntityProcessingSystem {
     private final ShaderProgram shadowProjectShader;
     private CubeRenderer batchRender;
     private final ArrayList<CubeRegion> blocks;
+    public static boolean superInit = false;
 
     public RenderMineralSystem(FollowCameraComponent camera, ArrayList<CubeRegion> blocks) {
         super(Aspect.getAspectForAll(PositionComponent.class, ShadowComponent.class));
@@ -59,7 +60,8 @@ public class RenderMineralSystem extends EntityProcessingSystem {
         shadowProjectShader.setUniformMatrix("u_projTrans", camera.getCamera().combined);
         batchRender.enableBlending();
         Int point = App.getPlayer().getCollision().getCurrent();
-        batchRender.drawSubregion(blocks.get(App.getCurrentView()), point.x, point.y, 4, false, true);
+        float radius = App.getPlayer().getSight().getRadius();
+        //   batchRender.drawSubregion(blocks.get(App.getCurrentView()), point.x, point.y, (int) radius, false);
         batchRender.end();
     }
 

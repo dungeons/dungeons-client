@@ -60,11 +60,6 @@ public class RenderVillageSystem extends EntityProcessingSystem {
     @Override
     protected void end() {
 
-        batchRender.setShader(starShader);
-        batchRender.begin();
-        starShader.setUniformMatrix("u_projTrans", camera.camera.combined);
-        batchRender.draw(App.sky);
-        batchRender.end();
     }
 
     @Override

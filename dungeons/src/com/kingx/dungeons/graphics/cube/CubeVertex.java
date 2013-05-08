@@ -11,6 +11,7 @@ public class CubeVertex {
     public static final int POSITION_SIZE = 3;
     private final float[] position = new float[POSITION_SIZE];
     private final float[] texCoords = new float[2];
+    private final float[] defaultTexCoords = new float[2];
     private final float[] normal = new float[3];
     private final float[] color = new float[4];
 
@@ -31,6 +32,15 @@ public class CubeVertex {
         }
         texCoords[0] = x;
         texCoords[1] = y;
+    }
+
+    public void setDefaultTexCoords(float x, float y) {
+        if (!texCoordsAttribute) {
+            texCoordsAttribute = true;
+            calculate();
+        }
+        defaultTexCoords[0] = x;
+        defaultTexCoords[1] = y;
     }
 
     public void setNormal(float x, float y, float z) {
@@ -68,6 +78,10 @@ public class CubeVertex {
 
     public float[] getTexCoords() {
         return texCoords;
+    }
+
+    public float[] getDefaultTexCoords() {
+        return defaultTexCoords;
     }
 
     public float[] getNormal() {
