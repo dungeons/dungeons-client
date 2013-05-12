@@ -10,6 +10,7 @@ public class CubeVertex {
 
     public static final int POSITION_SIZE = 3;
     private final float[] position = new float[POSITION_SIZE];
+    private final float[] positionOffseted = new float[POSITION_SIZE];
     private final float[] texCoords = new float[2];
     private final float[] defaultTexCoords = new float[2];
     private final float[] normal = new float[3];
@@ -23,6 +24,12 @@ public class CubeVertex {
         position[0] = x;
         position[1] = y;
         position[2] = z;
+    }
+
+    public void setPositionOffseted(float x, float y, float z) {
+        positionOffseted[0] = x;
+        positionOffseted[1] = y;
+        positionOffseted[2] = z;
     }
 
     public void setTexCoords(float x, float y) {
@@ -74,6 +81,10 @@ public class CubeVertex {
 
     public float[] getPosition() {
         return position;
+    }
+
+    public float[] getPositionOffseted() {
+        return positionOffseted;
     }
 
     public float[] getTexCoords() {

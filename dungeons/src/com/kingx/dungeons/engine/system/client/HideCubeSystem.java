@@ -25,23 +25,14 @@ public class HideCubeSystem extends EntityProcessingSystem {
         this.blocks = blocks;
     }
 
-    private boolean firstTime = true;
-
     @Override
     protected void process(Entity e) {
-        for (CubeRegion region : blocks) {
-            for (Cube[] cubes : region.getCubes()) {
-                for (Cube cube : cubes) {
-                    if (cube != null) {
-                        cube.setHidden(!Collision.isCubeVisible(cube, (int) sm.get(e).getRadius()));
-                    }
+        for (Cube[] cubes : blocks.get(App.getCurrentView()).getCubes()) {
+            for (Cube cube : cubes) {
+                if (cube != null) {
+                    cube.setHidden(!Collision.isCubeVisible(cube, (int) sm.get(e).getRadius()));
                 }
             }
-        }
-
-        if (firstTime) {
-            App.getCubeManager().hideInvidibleParts();
-            firstTime = false;
         }
 
     }

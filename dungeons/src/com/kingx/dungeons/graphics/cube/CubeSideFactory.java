@@ -17,7 +17,7 @@ public abstract class CubeSideFactory {
         regions = new ArrayList<CubeRegion>();
         for (int i = 0; i < maze.getFootprints(); i++) {
             cubes = new Cube[maze.getFootprint(i).length + 1][maze.getFootprint(i)[0].length];
-            for (int j = 0; j < cubes.length - 1; j++) {
+            for (int j = 0; j < cubes.length; j++) {
                 for (int k = 0; k < cubes[j].length; k++) {
                     float x = 0, y = 0, z = 0;
                     switch (i) {
@@ -42,11 +42,18 @@ public abstract class CubeSideFactory {
                             z = -maze.getFootprint(i).length + j;
                             break;
                     }
-                    cubes[j][k] = CubeFactory.makeCube(i, x * App.UNIT, y * App.UNIT, z * App.UNIT, size, getBlock(maze.getFootprint(i)[j][k]), j, k);
-                    if (j == 0) {
-                        cubes[j][k].setCorner(true);
+
+                    BlockPair mazeBlock;
+                    if (j == maze.getFootprint(i).length) {
+                        mazeBlock = maze.getFootprint((i + 1) % maze.getFootprints())[0][k];
+                    } else {
+                        mazeBlock = maze.getFootprint(i)[j][k];
                     }
-                    cubes[j][k].setVisible(i, !maze.getFootprint(i)[j][k].isRemoved());
+                    cubes[j][k] = CubeFactory.makeCube(i, x * App.UNIT, y * App.UNIT, z * App.UNIT, size, getBlock(mazeBlock), j, k);
+                    if (j == 0 || j == maze.getFootprint(i).length) {
+                        //     cubes[j][k].setCorner(true);
+                    }
+                    cubes[j][k].setVisible(i, !mazeBlock.isRemoved());
 
                 }
             }
@@ -54,18 +61,18 @@ public abstract class CubeSideFactory {
             regions.add(new CubeRegion(i, cubes, computeBoundaries));
 
         }
+        /*
+                for (int i = 0; i < regions.size(); i++) {
+                    Cube[][] current = regions.get(i).getCubes();
+                    Cube[][] next = regions.get((i + 1) % regions.size()).getCubes();
 
-        for (int i = 0; i < regions.size(); i++) {
-            Cube[][] current = regions.get(i).getCubes();
-            Cube[][] next = regions.get((i + 1) % regions.size()).getCubes();
+                    int last = current.length - 1;
 
-            int last = current.length - 1;
-
-            for (int k = 0; k < current[last].length; k++) {
-                current[last][k] = next[0][k];
-                current[last][k].setCorner(true);
-            }
-        }
+                    for (int k = 0; k < current[last].length; k++) {
+                        current[last][k] = next[0][k];
+                        current[last][k].setCorner(true);
+                    }
+                }*/
     }
 
     private Block getBlock(BlockPair blockPair) {

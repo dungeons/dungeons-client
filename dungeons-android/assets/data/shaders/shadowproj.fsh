@@ -131,11 +131,11 @@ void main ()
 	}
 
 	if(vWorldVertex.y >= 49.81){
-			gl_FragColor = u_source_color * texture2D(u_texture,v_texCoord) * u_tint * temp ;
+			gl_FragColor = u_source_color * texture2D(u_texture,v_texCoord) * u_tint * temp *vColor;
 	}else if(u_forceShadow || shadow ){
-		gl_FragColor = u_ground_color * texture2D(u_texture,v_texCoord) * u_tint ;
+		gl_FragColor = u_ground_color * texture2D(u_texture,v_texCoord) * u_tint *vColor;
 	}else {
-		gl_FragColor = vec4(r,g,b,1.0) * texture2D(u_texture,v_texCoord) * u_tint ;
+		gl_FragColor = vec4(r,g,b,1.0) * texture2D(u_texture,v_texCoord) * u_tint *vColor;
 	}
         
 }

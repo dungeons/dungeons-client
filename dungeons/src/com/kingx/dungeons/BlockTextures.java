@@ -1,6 +1,8 @@
 package com.kingx.dungeons;
 
 public class BlockTextures {
+
+    // BACK, RIGHT, FRONT, LEFT, TOP, BOTTOM;
     public static final String[] DIRT = new String[] { "dirt_light", "dirt_side", "dirt", "dirt_side", "dirt_side", "dirt_side" };
     public static final String[] GRASS = new String[] { "dirt_light", "grass_side", "grass_side", "grass_side", "grass_top", "dirt" };
     public static final String[] SAND = new String[] { "dirt_light", "sand", "sand", "sand", "sand", "sand" };

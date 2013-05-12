@@ -88,8 +88,9 @@ public class CubeRegion {
         cubes[point.x][point.y].setVisible(id, false);
     }
 
-    public void removeCube(int x, int y) {
+    public Cube removeCube(int x, int y) {
         cubes[x][y].setVisible(id, false);
+        return cubes[x][y];
     }
 
     @Override

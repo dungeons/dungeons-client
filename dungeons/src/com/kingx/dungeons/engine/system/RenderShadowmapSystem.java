@@ -77,7 +77,7 @@ public class RenderShadowmapSystem extends EntityProcessingSystem {
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE1);
         depthMap.bind();
         Gdx.gl.glActiveTexture(GL20.GL_TEXTURE0);
-        Assets.getTexture("terrain", 0).getTexture().bind();
+        Assets.getTexture("dirt", 0).getTexture().bind();
     }
 
     /**

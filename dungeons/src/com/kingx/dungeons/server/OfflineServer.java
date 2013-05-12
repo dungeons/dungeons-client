@@ -112,7 +112,6 @@ public class OfflineServer extends AbstractServer {
                 }
                 break;
             case Keys.E:
-                System.out.println(position.getMovementType());
                 if (position.getMovementType() == MovementType.WALK) {
                     mining.setMining(c.getValue() != 0);
                 }

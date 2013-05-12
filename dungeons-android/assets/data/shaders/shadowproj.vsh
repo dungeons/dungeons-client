@@ -5,6 +5,7 @@
 // Attributes.
 attribute vec3 a_position;
 attribute vec2 a_texCoord0;
+attribute vec4 a_color;
 
 // Uniform variables.
 uniform mat4 ProjectionMatrix;
@@ -33,7 +34,7 @@ varying vec2 v_texCoord;
 // Vertex shader entry.
 void main ()
 {
-    vColor = color;
+    vColor = a_color;
     v_texCoord = a_texCoord0;
     
     // Standard basic lighting preperation

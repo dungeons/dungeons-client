@@ -30,6 +30,7 @@ import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.utils.Disposable;
 import com.kingx.dungeons.App;
+import com.kingx.dungeons.graphics.cube.Cube.AnimationType;
 import com.kingx.dungeons.graphics.cube.Cube.CubeSideType;
 
 /**
@@ -341,9 +342,9 @@ public class CubeRenderer implements Disposable {
 
     }
 
-    public void draw(List<CubeRegion> regions, boolean onlyVisible, boolean drawHidden) {
+    public void draw(List<CubeRegion> regions, boolean onlyVisible, boolean drawHidden, boolean drawTransition) {
         for (CubeRegion region : regions) {
-            draw(region, onlyVisible, drawHidden);
+            draw(region, onlyVisible, drawHidden, drawTransition);
         }
     }
 
@@ -357,32 +358,46 @@ public class CubeRenderer implements Disposable {
         }
     }
 
-    public void draw(CubeRegion region, boolean onlyVisible, boolean drawHidden) {
+    public void draw(CubeRegion region, boolean onlyVisible, boolean drawHidden, boolean drawTransition) {
         for (Cube[] temp : region.getCubes()) {
             for (Cube cube : temp) {
                 if (cube != null) {
-                    draw(cube, onlyVisible, drawHidden);
+                    draw(cube, onlyVisible, drawHidden, drawTransition);
                 }
             }
         }
     }
 
-    public void draw(Cube cube, boolean onlyVisible, boolean drawHidden) {
+    public void draw(Cube cube, boolean onlyVisible, boolean drawHidden, boolean drawTransition) {
+        //   System.out.println("Drawing " + cube.getX() + " : " + cube.getY());
         if (cube != null && cube.getType() != null) {
+            //   System.out.println("not nul and its type is not null either");
             if (!onlyVisible || cube.isVisible()) {
-                boolean hidden = App.getCubeManager().getHidden(cube);
-                if (hidden == drawHidden) {
-                    CubeSide[] cubeSides = cube.getSides();
-                    for (CubeSide side : cubeSides) {
-                        if (side.isVisible()) {
-                            if (cube.scale < 1.0f) {
-                                draw(side, cube, hidden);
-                            } else {
-                                draw(side, hidden);
+                //    System.out.println("Cube is not suposed to be visible or is visible");
+                if (!drawTransition) {
+                    //System.out.println("not drawing transition");
+                    boolean hidden = cube.isHidden() && !cube.isAnimation();// && cube.getY() != App.getTerrain().getHeight() - 1;
+                    if (hidden == drawHidden) {
+                        CubeSide[] cubeSides = cube.getSides();
+                        for (CubeSide side : cubeSides) {
+                            if (side.isVisible()) {
+                                if (cube.scale < 1.0f) {
+                                    draw(side, cube, hidden);
+                                } else {
+                                    draw(side, hidden, 1f);
+                                }
                             }
                         }
                     }
+                } else {
+                    if (cube.isAnimation()) {
+                        CubeSide[] cubeSides = cube.getSides();
+                        for (CubeSide side : cubeSides) {
+                            draw(side, true, cube.getAnimationType() == AnimationType.APPEAR ? cube.getAnimationFactor() : 1 - cube.getAnimationFactor());
+                        }
+                    }
                 }
+
             }
         }
 
@@ -397,7 +412,7 @@ public class CubeRenderer implements Disposable {
                         if (cube.scale < 1.0f) {
                             draw(side, cube, false);
                         } else {
-                            draw(side, false);
+                            draw(side, false, 1f);
                         }
                     }
                 }
@@ -412,18 +427,18 @@ public class CubeRenderer implements Disposable {
             for (Cube cube : temp) {
                 if (cube.getX() >= x - radius && cube.getX() <= x + radius) {
                     if (cube.getY() >= y - radius && cube.getY() <= y + radius) {
-                        draw(cube, onlyVisible, false);
+                        draw(cube, onlyVisible, false, false);
                     }
                 }
             }
         }
     }
 
-    private void draw(CubeSide side, boolean hidden) {
+    private void draw(CubeSide side, boolean hidden, float alpha) {
 
         for (CubeVertex cubeVert : side.getVerts()) {
             if (CubeVertex.isPositionAttribute()) {
-                float[] position = cubeVert.getPosition();
+                float[] position = alpha == 1 ? cubeVert.getPosition() : cubeVert.getPositionOffseted();
                 vertices[idx++] = position[0];
                 vertices[idx++] = position[1];
                 vertices[idx++] = position[2];
@@ -447,7 +462,7 @@ public class CubeRenderer implements Disposable {
                 vertices[idx++] = color[0];
                 vertices[idx++] = color[1];
                 vertices[idx++] = color[2];
-                vertices[idx++] = color[3];
+                vertices[idx++] = alpha;
             }
         }
     }
@@ -457,7 +472,7 @@ public class CubeRenderer implements Disposable {
             float[] position = cubeVert.getPosition();
             vertices[idx++] = position[0];
 
-            if (side.getType() != cube.getCorrectFace(cube.getRegion(), CubeSideType.BACK) && position[1] > cube.mean.y) {
+            if (side.getType() != CubeSideType.getCorrectFace(cube.getRegion(), CubeSideType.BACK) && position[1] > cube.mean.y) {
                 vertices[idx++] = position[1] - App.UNIT + App.UNIT * cube.scale;
             } else {
                 vertices[idx++] = position[1];
@@ -469,9 +484,9 @@ public class CubeRenderer implements Disposable {
                 vertices[idx++] = texCords[0];
                 vertices[idx] = texCords[1];
                 if (position[1] > cube.mean.y) {
-                    if (side.getType() == cube.getCorrectFace(cube.getRegion(), CubeSideType.LEFT)
-                            || side.getType() == cube.getCorrectFace(cube.getRegion(), CubeSideType.RIGHT)
-                            || side.getType() == cube.getCorrectFace(cube.getRegion(), CubeSideType.FRONT)) {
+                    if (side.getType() == CubeSideType.getCorrectFace(cube.getRegion(), CubeSideType.LEFT)
+                            || side.getType() == CubeSideType.getCorrectFace(cube.getRegion(), CubeSideType.RIGHT)
+                            || side.getType() == CubeSideType.getCorrectFace(cube.getRegion(), CubeSideType.FRONT)) {
                         vertices[idx] = texCords[1] + (App.UNIT - cube.scale) * 0.25f;
                     }
                 }

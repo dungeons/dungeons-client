@@ -524,26 +524,32 @@ public class Collision {
 
     public static boolean isCubeVisible(Cube cube, int radius) {
         Int point = App.getPlayer().getCollision().getCurrent();
+        PositionComponent pos = App.getPlayer().getPositionComponent();
+        Vector2 avatar = pos.getScreen();
 
+        //System.out.println(avatar);
         if (point == null) {
             return false;
         }
 
         if (cube != null) {
-            if (App.getCubeManager().isCubeSurrounded(cube)) {
-                return false;
-            }
+            // TODO optimalization
+            /* if (App.getCubeManager().isCubeSurrounded(cube)) {
+                 return false;
+             }*/
             if (cube.getX() >= point.x - radius && cube.getX() <= point.x + radius) {
                 if (cube.getY() >= point.y - radius && cube.getY() <= point.y + radius) {
 
                     Vector2[] points = cube.getCubePoint();
-                    Vector2 avatar = App.getPlayer().getPositionComponent().getScreen();
+                    //   System.out.println("Avatar: " + avatar);
                     for (int i = 0; i < points.length; i++) {
+                        //  System.out.println("Ray n." + i);
                         if (fireLight(cube, avatar, points[i], radius)) {
                             return true;
                         }
                     }
 
+                    //     }
                 }
             }
         }
@@ -552,24 +558,30 @@ public class Collision {
 
     private static boolean fireLight(Cube cube, Vector2 from, Vector2 to, int radius) {
         Int point = App.getPlayer().getCollision().getCurrent();
-        CubeRegion region = App.getCubeManager().getCurrentRegion();
+        CubeRegion region = App.getCubeManager().getRegion(cube.getRegion());
 
         for (Cube[] temp : region.getCubes()) {
             for (Cube c : temp) {
                 if (c != null) {
+
+                    //  if (c.getX() == 6 && c.getY() == 19) {
+                    //System.out.println("ITS HIM !");
                     if (c.getX() >= point.x - radius && c.getX() <= point.x + radius) {
                         if (c.getY() >= point.y - radius && c.getY() <= point.y + radius) {
                             if (cube != c && c.isVisible()) {
-                                if (c.blocksRay(from, to)) {
+                                //        System.out.println("PASS");
+                                if (c.blocksRay(c, from, to)) {
                                     return false;
+                                } else {
                                 }
                             }
                         }
                     }
+                    //     }
                 }
             }
+
         }
         return true;
     }
-
 }

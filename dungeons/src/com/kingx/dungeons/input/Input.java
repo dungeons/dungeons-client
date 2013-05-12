@@ -9,18 +9,17 @@ public class Input extends InputAdapter {
 
     @Override
     public boolean keyDown(int keycode) {
-        System.out.println("Key down: " + keycode);
+        // System.out.println("Key down: " + keycode);
         return action(keycode, 1);
     }
 
     @Override
     public boolean keyUp(int keycode) {
-        System.out.println("Key up: " + keycode);
+        // System.out.println("Key up: " + keycode);
         return action(keycode, 0);
     }
 
     private boolean action(int keycode, int dir) {
-        System.out.println(App.INITIALIZED);
         if (App.INITIALIZED) {
             App.getServer().send(new ClientCommand((short) keycode, System.currentTimeMillis(), dir));
         }

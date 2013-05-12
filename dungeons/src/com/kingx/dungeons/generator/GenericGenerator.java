@@ -24,7 +24,6 @@ public class GenericGenerator extends AbstractGenerator {
         for (int i = 1; i < zones.length; i++) {
             int min = i * zoneSize - 1;
             int max = i * zoneSize + scatterZoneSize;
-            System.out.println(min + " : " + max);
             TerainMutator b1 = new BlockMutator(terain, zones[i - 1], min, max);
             chances.add(new Trigger(2, new SpotMutator(b1)));
         }
@@ -43,7 +42,6 @@ public class GenericGenerator extends AbstractGenerator {
         for (int i = 0; i < zones.length; i++) {
             int min = i * zoneSize;
             int max = (i + 1) * zoneSize;
-            System.out.println(min + " : " + max);
             TerainMutator b1 = new MineralMutator(terain, zones[i], min, max);
             chances.add(new Trigger(20, new SpotMutator(b1)));
         }

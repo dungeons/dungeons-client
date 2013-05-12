@@ -16,6 +16,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -33,6 +34,7 @@ import com.kingx.dungeons.engine.system.RenderGeometrySystem;
 import com.kingx.dungeons.engine.system.RenderMineralSystem;
 import com.kingx.dungeons.engine.system.RenderPlainSystem;
 import com.kingx.dungeons.engine.system.RenderShadowSystem;
+import com.kingx.dungeons.engine.system.RenderShadowmapSystem;
 import com.kingx.dungeons.engine.system.RenderVillageSystem;
 import com.kingx.dungeons.generator.GeneratorFactory;
 import com.kingx.dungeons.generator.GeneratorType;
@@ -135,6 +137,7 @@ public class App implements ApplicationListener {
     private SpriteBatch onScreenRasterRender;
     private ShapeRenderer onScreenVectorRender;
     private World world;
+    private static RenderShadowmapSystem renderShadowmapSystem;
     private RenderPlainSystem renderPlainSystem;
     private RenderShadowSystem renderShadowSystem;
     private RenderMineralSystem renderMineralSystem;
@@ -168,6 +171,8 @@ public class App implements ApplicationListener {
         avatarCamera.getCamera().update();
         backgroundCamera.getCamera().update();
 
+        renderShadowmapSystem.process();
+
         renderBackgroundSystem.process();
         renderVillageSystem.process();
         renderShadowSystem.process();
@@ -177,8 +182,8 @@ public class App implements ApplicationListener {
 
         if (DEBUG != null) {
             onScreenRasterRender.begin();
-            if (renderShadowSystem.getDepthMap() != null) {
-                onScreenRasterRender.draw(renderShadowSystem.getDepthMap(), 0, 0, 100, 100, 1, 0, 0, 1);
+            if (renderShadowmapSystem.getDepthMap() != null) {
+                onScreenRasterRender.draw(renderShadowmapSystem.getDepthMap(), 0, 0, 100, 100, 1, 0, 0, 1);
             }
             font.draw(onScreenRasterRender, App.getPlayer().getPositionComponent().toString(), 30, Gdx.graphics.getHeight() - 30);
             font.draw(onScreenRasterRender, String.valueOf(App.getCurrentView()), 30, Gdx.graphics.getHeight() - 60);
@@ -286,6 +291,7 @@ public class App implements ApplicationListener {
      * Register systems to the world and initialize.
      */
     private void addSystemsToWorld() {
+        renderShadowmapSystem = world.setSystem(new RenderShadowmapSystem(worldCamera, cubeManager.getBlockSides()), true);
         renderPlainSystem = world.setSystem(new RenderPlainSystem(worldCamera, cubeManager.getTop()), true);
         renderShadowSystem = world.setSystem(new RenderShadowSystem(worldCamera, cubeManager.getBlockSides()), true);
         renderMineralSystem = world.setSystem(new RenderMineralSystem(worldCamera, cubeManager.getMineralSides()), true);
@@ -407,6 +413,10 @@ public class App implements ApplicationListener {
 
     public static Terrain getTerrain() {
         return terrain;
+    }
+
+    public static Texture getShadowMap() {
+        return renderShadowmapSystem.getDepthMap();
     }
 
     public static BackgroundManager getBackgroundManager() {

@@ -19,9 +19,10 @@ public class CubeSide {
     }
 
     private static final float NINE_OFFSET = 0f;
+    private static final float FOUR_OFFSET = 0f;
 
     public Vector3[] getNinePoints() {
-        Vector3[] nine = new Vector3[9];
+        Vector3[] nine = new Vector3[8];
 
         CubeVertex[] vertexes = getVerts();
         for (int i = 0; i < vertexes.length; i++) {
@@ -35,20 +36,38 @@ public class CubeSide {
             nine[vertexes.length + i] = next.cpy().sub(prev).mul(0.5f).add(prev);
         }
 
-        nine[nine.length - 1] = mean;
-
         //  System.out.println("INIT " + Arrays.toString(nine));
-        if (NINE_OFFSET != 0) {
-            Vector3 origin = mean.cpy();
-            for (int i = 0; i < nine.length; i++) {
-                nine[i].sub(origin);
-                nine[i].mul(1 - NINE_OFFSET);
-                nine[i].add(origin);
-            }
-        }
+        /*  if (NINE_OFFSET != 0) {
+              Vector3 origin = nine[nine.length - 1].cpy();
+              for (int i = 0; i < nine.length; i++) {
+                  nine[i].sub(origin);
+                  nine[i].mul(1 - NINE_OFFSET);
+                  nine[i].add(origin);
+              }
+          }*/
 
         //  System.out.println("     " + Arrays.toString(nine));
         return nine;
+    }
+
+    public Vector3[] getFourPoints() {
+        Vector3[] four = new Vector3[4];
+
+        CubeVertex[] vertexes = getVerts();
+        for (int i = 0; i < vertexes.length; i++) {
+            float[] pos = vertexes[i].getPosition();
+            four[i] = new Vector3(pos[0], pos[1], pos[2]);
+        }
+        if (FOUR_OFFSET != 0) {
+            Vector3 origin = center.cpy();
+            for (int i = 0; i < four.length; i++) {
+                four[i].sub(origin);
+                four[i].mul(1 - FOUR_OFFSET);
+                four[i].add(origin);
+            }
+        }
+
+        return four;
     }
 
     public boolean isVisible() {

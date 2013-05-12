@@ -60,7 +60,16 @@ public class CubeManager {
             Cube left = getCubeAt(region, x - 1, y);
             Cube right = getCubeAt(region, x + 1, y);
 
-            if (!cube.corner) {
+            if (cube.corner) {
+
+                cube.setVisibleSide(region.getId(), CubeSideType.TOP, up == null || !up.isVisible());
+                cube.setVisibleSide(region.getId(), CubeSideType.BOTTOM, down == null || !down.isVisible());
+                cube.setVisibleSide(region.getId(), CubeSideType.BACK, true);
+                cube.setVisibleSide(region.getId(), CubeSideType.LEFT, true);
+                cube.setVisibleSide(region.getId(), CubeSideType.RIGHT, true);
+                cube.setVisibleSide(region.getId(), CubeSideType.FRONT, true);
+
+            } else {
                 cube.setVisibleSide(region.getId(), CubeSideType.BACK, false);
 
                 cube.setVisibleSide(region.getId(), CubeSideType.TOP, up == null || !up.isVisible());
@@ -85,7 +94,7 @@ public class CubeManager {
 
     public void removeCube(Int point) {
         removeCubeInternal(point, this.getBlockSides());
-        removeCubeInternal(point, this.getMineralSides());
+        //  removeCubeInternal(point, this.getMineralSides());
     }
 
     public void removeCubeInternal(Int point, ArrayList<CubeRegion> regionPack) {
@@ -93,8 +102,10 @@ public class CubeManager {
 
         if (point.x == 0) {
             removeCube(regionPack.get(App.getPrevView()), footprint.length, point.y);
+            removeCube(regionPack.get(App.getCurrentView()), point.x, point.y);
         } else if (point.x == footprint.length) {
             removeCube(regionPack.get(App.getNextView()), 0, point.y);
+            removeCube(regionPack.get(App.getCurrentView()), point.x, point.y);
         }
         removeCube(regionPack.get(App.getCurrentView()), point.x, point.y);
 
@@ -117,17 +128,11 @@ public class CubeManager {
     private Cube getCubeInternal(int x, int y, ArrayList<CubeRegion> regionPack) {
         BlockPair[][] footprint = App.getTerrain().getFootprint();
 
-        if (x == 0) {
-            return regionPack.get(App.getPrevView()).getCubes()[footprint.length][y];
-        } else if (x == footprint.length) {
-            return regionPack.get(App.getNextView()).getCubes()[0][y];
-        }
-
         return regionPack.get(App.getCurrentView()).getCubes()[x][y];
     }
 
     private void removeCube(CubeRegion region, int x, int y) {
-        region.removeCube(x, y);
+        System.out.println("Remove: " + x + " " + y + "  " + region.removeCube(x, y).isVisible());
         checkCubeRegion(region, x, y);
     }
 
@@ -147,12 +152,12 @@ public class CubeManager {
         return this.getBlockSides().get(App.getCurrentView());
     }
 
-    public void checkCubeRegion(Cube cube) {
-        checkCubeRegion(getCurrentRegion(), cube.getX(), cube.getY());
+    public CubeRegion getRegion(int i) {
+        return this.getBlockSides().get(i);
     }
 
-    public boolean getHidden(Cube cube) {
-        return getCubeInternal(cube.getX(), cube.getY(), this.getBlockSides()).isHidden();
+    public void checkCubeRegion(Cube cube) {
+        checkCubeRegion(getCurrentRegion(), cube.getX(), cube.getY());
     }
 
     public boolean isCubeSurrounded(Cube cube) {

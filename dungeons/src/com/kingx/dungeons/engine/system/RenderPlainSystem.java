@@ -56,28 +56,30 @@ public class RenderPlainSystem extends EntityProcessingSystem {
     @Override
     protected void process(Entity e) {
         PositionComponent pc = pm.getSafe(e);
-        MoveComponent mc = mm.getSafe(e);
-        ShadowComponent sc = sm.getSafe(e);
+        if (pc.getY() > App.getTerrain().getHeight()) {
+            MoveComponent mc = mm.getSafe(e);
+            ShadowComponent sc = sm.getSafe(e);
 
-        Camera[] lights = sc.getLights();
-        sc.move(pc);
-        sc.rotate(mc);
+            Camera[] lights = sc.getLights();
+            sc.move(pc);
+            sc.rotate(mc);
 
-        batchRender.setShader(plainShader);
-        batchRender.begin();
-        plainShader.setUniformMatrix("ProjectionMatrix", camera.getCamera().projection);
-        plainShader.setUniformMatrix("ViewMatrix", camera.getCamera().view);
-        plainShader.setUniformf("v_lightSpacePosition", lights[0].position);
+            batchRender.setShader(plainShader);
+            batchRender.begin();
+            plainShader.setUniformMatrix("ProjectionMatrix", camera.getCamera().projection);
+            plainShader.setUniformMatrix("ViewMatrix", camera.getCamera().view);
+            plainShader.setUniformf("v_lightSpacePosition", lights[0].position);
 
-        plainShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
-        plainShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
-        plainShader.setUniformi("u_texture", 0);
-        plainShader.setUniformf("u_sight", App.getPlayer().getEntity().getComponent(SightComponent.class).getRadius());
-        plainShader.setUniformf("u_side", App.getCurrentView());
-        plainShader.setUniformf("u_tint", Colors.interpolate(Colors.SHADOW_BOTTOM, Color.WHITE, App.getProgress(), 1));
+            plainShader.setUniformf("u_source_color", Colors.WALL_LIGHT);
+            plainShader.setUniformf("u_ground_color", Colors.WALL_SHADOW);
+            plainShader.setUniformi("u_texture", 0);
+            plainShader.setUniformf("u_sight", App.getPlayer().getEntity().getComponent(SightComponent.class).getRadius());
+            plainShader.setUniformf("u_side", App.getCurrentView());
+            plainShader.setUniformf("u_tint", Colors.interpolate(Colors.SHADOW_BOTTOM, Color.WHITE, App.getProgress(), 1));
 
-        batchRender.draw(blocks, false);
-        batchRender.end();
+            batchRender.draw(blocks, false);
+            batchRender.end();
+        }
     }
 
 }

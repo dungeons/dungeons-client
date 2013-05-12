@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.kingx.dungeons.App;
 import com.kingx.dungeons.Assets;
 import com.kingx.dungeons.Block;
-import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.cube.Cube.CubeSideType;
 
 public final class CubeFactory {
@@ -45,9 +44,9 @@ public final class CubeFactory {
 
         for (int i = 0; i < quads.length; i++) {
 
-            TextureRegion texture = getTexture(type, i);
-            TextureRegion defaultTexture = getDefaultTexture(type, i);
-            c.addVerts(makeQuad(x, y, z, size, i, texture, defaultTexture, Colors.random()), CubeSideType.values()[i]);
+            TextureRegion texture = getTexture(type, c.getRegion(), i);
+            TextureRegion defaultTexture = getDefaultTexture(type, c.getRegion(), i);
+            c.addVerts(makeQuad(x, y, z, size, i, texture, defaultTexture, Color.WHITE), CubeSideType.values()[i]);
         }
 
         c.computeBoundaries();
@@ -71,8 +70,12 @@ public final class CubeFactory {
         CubeVertex cv = new CubeVertex();
         float offset = (App.UNIT-size)/2f;
         cv.setPosition(positionOffset[quads[face][i]][0] * size + x+offset,  // x position
-                       positionOffset[quads[face][i]][1] * size + y+offset,  // y position
-                       positionOffset[quads[face][i]][2] * size + z+offset); // z position
+                positionOffset[quads[face][i]][1] * size + y+offset,  // y position
+                positionOffset[quads[face][i]][2] * size + z+offset); // z position
+        size = size+0.01f;
+        cv.setPositionOffseted(positionOffset[quads[face][i]][0] * size + x+offset,  // x position
+                positionOffset[quads[face][i]][1] * size + y+offset,  // y position
+                positionOffset[quads[face][i]][2] * size + z+offset); // z position
         if(texture != null){
             Vector2 cords = getTextureCoordinates(i, texture);
             cv.setTexCoords(cords.x, cords.y);
@@ -108,12 +111,14 @@ public final class CubeFactory {
         return null;
     }
 
-    private static TextureRegion getTexture(Block block, int face) {
-        return block != null ? Assets.getTexture(block.getTextureName(CubeSideType.values()[face].ordinal()), 0) : null;
+    private static TextureRegion getTexture(Block block, int region, int face) {
+        return block != null ? Assets.getTexture(block.getTextureName(CubeSideType.getCorrectFace(4 - region, CubeSideType.values()[face]).ordinal()), 0)
+                : null;
     }
 
-    private static TextureRegion getDefaultTexture(Block block, int face) {
-        return block != null ? Assets.getTexture(block.getDefaultTextureName(CubeSideType.values()[face].ordinal()), 0) : null;
+    private static TextureRegion getDefaultTexture(Block block, int region, int face) {
+        return block != null ? Assets.getTexture(
+                block.getDefaultTextureName(CubeSideType.getCorrectFace(4 - region, CubeSideType.values()[face]).ordinal()), 0) : null;
     }
 
 }
