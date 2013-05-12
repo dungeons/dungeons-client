@@ -39,3 +39,9 @@ v 0.0.1d10
 - Village texture added.
 - Input for touch devices added.
 - Rotation tween is triggered when switching regions.
+
+v 0.0.1d11
+- Village is composed of 3D models
+- Replays support
+- collisions are now raycasted
+- lot of bugfixes

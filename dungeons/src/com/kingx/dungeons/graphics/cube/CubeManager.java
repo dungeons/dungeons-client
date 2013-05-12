@@ -132,7 +132,7 @@ public class CubeManager {
     }
 
     private void removeCube(CubeRegion region, int x, int y) {
-        System.out.println("Remove: " + x + " " + y + "  " + region.removeCube(x, y).isVisible());
+        region.removeCube(x, y);
         checkCubeRegion(region, x, y);
     }
 

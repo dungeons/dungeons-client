@@ -212,8 +212,8 @@ public class App implements ApplicationListener {
         createBackground();
         createCubes();
         createPlayer();
+        createMonsters();
         createSky();
-        // createZombies(50);
         addSystemsToWorld();
 
         onScreenRasterRender = new SpriteBatch();
@@ -265,6 +265,10 @@ public class App implements ApplicationListener {
         mazeManager = new TerrainManager(terrain);
     }
 
+    private void createMonsters() {
+        MonsterFactory factory = new MonsterFactory(world, terrain, cubeManager.getBlockSides());
+    }
+
     private void createCubes() {
 
         ArrayList<CubeRegion> cubeBlockSides = new CubeBlockSideFactory(terrain).getCubeRegions();
@@ -282,9 +286,6 @@ public class App implements ApplicationListener {
      */
     private BlockPair[][][] createMap() {
         return GeneratorFactory.getInstace(GeneratorType.GENERIC).buildLayered(36, 20);
-        // return Assets.map == null ? MazeBuilder.getMaze(MAZE_BLOCKS_COUNT, MAZE_BLOCKS_COUNT) : Assets.map;
-        //return MazeBuilder.getLayeredMaze(36, 9);
-        // return Assets.map;
     }
 
     /**
@@ -330,20 +331,6 @@ public class App implements ApplicationListener {
 
         Building building = new Building(world, new Vector3(x, y, z), name, scale);
         building.createEntity().addToWorld();
-    }
-
-    /**
-     * Scatter zombies all over the map.
-     * 
-     * @param count
-     *            number of zombies
-     */
-    private void createZombies(int count) {
-        for (int i = 0; i < count; i++) {
-            Vector2 p = terrain.getRandomPosition();
-            // Zombie zombie = new Zombie(world, p, 1f, 1f);
-            //  zombie.createEntity().addToWorld();
-        }
     }
 
     @Override

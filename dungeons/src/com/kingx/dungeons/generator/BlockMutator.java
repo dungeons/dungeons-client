@@ -17,7 +17,7 @@ public class BlockMutator extends TerainMutator<Block> {
     protected void convert(int x, int y) {
         if (isBounds(x, y)) {
             if (terain[x][y] != null) {
-                terain[x][y].setFirst(type);
+                terain[x][y].setCube(type);
             }
         }
     }

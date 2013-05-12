@@ -17,7 +17,7 @@ public class MineralMutator extends TerainMutator<Block> {
     protected void convert(int x, int y) {
         if (isBounds(x, y)) {
             if (terain[x][y] != null) {
-                terain[x][y].setSecond(type);
+                terain[x][y].setMineral(type);
             }
         }
     }

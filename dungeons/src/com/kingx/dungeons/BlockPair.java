@@ -2,30 +2,40 @@ package com.kingx.dungeons;
 
 public class BlockPair {
 
-    private Block first;
-    private Block second;
+    private Block cube;
+    private Block mineral;
+    private Monster spawn;
     private boolean removed = false;
 
-    public BlockPair(Block first, Block second, boolean removed) {
-        this.first = first;
-        this.second = second;
+    public BlockPair(Block cube, Block mineral, Monster spawn, boolean removed) {
+        this.cube = cube;
+        this.mineral = mineral;
+        this.spawn = spawn;
         this.removed = removed;
     }
 
-    public Block getFirst() {
-        return first;
+    public Block getCube() {
+        return cube;
     }
 
-    public void setFirst(Block first) {
-        this.first = first;
+    public void setCube(Block cube) {
+        this.cube = cube;
     }
 
-    public Block getSecond() {
-        return second;
+    public Block getMineral() {
+        return mineral;
     }
 
-    public void setSecond(Block second) {
-        this.second = second;
+    public void setMineral(Block mineral) {
+        this.mineral = mineral;
+    }
+
+    public Monster getSpawn() {
+        return spawn;
+    }
+
+    public void setSpawn(Monster spawn) {
+        this.spawn = spawn;
     }
 
     public boolean isRemoved() {

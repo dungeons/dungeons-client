@@ -18,6 +18,7 @@ import com.kingx.dungeons.engine.component.MiningComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
 import com.kingx.dungeons.geom.Point.Int;
 import com.kingx.dungeons.graphics.cube.Cube;
+import com.kingx.dungeons.graphics.cube.Cube.CubeSideType;
 import com.kingx.dungeons.tween.CubeAccessor;
 
 public class MiningSystem extends EntityProcessingSystem {
@@ -56,7 +57,6 @@ public class MiningSystem extends EntityProcessingSystem {
             }
 
             if (block != null) {
-                System.out.println("MINE");
                 final Int fblock = block;
                 ArrayList<Cube> cubes = App.getCubeManager().getCube(fblock);
                 float time = 0;
@@ -80,6 +80,7 @@ public class MiningSystem extends EntityProcessingSystem {
 
                 final Cube cube = cubes.get(0);
                 for (Cube c : cubes) {
+                    c.setVisibleSide(c.getRegion(), CubeSideType.BACK, !c.corner);
                     c.setVisible(false);
                     //App.getCubeManager().checkCubeRegion(App.getCurrentView(), fblock.x, fblock.y);
                     if (c.getType() == null) {

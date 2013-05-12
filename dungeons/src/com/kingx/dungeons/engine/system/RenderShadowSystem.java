@@ -20,6 +20,7 @@ import com.kingx.dungeons.engine.component.ShadowComponent;
 import com.kingx.dungeons.engine.component.SightComponent;
 import com.kingx.dungeons.engine.component.dynamic.MoveComponent;
 import com.kingx.dungeons.engine.component.dynamic.PositionComponent;
+import com.kingx.dungeons.engine.system.WorldRotateSystem.State;
 import com.kingx.dungeons.graphics.Colors;
 import com.kingx.dungeons.graphics.Shader;
 import com.kingx.dungeons.graphics.cube.CubeRegion;
@@ -100,9 +101,23 @@ public class RenderShadowSystem extends EntityProcessingSystem {
         shadowProjectShader.setUniformf("u_maxBound", CubeRegion.max);
         shadowProjectShader.setUniformf("u_tint", Colors.interpolate(Colors.SHADOW_BOTTOM, Color.WHITE, App.getProgress(), 1));
 
+        if (WorldRotateSystem.getCurrentState() == State.TURNING_LEFT) {
+            batchRender.draw(blocks.get(App.getNextView()), false, false, false);
+            batchRender.draw(blocks.get(App.getNextView()), false, true, false);
+        } else if (WorldRotateSystem.getCurrentState() == State.TURNING_RIGHT) {
+            batchRender.draw(blocks.get(App.getPrevView()), false, false, false);
+            batchRender.draw(blocks.get(App.getPrevView()), false, true, false);
+        }
+
         batchRender.draw(blocks.get(App.getCurrentView()), false, false, false);
         batchRender.draw(blocks.get(App.getCurrentView()), false, true, false);
+
         batchRender.enableBlending();
+        if (WorldRotateSystem.getCurrentState() == State.TURNING_LEFT) {
+            batchRender.draw(blocks.get(App.getNextView()), false, true, true);
+        } else if (WorldRotateSystem.getCurrentState() == State.TURNING_RIGHT) {
+            batchRender.draw(blocks.get(App.getPrevView()), false, true, true);
+        }
         batchRender.draw(blocks.get(App.getCurrentView()), false, true, true);
         batchRender.disableBlending();
 

@@ -13,7 +13,7 @@ public class CubeBlockSideFactory extends CubeSideFactory {
 
     @Override
     protected Block getBlockInternal(BlockPair blockPair) {
-        return blockPair.getFirst();
+        return blockPair.getCube();
     }
 
 }
